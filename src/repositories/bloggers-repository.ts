@@ -15,7 +15,13 @@ export const bloggersDbRepository = {
 
         if (searchNameTerm) {
             const bloggers = await bloggersCollection
-                .find({name: {$regex: searchNameTerm}}, {projection: {_id: 0}}).skip((pageNumber - 1) * pageSize).limit(pageSize).toArray()
+                .find(
+                    {name: {$regex: searchNameTerm}},
+                    {projection: {_id: 0}}
+                )
+                .skip((pageNumber - 1) * pageSize)
+                .limit(pageSize)
+                .toArray()
 
             const bloggersCount = await bloggersCollection
                 .count({name: {$regex: searchNameTerm}})

@@ -32,7 +32,7 @@ export const urlValidation = body('youtubeUrl').trim().isLength({
     max: 100
 }).matches(regexp).isString();
 
-export const bloggerIdValidation = body('bloggerId').isNumeric();
+export const bloggerIdValidation = body('bloggerId').isString();
 
 export const loginValidator = body('login').trim().isLength({min: 3, max: 10}).isString();
 export const passwordValidator = body('password').trim().isLength({min: 6, max: 20}).isString();
