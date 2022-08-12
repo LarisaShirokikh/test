@@ -10,7 +10,6 @@ import {usersService} from "../domain/users-servise";
 export const authRouter = Router({})
 
 authRouter.post('/login',
-    authMiddleware,
     loginValidator,
     passwordValidator,
     inputValidation,
