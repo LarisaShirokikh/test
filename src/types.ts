@@ -1,4 +1,5 @@
 import {ObjectId} from "mongodb";
+import {v4 as uuidv4} from "uuid";
 
 
 export const bloggersCollection: BloggerType[] = [
@@ -109,14 +110,14 @@ export type PostsOfBloggerType = {
 export type UsersType = {
     id: string
     login: string
-    password: string
+
 }
 
-export type UsersWithPassType = {
-    id: string
-    login: string
-    password: string
-    isConfirmed: boolean
+export type UsersWithHashType = {
+    id: string,
+    login: string,
+    passwordHash: string,
+    passwordSalt: string,
 }
 
 export type CommentType = {

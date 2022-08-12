@@ -2,19 +2,19 @@
 import { bcrypt } from 'bcrypt';
 import {usersRepository} from "../repositories/users-repository";
 import { v4 as uuidv4 } from 'uuid';
-import {UsersType} from "../types";
+import {UsersType, UsersWithHashType} from "../types";
 
 export const usersService = {
 
     async createUser(
         login: string,
         password: string
-    ): Promise<UsersType | null> {
+    ): Promise<UsersWithHashType | null> {
 
         const passwordSalt = bcrypt.genSalt(10)
         const passwordHash = await this._generateHash(password, passwordSalt)
 
-        const newUser: UsersType = {
+        const newUser: UsersWithHashType = {
             id: uuidv4(),
             login: login,
             passwordHash,
