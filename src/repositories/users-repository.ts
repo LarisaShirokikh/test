@@ -34,7 +34,6 @@ export const usersRepository = {
     async createUser(newUser: { id: string, login: string }
     ): Promise<UsersType> {
         const result = await usersCollection
-            // @ts-ignore
             .insertOne(newUser)
 
         const user = await usersCollection

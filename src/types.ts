@@ -109,7 +109,6 @@ export type PostsOfBloggerType = {
 export type UsersType = {
     id: string
     login: string
-    password: string
 }
 
 export type UsersWithPassType = {

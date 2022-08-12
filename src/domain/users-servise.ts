@@ -12,7 +12,7 @@ export const usersService = {
 
         let newUser: { id: string, login: string } = {
             id: uuidv4(),
-            login: login,
+            login: login
         }
 
         const createdUser = usersRepository
