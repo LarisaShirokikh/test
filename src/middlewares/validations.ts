@@ -18,8 +18,8 @@ export const shortDescriptionValidation = body('shortDescription').trim().isLeng
 }).isString();
 
 export const contentValidation = body('content').trim().isLength({
-    min: 30,
-    max: 300
+    min: 1,
+    max: 1000
 }).isString();
 
 export const nameValidationCreate = body('name').trim().isLength({
