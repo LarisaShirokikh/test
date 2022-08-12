@@ -10,17 +10,18 @@ import {usersService} from "../domain/users-servise";
 export const authRouter = Router({})
 
 authRouter.post('/login',
-    authMiddleware,
     loginValidator,
     passwordValidator,
     inputValidation,
     async (req: Request, res: Response) => {
         const user = await usersService.checkCredentials(req.body.login, req.body.password)
-        if (!user) {
-            res.sendStatus(401)
-        } else {
+        if (user) {
             const token = await jwtService.createJWT(user)
             res.status(200).send(token)
+        } else {
+            res.status(401)
+            return
+
         }
     })
 
