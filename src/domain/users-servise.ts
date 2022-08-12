@@ -28,9 +28,9 @@ export const usersService = {
     async checkCredentials(login: string, password: string) {
         const user = await usersRepository.findByLogin(login, password)
         if (!user) {
-            return
+            return false
         } else {
-            return user
+            return true
         }
     },
 

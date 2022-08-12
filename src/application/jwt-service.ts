@@ -6,11 +6,14 @@ import {UsersType} from "../types";
 
 export const jwtService = {
 
-    async createJWT(user: UsersType) {
-        const token = jwt
-            .sign({userId: user.id},
-                settings.JWT_SECRET, {expiresIn: '10h'})
-        return token
+    async createJWT(user: UsersType | boolean) {
+        if (typeof user !== "boolean") {
+            const token = jwt
+                .sign({userId: user.id},
+                    settings.JWT_SECRET, {expiresIn: '10h'})
+
+            return token
+        }
 
     },
 
