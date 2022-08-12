@@ -1,6 +1,6 @@
 
 import {usersCollection} from "../settings";
-import {UsersType} from "../types";
+import {UsersType, UsersWithPassType} from "../types";
 
 export const usersRepository = {
 
@@ -31,16 +31,13 @@ export const usersRepository = {
         return usersCollection.find().sort('createdAt', -1).toArray()
     },
 
-    async createUser(newUser: { id: string, login: string }
-    ): Promise<UsersType> {
-        const result = await usersCollection
-            .insertOne(newUser)
+    async createUser(newUser: UsersType): Promise<UsersType | null> {
+        const result = await usersCollection.insertOne(newUser)
+        if(result.acknowledged) {
+            return newUser
+        }
 
-        const user = await usersCollection
-            .find({login: newUser.login},
-                {projection: {_id: 0}})
-            .toArray()
-        return user[0]
+        return null
     },
 
     async findUserById(id: string): Promise<UsersType | null> {

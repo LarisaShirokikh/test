@@ -29,12 +29,14 @@ usersRouter.post('/',
         const newUser = await usersService.createUser(req.body.login, req.body.password)
 
         if (!newUser) {
-            res.status(400).send(
-                {errorsMessages: [{message: "Problem with a user", field: "user "}]})
+            res.status(400)
             return
         }
 
-        res.status(201).send(newUser)
+        res.status(201).send({
+            id: newUser.id,
+            login: newUser.login
+        })
     })
 
 usersRouter.delete('/:id',

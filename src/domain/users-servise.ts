@@ -1,23 +1,22 @@
 
 import {usersRepository} from "../repositories/users-repository";
 import { v4 as uuidv4 } from 'uuid';
-import {UsersType} from "../types";
+import {UsersType, UsersWithPassType} from "../types";
 
 export const usersService = {
 
     async createUser(
         login: string,
         password: string
-    ): Promise<UsersType> {
+    ): Promise<UsersType | null> {
 
-        let newUser: { id: string, login: string } = {
+        let newUser = {
             id: uuidv4(),
-            login: login
+            login: login,
+            password: password,
         }
 
-        const createdUser = usersRepository
-            .createUser(newUser)
-        return createdUser
+        return usersRepository.createUser(newUser)
     },
 
     async findUserById(id: string): Promise<UsersType | null> {
