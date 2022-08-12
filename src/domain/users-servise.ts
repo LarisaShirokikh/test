@@ -12,10 +12,9 @@ export const usersService = {
 
         let newUser = {
             id: uuidv4(),
-            login: login,
-            password: password,
+            login: login
         }
-
+        // @ts-ignore
         return usersRepository.createUser(newUser)
     },
 
