@@ -1,18 +1,17 @@
 import {Request, Response, Router} from "express"
-
-import {inputValidationMiddleware, } from "../middlewares/input-validation-middleware";
+import {postsService} from "../domain/posts-service";
+import {authBarer, authMiddleware} from "../middlewares/auth-middleware";
 import {
     bloggerIdValidation,
     contentValidation,
     shortDescriptionValidation,
     titleValidationCreate
-} from "../middlewares/title-validation";
+} from "../middlewares/validations";
+import {inputValidation} from "../middlewares/input-validation";
+import {bloggersDbRepository} from "../repositories/bloggers-repository";
+import {postDbRepository} from "../repositories/posts-repository";
+import {commentsService} from "../domain/comment-service";
 
-import {postsService} from "../domain/posts-service";
-import {bloggersDbRepository} from "../repositories/bloggers-db-repository";
-import {postDbRepository} from "../repositories/post-db-repository";
-import {commentsService} from "../domain/commets-service";
-import {authBarer, authRouterBasic} from "../middlewares/auth-basic";
 
 
 export const postsRouter = Router({})
@@ -29,12 +28,12 @@ postsRouter.get('/',
     })
 
 postsRouter.post('/',
-    authRouterBasic,
+    authMiddleware,
     titleValidationCreate,
     shortDescriptionValidation,
     contentValidation,
     bloggerIdValidation,
-    inputValidationMiddleware,
+    inputValidation,
     async (req: Request, res: Response) => {
         const newPost = await postsService.createPost(
             req.body.title,
@@ -52,12 +51,12 @@ postsRouter.post('/',
     })
 
 postsRouter.put('/:postId',
-    authRouterBasic,
+    authMiddleware,
     titleValidationCreate,
     shortDescriptionValidation,
     contentValidation,
     bloggerIdValidation,
-    inputValidationMiddleware,
+    inputValidation,
     async (req: Request, res: Response) => {
 
 
@@ -100,7 +99,7 @@ postsRouter.get('/:postId',
     })
 
 postsRouter.delete('/:postId',
-    authRouterBasic,
+    authMiddleware,
     async (req: Request, res: Response) => {
 
         const isDeleted = await postsService.deletePost(req.params.postId)
@@ -131,7 +130,7 @@ postsRouter.get('/:postsId/comments',
 postsRouter.post('/:postsId/comments',
     authBarer,
     contentValidation,
-    inputValidationMiddleware,
+    inputValidation,
     async (req: Request, res: Response) => {
 
         const post = await postDbRepository

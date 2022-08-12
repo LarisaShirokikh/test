@@ -1,12 +1,16 @@
 import {Request, Response, Router} from "express";
-import {inputValidationMiddleware} from "../middlewares/input-validation-middleware";
-import {
-    contentValidation, urlValidation, nameValidationCreate, shortDescriptionValidation, titleValidationCreate
-} from "../middlewares/title-validation";
 
 import {bloggersService} from "../domain/bloggers-service";
-import {bloggersDbRepository} from "../repositories/bloggers-db-repository";
-import {authRouterBasic} from "../middlewares/auth-basic";
+import {authMiddleware} from "../middlewares/auth-middleware";
+import {inputValidation} from "../middlewares/input-validation";
+import {bloggersDbRepository} from "../repositories/bloggers-repository";
+import {
+    contentValidation,
+    nameValidationCreate,
+    shortDescriptionValidation, titleValidationCreate,
+    urlValidation
+} from "../middlewares/validations";
+
 
 export const bloggersRoute = Router({});
 
@@ -24,10 +28,10 @@ bloggersRoute.get('/',
 )
 
 bloggersRoute.post('/',
-    authRouterBasic,
+    authMiddleware,
     nameValidationCreate,
     urlValidation,
-    inputValidationMiddleware,
+    inputValidation,
     async (req: Request, res: Response) => {
         const newBlogger = await bloggersService
             .createBlogger(
@@ -51,10 +55,10 @@ bloggersRoute.get('/:bloggerId',
 )
 
 bloggersRoute.put('/:bloggerId',
-    authRouterBasic,
+    authMiddleware,
     nameValidationCreate,
     urlValidation,
-    inputValidationMiddleware,
+    inputValidation,
     async (req: Request, res: Response) => {
 
         const isUpdated = await bloggersService.updateBlogger(req.params.bloggerId, req.body.name, req.body.youtubeUrl)
@@ -69,7 +73,7 @@ bloggersRoute.put('/:bloggerId',
 )
 
 bloggersRoute.delete('/:bloggerId',
-    authRouterBasic,
+    authMiddleware,
     async (req: Request, res: Response) => {
         const isDeleted = await bloggersService.deleteBlogger(req.params.bloggerId)
         if (isDeleted) {
@@ -102,11 +106,11 @@ bloggersRoute.get('/:bloggerId/posts',
 )
 
 bloggersRoute.post('/:bloggerId/posts',
-    authRouterBasic,
+    authMiddleware,
     titleValidationCreate,
     shortDescriptionValidation,
     contentValidation,
-    inputValidationMiddleware,
+    inputValidation,
 
     async (req: Request, res: Response) => {
 

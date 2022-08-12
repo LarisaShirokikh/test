@@ -1,13 +1,13 @@
 import express from 'express'
 import bodyParser from "body-parser"
-
 import {bloggersRoute} from "./router/bloggers-route";
 import {postsRouter} from "./router/posts-route";
 import {runDb} from "./settings"
 import cors from "cors"
-import {usersRouter} from "./router/users-router";
-import { commentRouter } from './router/comment-router';
+import {commentRouter} from "./router/comment-router";
+import {usersRouter} from "./router/users-route";
 import {authRouter} from "./router/auth-router";
+
 
 
 const app = express()
