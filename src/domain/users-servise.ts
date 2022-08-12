@@ -1,7 +1,8 @@
-
+// @ts-ignore
+import { bcrypt } from 'bcrypt';
 import {usersRepository} from "../repositories/users-repository";
 import { v4 as uuidv4 } from 'uuid';
-import {UsersType, UsersWithPassType} from "../types";
+import {UsersType} from "../types";
 
 export const usersService = {
 
@@ -10,11 +11,16 @@ export const usersService = {
         password: string
     ): Promise<UsersType | null> {
 
-        let newUser = {
+        const passwordSalt = bcrypt.genSalt(10)
+        const passwordHash = await this._generateHash(password, passwordSalt)
+
+        const newUser: UsersType = {
             id: uuidv4(),
-            login: login
+            login: login,
+            passwordHash,
+            passwordSalt,
         }
-        // @ts-ignore
+
         return usersRepository.createUser(newUser)
     },
 
@@ -24,12 +30,13 @@ export const usersService = {
 
 
     async checkCredentials(login: string, password: string) {
-        const user = await usersRepository.findByLogin(login, password)
-        if (!user) {
+        const user = await usersRepository.findByLogin(login)
+        if (!user) return false
+        const passwordHash = await this._generateHash(password, user.passwordSalt)
+        if (user.passwordHash !== passwordHash) {
             return false
-        } else {
-            return true
         }
+        return true
     },
 
 
@@ -46,5 +53,11 @@ export const usersService = {
     async deleteUser (id: string
     ): Promise<boolean> {
         return usersRepository.deleteUser(id)
+    },
+
+    async _generateHash(password: string, salt: string) {
+        const hash = await bcrypt.hash(password, salt)
+        console.log('hash: ' + hash)
+        return hash
     }
 }

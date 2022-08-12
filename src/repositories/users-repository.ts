@@ -50,9 +50,9 @@ export const usersRepository = {
         }
     },
 
-    async findByLogin(login: string, password: string) {
+    async findByLogin(login: string) {
         const user = await usersCollection
-            .findOne({ login: login, password: password} )
+            .findOne({ login: login } )
         return user
     },
 
