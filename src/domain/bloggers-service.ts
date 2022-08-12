@@ -1,7 +1,7 @@
 
 import { v4 as uuidv4 } from 'uuid';
 import {bloggersDbRepository} from "../repositories/bloggers-repository";
-import {BloggerType, PostType} from "../types";
+import {BloggerType, Pagination, PostType} from "../types";
 import {postDbRepository} from "../repositories/posts-repository";
 
 
@@ -12,10 +12,10 @@ import {postDbRepository} from "../repositories/posts-repository";
 export const bloggersService = {
 
     async getAllBloggers(
-        pageNumber: string = '1' || undefined,
-        pageSize:string = '10' || undefined,
+        pageNumber: string,
+        pageSize: string,
         searchNameTerm: string | null = null
-    ): Promise<BloggerType | undefined | null> {
+    ): Promise<Pagination<BloggerType[]> | null> {
 
         const bloggersDb = await bloggersDbRepository
             .getAllBloggers(

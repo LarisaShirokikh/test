@@ -1,6 +1,6 @@
 
 import {bloggersCollection, postsCollection} from "../settings";
-import {BloggerType, PostType} from "../types";
+import {BloggerType, Pagination, PostType} from "../types";
 
 
 
@@ -10,14 +10,11 @@ export const bloggersDbRepository = {
     async getAllBloggers(
         pageNumber: number,
         pageSize: number,
-        searchNameTerm: string | null): Promise<BloggerType | undefined | null> {
-
-
+        searchNameTerm: string | null): Promise<Pagination<BloggerType[]> | null> {
         if (searchNameTerm) {
             const bloggers = await bloggersCollection
                 .find(
-                    {name: {$regex: searchNameTerm}},
-                    {projection: {_id: 0}}
+                    {name: {$regex: searchNameTerm}}
                 )
                 .skip((pageNumber - 1) * pageSize)
                 .limit(pageSize)
@@ -27,18 +24,22 @@ export const bloggersDbRepository = {
                 .count({name: {$regex: searchNameTerm}})
             const pagesCount = Math.ceil(bloggersCount / pageSize)
 
-            const result = {
+            const result: Pagination<BloggerType[]> = {
                 pagesCount: pagesCount,
                 page: pageNumber,
                 pageSize,
                 totalCount: bloggersCount,
-                items: bloggers
+                items: bloggers.map((blogger) => {
+                    return {
+                        youtubeUrl: blogger.youtubeUrl,
+                        name: blogger.name,
+                        id: blogger.id
+                    }
+                })
             }
-            // @ts-ignore
+
             return result
         } else {
-
-            // @ts-ignore
             const bloggers = await bloggersCollection
                 .find({}, {projection: {_id: 0}}).skip((pageNumber - 1) * pageSize)
                 .limit(pageSize)
@@ -54,7 +55,7 @@ export const bloggersDbRepository = {
                 totalCount: bloggersCount,
                 items: bloggers
             }
-            // @ts-ignore
+
             return result
         }
     },
