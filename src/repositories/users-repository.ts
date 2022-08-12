@@ -11,7 +11,7 @@ export const usersRepository = {
         const usersCount = await usersCollection.count({})
         const pagesCount = Math.ceil(usersCount / pageSize)
         const users: UsersType[] = await usersCollection
-            .find({})
+            .find({}, {projection : {_id: 0 } })
             .skip((pageNumber - 1) * pageSize)
             .limit(pageSize)
             .toArray()
