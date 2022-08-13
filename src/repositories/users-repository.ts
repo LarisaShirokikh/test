@@ -49,7 +49,12 @@ export const usersRepository = {
     async findByLogin(login: string) {
         const user = await usersCollection
             .findOne({ login: login } )
-        return user
+        if (user) {
+            return {
+                id: user.id,
+                login: user.login
+            }
+        }
     },
 
     async deleteUser (id: string): Promise<boolean> {
