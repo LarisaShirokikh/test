@@ -11,7 +11,7 @@ export const usersRepository = {
         const usersCount = await usersCollection.count({})
         const pagesCount = Math.ceil(usersCount / pageSize)
         const users: UsersType[] = await usersCollection
-            .find({}, {projection : {_id: 0, passwordSalt: 0, passwordHash: 0}} )
+            .find({}, {projection : {_id: 0}} )
             .skip((pageNumber - 1) * pageSize)
             .limit(pageSize)
             .toArray()
@@ -48,7 +48,7 @@ export const usersRepository = {
 
     async findByLogin(login: string) {
         const user = await usersCollection
-            .findOne({ login: login },{projection: {passwordSalt: 0, passwordHash: 0}} )
+            .findOne({ login: login } )
 
             return user
 
