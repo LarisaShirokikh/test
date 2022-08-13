@@ -11,14 +11,21 @@ export const usersRouter = Router({})
 
 usersRouter.get('/',
     async (req: Request, res: Response) => {
+        const pageNumber = typeof req.query.PageNumber === 'string' ? req.query.PageNumber : '1'
+        const pageSize = typeof req.query.PageSize === 'string' ? req.query.PageSize : '10'
 
         const users = await usersService.getAllUsers(
-            // @ts-ignore
-            req.query.PageNumber,
-            req.query.PageSize
+            pageNumber,
+            pageSize
         )
+
+        if (!users) {
+            return res.status(500).send('wrong')
+        }
         res.status(200).send(users);
+
     })
+
 
 usersRouter.post('/',
     authMiddleware,

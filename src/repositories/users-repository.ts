@@ -1,30 +1,36 @@
 
 import {usersCollection} from "../settings";
-import {UsersType, UsersWithHashType} from "../types";
+import {Pagination, UsersType, UsersWithHashType} from "../types";
 
 export const usersRepository = {
 
     async getAllUsersDb(
         pageNumber: number,
-        pageSize: number): Promise<UsersType | undefined | null> {
+        pageSize: number
+    ): Promise<Pagination<UsersType[]>> {
+
+        const users = await usersCollection
+            .find({})
+            .skip((pageNumber - 1) * pageSize)
+            .limit(pageSize).toArray()
 
         const usersCount = await usersCollection.count({})
         const pagesCount = Math.ceil(usersCount / pageSize)
-        const users: UsersType[] = await usersCollection
-            .find({}, {projection : {_id: 0}} )
-            .skip((pageNumber - 1) * pageSize)
-            .limit(pageSize)
-            .toArray()
-
-        const result = {
+        const result: Pagination<UsersType[]> = {
             pagesCount: pagesCount,
             page: pageNumber,
             pageSize,
             totalCount: usersCount,
-            items: users
+            items: users.map((user) => {
+                return {
+                    id: user.id,
+                    login: user.login
+                }
+        })
         }
-// @ts-ignore
         return result
+
+
     },
 
     async getAllUsers(): Promise<UsersType[]> {

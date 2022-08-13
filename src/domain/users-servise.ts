@@ -2,7 +2,7 @@
 import bcrypt  from 'bcrypt';
 import {usersRepository} from "../repositories/users-repository";
 import { v4 as uuidv4 } from 'uuid';
-import {UsersType, UsersWithHashType} from "../types";
+import {Pagination, UsersType, UsersWithHashType} from "../types";
 
 export const usersService = {
 
@@ -42,11 +42,12 @@ export const usersService = {
 
 
     async getAllUsers(
-        pageNumber: string = '1' || undefined,
-        pageSize:string = '10' || undefined
-    ): Promise<UsersType | undefined | null> {
+        pageNumber: string,
+        pageSize:string
+    ): Promise<Pagination<UsersType[]> | null> {
 
-        const users = await usersRepository.getAllUsersDb(+pageNumber, +pageSize)
+        const users = await usersRepository
+            .getAllUsersDb(+pageNumber, +pageSize)
 
         return users
     },
