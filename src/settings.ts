@@ -1,5 +1,5 @@
 import {MongoClient} from "mongodb";
-import {BloggerType, CommentType, PostType, UsersType, UsersWithHashType} from "./types";
+import {BloggerType, CommentType, Pagination, PostType, UsersType, UsersWithHashType} from "./types";
 
 
 

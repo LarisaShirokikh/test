@@ -92,7 +92,7 @@ export const postDbRepository = {
                               pageSize: number
     ): Promise<Pagination<CommentType[]> | null> {
 
-        const comments: CommentType[] | CommentType = await commentCollection
+        const comments: CommentType[] = await commentCollection
             .find({})
             .skip((pageNumber - 1) * pageSize)
             .limit(pageSize)
@@ -109,13 +109,14 @@ export const postDbRepository = {
             totalCount: commentsCount,
             items: comments.map((comment) => {
                 return {
-                    // @ts-ignore
-                    content: comments.content
+                    id: comment.id,
+                    content: comment.content,
+                    userId: comment.userId,
+                    userLogin: comment.userLogin,
+                    addedAt: "2022-08-13T15:40:25.835Z"
                 }
             })
         }
-
-        // @ts-ignore
         return result
 
     },

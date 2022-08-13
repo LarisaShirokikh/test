@@ -123,8 +123,9 @@ postsRouter.get('/:postsId/comments',
             const comments = await postsService
 
                 .getCommentsByPostId
-                (req.params.postId,
-                    // @ts-ignore
+                (
+                    req.params.postId,
+                    //@ts-ignore
                     req.query.pageNumber,
                     req.query.pageSize);
             res.status(200).send(comments);
