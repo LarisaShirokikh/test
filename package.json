@@ -11,11 +11,13 @@
     "start": "node dist/index.js"
   },
   "dependencies": {
+    "@types/bcrypt": "^5.0.0",
     "@types/cors": "^2.8.12",
     "@types/jsonwebtoken": "^8.5.8",
     "@types/mongodb": "^4.0.7",
     "@types/nodemailer": "^6.4.5",
     "@types/uuid": "^8.3.4",
+    "bcrypt": "^5.0.1",
     "body-parser": "^1.20.0",
     "cors": "^2.8.5",
     "date-fns": "^2.29.1",

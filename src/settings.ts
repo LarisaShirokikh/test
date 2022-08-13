@@ -1,5 +1,5 @@
 import {MongoClient} from "mongodb";
-import {BloggerType, CommentType, PostType, UsersType} from "./types";
+import {BloggerType, CommentType, PostType, UsersType, UsersWithHashType} from "./types";
 
 
 
@@ -18,7 +18,7 @@ const db = client.db("blog")
 
 export const bloggersCollection = db.collection<BloggerType>("bloggers")
 export const postsCollection = db.collection<PostType>("posts")
-export const usersCollection = db.collection<UsersType>("users")
+export const usersCollection = db.collection<UsersWithHashType>("users")
 export const commentCollection = db.collection<CommentType>("comment")
 
 

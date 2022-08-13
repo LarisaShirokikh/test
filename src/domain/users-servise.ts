@@ -1,5 +1,5 @@
 
-import { bcrypt } from 'bcrypt';
+import bcrypt  from 'bcrypt';
 import {usersRepository} from "../repositories/users-repository";
 import { v4 as uuidv4 } from 'uuid';
 import {UsersType, UsersWithHashType} from "../types";
@@ -11,7 +11,7 @@ export const usersService = {
         password: string
     ): Promise<UsersWithHashType | null> {
 
-        const passwordSalt = bcrypt.genSalt(10)
+        const passwordSalt = await bcrypt.genSalt(10)
         const passwordHash = await this._generateHash(password, passwordSalt)
 
         const newUser: UsersWithHashType = {
