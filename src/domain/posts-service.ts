@@ -2,7 +2,7 @@
 import { v4 as uuidv4 } from 'uuid';
 import {postDbRepository} from "../repositories/posts-repository";
 import {bloggersDbRepository} from "../repositories/bloggers-repository";
-import {CommentType, PostType} from "../types";
+import {CommentType, Pagination, PostType} from "../types";
 
 export const postsService = {
     async getAllPosts (
@@ -51,9 +51,9 @@ export const postsService = {
 
     async getCommentsByPostId(
         postId: string,
-        pageNumber: string = '1' || undefined || null,
-        pageSize: string = '10' || undefined || null
-    ): Promise<CommentType | null > {
+        pageNumber: string,
+        pageSize: string
+    ): Promise<Pagination<CommentType[]> | null > {
         const commentsDb = await postDbRepository
             .getCommentsByPostId
             (

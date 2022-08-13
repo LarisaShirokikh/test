@@ -121,8 +121,12 @@ postsRouter.get('/:postsId/comments',
         } else {
 
             const comments = await postsService
-                // @ts-ignore
-                .getCommentsByPostId(req.params.postId, req.query.pageNumber, req.query.pageSize);
+
+                .getCommentsByPostId
+                (req.params.postId,
+                    // @ts-ignore
+                    req.query.pageNumber,
+                    req.query.pageSize);
             res.status(200).send(comments);
         }
     })

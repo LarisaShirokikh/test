@@ -1,6 +1,6 @@
 
 import {bloggersCollection, commentCollection, postsCollection} from "../settings";
-import {CommentType, PostType} from "../types";
+import {CommentType, Pagination, PostType} from "../types";
 
 
 
@@ -90,22 +90,29 @@ export const postDbRepository = {
     async getCommentsByPostId(postId: string,
                               pageNumber: number,
                               pageSize: number
-    ): Promise<CommentType | null> {
+    ): Promise<Pagination<CommentType[]> | null> {
 
-        const commentsCount = await commentCollection.count({postId})
-        const pagesCount = Math.ceil(commentsCount / pageSize)
         const comments: CommentType[] | CommentType = await commentCollection
-            .find({postId}, {projection: {_id: 0}})
+            .find({})
             .skip((pageNumber - 1) * pageSize)
             .limit(pageSize)
             .toArray()
 
-        const result = {
+        const commentsCount = await commentCollection
+            .count({})
+        const pagesCount = Math.ceil(commentsCount / pageSize)
+
+        const result: Pagination<CommentType[]> = {
             pagesCount: pagesCount,
             page: pageNumber,
             pageSize,
             totalCount: commentsCount,
-            items: comments
+            items: comments.map((comment) => {
+                return {
+                    // @ts-ignore
+                    content: comments.content
+                }
+            })
         }
 
         // @ts-ignore

@@ -121,14 +121,9 @@ export type UsersWithHashType = {
 }
 
 export type CommentType = {
-    postId: string,
-    id: string,
+
     content: string,
-    userId: string,
-    userLogin: string,
-    addedAt: object
+
 }
 
-export type CommentContentType = {
-    content: string
-}
+
