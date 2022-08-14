@@ -1,6 +1,7 @@
 
 import {usersCollection} from "../settings";
 import {Pagination, UsersType, UsersWithHashType} from "../types";
+import {ObjectId} from "mongodb";
 
 export const usersRepository = {
 
