@@ -1,18 +1,21 @@
 
 import {settings} from "../settings";
 import jwt from 'jsonwebtoken'
-import {UsersType, UsersWithHashType} from "../types";
+import {CommentType, UsersType, UsersWithHashType} from "../types";
 import {ObjectId} from "mongodb";
+import {usersService} from "../domain/users-servise";
 
 export const jwtService = {
 
-    async createJWT(user: any) {
+    async createJWT(user: UsersWithHashType, password: string) {
+        const passwordHash = await usersService._generateHash(password,
+            user.passwordSalt)
 
+           // const token = jwt
+             //   .sign({userId: user.id, },
+           //         settings.JWT_SECRET, {expiresIn: '10h'})
 
-            const token = jwt
-                .sign({userId: user.id, },
-                    settings.JWT_SECRET, {expiresIn: '10h'})
-            return token
+            return passwordHash
 
 
     },

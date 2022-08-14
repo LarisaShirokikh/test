@@ -19,7 +19,7 @@ const db = client.db("blog")
 export const bloggersCollection = db.collection<BloggerType>("bloggers")
 export const postsCollection = db.collection<PostType>("posts")
 export const usersCollection = db.collection<UsersWithHashType>("users")
-export const commentCollection = db.collection<CommentType>("comment")
+export const commentCollection = db.collection<CommentType>("comments")
 
 
 export async function runDb() {

@@ -5,6 +5,8 @@ import {authMiddleware} from "../middlewares/auth-middleware";
 import {loginValidator, passwordValidator} from "../middlewares/validations";
 import {inputValidation} from "../middlewares/input-validation";
 import {usersService} from "../domain/users-servise";
+import {usersCollection} from "../settings";
+import {UsersWithHashType} from "../types";
 
 
 export const authRouter = Router({})
@@ -15,10 +17,15 @@ authRouter.post('/login',
         if (!user) {
             res.sendStatus(401)
         } else {
-            const token = await jwtService.createJWT(user)
+            // @ts-ignore
+            const findUser:  UsersWithHashType = await usersCollection.findOne({login: req.body.login})
+            const token = await jwtService.createJWT(findUser, req.body.password)
+            const userUpdate = await usersCollection
+                .updateOne({login: req.body.login}, {passwordHash: token})
             console.log(token)
             res.status(200).send(token)
         }
+
     })
 
 
