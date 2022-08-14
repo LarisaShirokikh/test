@@ -1,5 +1,5 @@
 
-import {settings} from "../settings";
+import {settings, usersCollection} from "../settings";
 import jwt from 'jsonwebtoken'
 import {CommentType, UsersType, UsersWithHashType} from "../types";
 import {ObjectId} from "mongodb";
@@ -21,6 +21,11 @@ export const jwtService = {
     },
 
     async getUserIdByToken (token: string) {
+        const newToken = await usersCollection.findOne({token})
+        if (token)
+        //написать логику чтобы искал нужный токен
+        //здесь только создание
+        // в другом месте искать юзера по токену и брать у него айди и записывать данные комментария
         try {
             //const result: any = jwt.decode(token)
             const result: any = jwt.verify(token, settings.JWT_SECRET)
