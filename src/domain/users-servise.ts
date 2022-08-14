@@ -3,6 +3,7 @@ import bcrypt  from 'bcrypt';
 import {usersRepository} from "../repositories/users-repository";
 import { v4 as uuidv4 } from 'uuid';
 import {Pagination, UsersType, UsersWithHashType} from "../types";
+import {ObjectId} from "mongodb";
 
 export const usersService = {
 
@@ -24,7 +25,7 @@ export const usersService = {
         return usersRepository.createUser(newUser)
     },
 
-    async findUserById(id: string): Promise<UsersType | null> {
+    async findUserById(id: string): Promise<UsersWithHashType | null> {
         return usersRepository.findUserById(id)
     },
 

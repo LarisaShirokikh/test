@@ -36,7 +36,7 @@ usersRouter.post('/',
         const newUser = await usersService.createUser(req.body.login, req.body.password)
 
         if (!newUser) {
-            res.status(400)
+            res.status(401)
             return
         }
 

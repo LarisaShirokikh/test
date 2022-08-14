@@ -33,16 +33,12 @@ export const usersRepository = {
 
     },
 
-    async getAllUsers(): Promise<UsersType[]> {
-        return usersCollection.find().sort('createdAt', -1).toArray()
-    },
-
     async createUser(newUser: UsersWithHashType): Promise<UsersWithHashType> {
         const result = await usersCollection.insertOne(newUser)
         return newUser
     },
 
-    async findUserById(id: string): Promise<UsersType | null> {
+    async findUserById(id: string): Promise<UsersWithHashType | null> {
         let user = await usersCollection
             .findOne({id: id})
         if (user) {
