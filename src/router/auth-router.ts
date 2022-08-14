@@ -21,15 +21,15 @@ authRouter.post('/login',
 
             // @ts-ignore
 
-            const findUser:  UsersWithHashType = await usersCollection.findOne({login: req.body.login})
+            const findUser: UsersWithHashType = await usersCollection.findOne({login: req.body.login})
 
             const token = await jwtService.createJWT(findUser, req.body.password)
             const userUpdate = await usersCollection
                 .updateOne({login: req.body.login}, {$set: {passwordHash: token}})
-           //const token1 = {
-             //   token: token
-           //}
-            res.status(200).send(token)
+            const token1 = {
+                token: token
+            }
+            res.status(200).send(token1)
         }
 
     })
