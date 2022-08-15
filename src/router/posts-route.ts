@@ -1,10 +1,7 @@
 import {Request, Response, Router} from "express"
 import {postsService} from "../domain/posts-service";
 import {authBearer, authMiddleware} from "../middlewares/auth-middleware";
-import {
-    contentValidation,
-    shortDescriptionValidation, titleValidation
-} from "../middlewares/validations";
+import {contentValidation, shortDescriptionValidation, titleValidation} from "../middlewares/validations";
 import {inputValidation} from "../middlewares/input-validation";
 import {bloggersDbRepository} from "../repositories/bloggers-repository";
 import {commentService} from "../domain/comment-service";
@@ -109,7 +106,8 @@ postsRouter.post('/:postId/comments', authBearer, contentValidation, inputValida
         const post = await postsService.findPostById(req.params.postId)
 
         if (post) {
-            const newComment = await commentService.createComment(req.body.content, req.user!.id, req.user!.login, req.params.postId)
+            const newComment = await commentService
+                .createComment(req.body.content, req.user.id, req.user.login, req.params.postId)
             res.status(201).send(newComment)
         } else {
             res.send(404)

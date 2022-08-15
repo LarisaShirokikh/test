@@ -1,4 +1,5 @@
 import {commentsCollection} from "../settings";
+import {CommentType} from "../types";
 
 
 export const commentRepository = {
@@ -11,8 +12,13 @@ export const commentRepository = {
         return await commentsCollection.findOne({id: id}, {projection: {_id: 0}})
     },
     async findCommentWithPag(postId: string, pageSize:number, pageNumber:number){
-        return await commentsCollection
-            .find({postId: postId}, {projection: {_id: 0}}).skip((pageNumber-1)*pageSize).limit(pageSize).toArray()
+        let comment =  await commentsCollection
+            .find({postId: postId}, {projection: {_id: 0}})
+            .skip((pageNumber-1)*pageSize).limit(pageSize).toArray()
+        const comment1 = comment.map((c: any) => delete c.postId)
+            return comment1
+
+
     },
     async getCount(postId:string){
         return await commentsCollection.count({postId: postId})

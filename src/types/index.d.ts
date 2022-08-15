@@ -1,4 +1,4 @@
-import {Request, Response, Router} from "express"
+
 import {UsersType} from "../types";
 
 declare global {
@@ -9,4 +9,3 @@ declare global {
         }
     }
 }
-// прописать импорты

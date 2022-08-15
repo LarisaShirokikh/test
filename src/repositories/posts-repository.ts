@@ -36,12 +36,7 @@ export const postDbRepository = {
     }): Promise<PostType | undefined> {
         const result = await postsCollection
             .insertOne(newPost)
-        const post = await postsCollection
-            .find({id: newPost.id},
-                {projection: {_id: 0}})
-            .toArray()
-
-        return post[0]
+        return
     },
 
     async getPostById(postId: string

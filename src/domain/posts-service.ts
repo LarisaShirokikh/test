@@ -30,9 +30,8 @@ export const postsService = {
                 bloggerName: blogger.name
             }
 
-
-            const createdPost = await postDbRepository.createPost(newPost)
-            return createdPost
+            await postDbRepository.createPost(newPost)
+            return newPost
         }
     },
 
