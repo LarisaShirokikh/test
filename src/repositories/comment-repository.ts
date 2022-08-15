@@ -48,7 +48,8 @@ export const commentRepository = {
 
     },
     async findUser(userId:string, commentId: string){
-        return await commentsCollection.findOne({userId: userId, id:commentId})
+        return await commentsCollection.findOne({userId: userId, id:commentId},
+            {projection: {_id: 0}})
     },
 
 }
