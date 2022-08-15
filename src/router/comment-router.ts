@@ -11,6 +11,7 @@ import {commentService} from "../domain/comment-service";
 export const commentsRouter = Router({})
 
 commentsRouter.get('/:id', async (req: Request, res: Response) => {
+    console.log(1111)
     const comment = await commentService.findComment(req.params.id)
 
     if(comment){

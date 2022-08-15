@@ -21,7 +21,7 @@ app.use(parserMiddleware)
 app.use('/bloggers', bloggersRoute)
 app.use('/posts', postsRouter)
 app.use('/users', usersRouter)
-app.use('/comment', commentsRouter)
+app.use('/comments', commentsRouter)
 app.use('/auth', authRouter)
 
 

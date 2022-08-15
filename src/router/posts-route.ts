@@ -25,12 +25,13 @@ postsRouter.get('/',
     })
 
 postsRouter.post('/',
-    authMiddleware,
+   authMiddleware,
     titleValidation,
     shortDescriptionValidation,
-    contentValidation,
+   contentValidation,
     inputValidation,
     async (req: Request, res: Response) => {
+
         const newPost = await postsService.createPost(
             req.body.title,
             req.body.shortDescription,

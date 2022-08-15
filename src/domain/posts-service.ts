@@ -49,8 +49,6 @@ export const postsService = {
         return postDbRepository.deletePost(postId)
     },
 
-
-
     async findPostById(id: string) {
         return await postDbRepository.findPostById(id)
     },
