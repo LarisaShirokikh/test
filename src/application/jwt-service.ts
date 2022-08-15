@@ -6,13 +6,14 @@ import {settings} from "../settings";
 
 export const jwtService = {
     async createJWT(user:any){
-        const token = jwt.sign({userId: user.id}, settings.JWT_SECRET, {expiresIn: '1h'} )
+        let payload = {"userId": user.id.toString()}
+        const token = jwt.sign(payload, settings.JWT_SECRET, {noTimestamp: true,expiresIn: '1h'} )
         return token
     },
 
     async getUserIdByToken (token: string){
         try{
-            const result:any =  jwt.verify(token, settings.JWT_SECRET)
+            const result:any =  await jwt.verify(token, settings.JWT_SECRET)
             return result.userId
         } catch (error) {
             return null
