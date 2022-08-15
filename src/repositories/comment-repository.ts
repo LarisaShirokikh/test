@@ -9,7 +9,7 @@ export const commentRepository = {
             userId,
             userLogin, addedAt} = newComment
         return {id, content,
-            userId,
+            //userId,
             userLogin, addedAt}
     },
     async findComment(id:string){
