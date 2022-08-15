@@ -49,20 +49,7 @@ export const postsService = {
         return postDbRepository.deletePost(postId)
     },
 
-    async getCommentsByPostId(
-        postId: string,
-        pageNumber: string,
-        pageSize: string
-    ): Promise<Pagination<CommentType[]> | null > {
-        const commentsDb = await postDbRepository
-            .getCommentsByPostId
-            (
-                postId,
-                +pageSize,
-                +pageNumber
-            );
-        return commentsDb
-    },
+
 
     async findPostById(id: string) {
         return await postDbRepository.findPostById(id)

@@ -87,39 +87,7 @@ export const postDbRepository = {
         }
     },
 
-    async getCommentsByPostId(postId: string,
-                              pageNumber: number,
-                              pageSize: number
-    ): Promise<Pagination<CommentType[]> | null> {
 
-        const comments: CommentType[] = await commentsCollection
-            .find({})
-            .skip((pageNumber - 1) * pageSize)
-            .limit(pageSize)
-            .toArray()
-
-        const commentsCount = await commentsCollection
-            .count({})
-        const pagesCount = Math.ceil(commentsCount / pageSize)
-
-        const result: Pagination<CommentType[]> = {
-            pagesCount: pagesCount,
-            page: pageNumber,
-            pageSize,
-            totalCount: commentsCount,
-            items: comments.map((comment) => {
-                return {
-                    id: comment.id,
-                    content: comment.content,
-                    userId: comment.userId,
-                    userLogin: comment.userLogin,
-                    addedAt: "2022-08-13T15:40:25.835Z"
-                }
-            })
-        }
-        return result
-
-    },
     async findPostById(id: string) {
         return await postsCollection.findOne({id: id}, {projection: {_id: 0}})
     },

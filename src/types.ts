@@ -123,13 +123,9 @@ export type UsersWithHashType = {
 export type CommentType = {
     id: string,
     content: string,
-    userId: string,
-    userLogin: string,
-    addedAt: "2022-08-13T15:40:25.835Z"
-}
-
-export type FeedbackDbType = {
 
 }
+
+
 
 
