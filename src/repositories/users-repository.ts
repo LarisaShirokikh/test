@@ -41,7 +41,7 @@ export const usersRepository = {
 
     async findUserById(id: string): Promise<UsersWithHashType | null> {
         let user = await usersCollection
-            .findOne({id: id})
+            .findOne({id: id}, {projection: {_id: 0}})
         if (user) {
             return user
         } else {
@@ -51,7 +51,7 @@ export const usersRepository = {
 
     async findByLogin(login: string) {
         const user = await usersCollection
-            .findOne({ login: login } )
+            .findOne({ login: login }, {projection: {_id: 0}} )
 
             return user
 
@@ -69,6 +69,6 @@ export const usersRepository = {
         return user;
     },
     async findUsersById(userId:string){
-        return await usersCollection.findOne({id: userId})
+        return await usersCollection.findOne({id: userId}, {projection: {_id: 0}})
     }
 }
