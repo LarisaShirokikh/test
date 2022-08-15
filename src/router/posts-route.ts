@@ -14,7 +14,6 @@ import {commentsService} from "../domain/comment-service";
 import {CommentType} from "../types";
 
 
-
 export const postsRouter = Router({})
 
 
@@ -86,8 +85,7 @@ postsRouter.put('/:postId',
         }
     })
 
-postsRouter.get('/:postId',
-    async (req: Request, res: Response) => {
+postsRouter.get('/:postId', async (req: Request, res: Response) => {
 
         const post = await postsService.getPostById(
             req.params.postId)
@@ -99,8 +97,7 @@ postsRouter.get('/:postId',
         }
     })
 
-postsRouter.delete('/:postId',
-    authMiddleware,
+postsRouter.delete('/:postId', authMiddleware,
     async (req: Request, res: Response) => {
 
         const isDeleted = await postsService.deletePost(req.params.postId)
@@ -131,17 +128,19 @@ postsRouter.get('/:postId/comments', async (req: Request, res: Response) => {
     } else {
         res.sendStatus(404)
     }
-
-    postsRouter.post('/:postId/comments', authBarer, commentValidator, inputValidation,
-        async (req: Request, res: Response) => {
-            const post = await postsService.findPostById(req.params.postId)
-
-            if (post) {
-                const newComment = await commentsService.createComment(req.body.content, req.user!.id, req.user!.login, req.params.postId)
-                res.status(201).send(newComment)
-            } else {
-                res.send(404)
-            }
-        })
 })
+
+postsRouter.post('/:postId/comments', authBarer, commentValidator, inputValidation,
+    async (req: Request, res: Response) => {
+        const post = await postsService.findPostById(req.params.postId)
+
+        if (post) {
+            const newComment = await commentsService
+                .createComment(req.body.content, req.user!.id, req.user!.login, req.params.postId)
+            res.status(201).send(newComment)
+        } else {
+            res.send(404)
+        }
+    })
+
 
