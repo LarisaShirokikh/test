@@ -17,6 +17,7 @@ export const commentsService = {
         }
         return await commentRepository.createComment(newComment)
     },
+    
     async findComment (id: string){
         return await commentRepository.findComment(id)
     },

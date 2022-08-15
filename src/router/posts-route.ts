@@ -1,6 +1,6 @@
 import {Request, Response, Router} from "express"
 import {postsService} from "../domain/posts-service";
-import {authBarer, authMiddleware} from "../middlewares/auth-middleware";
+import {authBearer, authMiddleware} from "../middlewares/auth-middleware";
 import {
     bloggerIdValidation, commentValidator,
     contentValidation,
@@ -109,6 +109,17 @@ postsRouter.delete('/:postId', authMiddleware,
         }
     })
 
+postsRouter.post('/:postId/comments', authBearer, commentValidator, inputValidation, async (req: Request, res: Response) => {
+        const post = await postsService.findPostById(req.params.postId)
+
+        if (post) {
+            const newComment = await commentsService.createComment(req.body.content, req.user!.id, req.user!.login, req.params.postId)
+            res.status(201).send(newComment)
+        } else {
+            res.send(404)
+        }
+    }
+)
 postsRouter.get('/:postId/comments', async (req: Request, res: Response) => {
     const pageSize: number = Number(req.query.PageSize) || 10
     const pageNumber: number = Number(req.query.PageNumber) || 1
@@ -129,18 +140,5 @@ postsRouter.get('/:postId/comments', async (req: Request, res: Response) => {
         res.sendStatus(404)
     }
 })
-
-postsRouter.post('/:postId/comments', authBarer, commentValidator, inputValidation,
-    async (req: Request, res: Response) => {
-        const post = await postsService.findPostById(req.params.postId)
-
-        if (post) {
-            const newComment = await commentsService
-                .createComment(req.body.content, req.user!.id, req.user!.login, req.params.postId)
-            res.status(201).send(newComment)
-        } else {
-            res.send(404)
-        }
-    })
 
 
