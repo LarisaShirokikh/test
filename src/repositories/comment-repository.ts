@@ -15,7 +15,13 @@ export const commentRepository = {
         let comment =  await commentsCollection
             .find({postId: postId}, {projection: {_id: 0}})
             .skip((pageNumber-1)*pageSize).limit(pageSize).toArray()
-        const comment1 = comment.map((c: any) => delete c.postId)
+        const comment1 = comment.map((c: any) => ({
+            id: c.id,
+            content: c.content,
+            userId: c.userId,
+            userLogin: c.userLogin,
+            addedAt: c.addedAt
+        }))
             return comment1
 
 
