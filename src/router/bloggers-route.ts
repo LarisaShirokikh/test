@@ -5,9 +5,9 @@ import {authMiddleware} from "../middlewares/auth-middleware";
 import {inputValidation} from "../middlewares/input-validation";
 import {bloggersDbRepository} from "../repositories/bloggers-repository";
 import {
-    contentValidation,
-    nameValidationCreate,
-    shortDescriptionValidation, titleValidationCreate,
+    contentValidation, nameValidation,
+
+    shortDescriptionValidation, titleValidation,
     urlValidation
 } from "../middlewares/validations";
 
@@ -37,7 +37,7 @@ bloggersRoute.get('/',
 
 bloggersRoute.post('/',
     authMiddleware,
-    nameValidationCreate,
+    nameValidation,
     urlValidation,
     inputValidation,
     async (req: Request, res: Response) => {
@@ -64,7 +64,7 @@ bloggersRoute.get('/:bloggerId',
 
 bloggersRoute.put('/:bloggerId',
     authMiddleware,
-    nameValidationCreate,
+    nameValidation,
     urlValidation,
     inputValidation,
     async (req: Request, res: Response) => {
@@ -118,7 +118,7 @@ bloggersRoute.get('/:bloggerId/posts',
 
 bloggersRoute.post('/:bloggerId/posts',
     authMiddleware,
-    titleValidationCreate,
+    titleValidation,
     shortDescriptionValidation,
     contentValidation,
     inputValidation,

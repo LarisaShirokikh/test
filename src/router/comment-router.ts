@@ -2,7 +2,8 @@ import {Request, Response, Router} from "express";
 import {commentsService} from "../domain/comment-service";
 import {authBearer} from "../middlewares/auth-middleware";
 import {inputValidation} from "../middlewares/input-validation";
-import {commentValidator} from "../middlewares/validations";
+import {commentValidation} from "../middlewares/validations";
+
 
 
 
@@ -36,7 +37,7 @@ commentsRouter.delete('/:id', authBearer, async (req: Request, res: Response) =>
         res.sendStatus(403)
     }
 })
-commentsRouter.put('/:commentId',authBearer, commentValidator, inputValidation,
+commentsRouter.put('/:commentId',authBearer, commentValidation, inputValidation,
     async (req: Request, res: Response) => {
     let comment = await commentsService.findComment(req.params.commentId)
     let user = await commentsService.findUser(req.user!.id, req.params.commentId)

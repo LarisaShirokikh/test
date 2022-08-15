@@ -2,16 +2,12 @@ import {Request, Response, Router} from "express"
 import {postsService} from "../domain/posts-service";
 import {authBearer, authMiddleware} from "../middlewares/auth-middleware";
 import {
-    bloggerIdValidation, commentValidator,
     contentValidation,
-    shortDescriptionValidation,
-    titleValidationCreate
+    shortDescriptionValidation, titleValidation
 } from "../middlewares/validations";
 import {inputValidation} from "../middlewares/input-validation";
 import {bloggersDbRepository} from "../repositories/bloggers-repository";
-import {postDbRepository} from "../repositories/posts-repository";
 import {commentsService} from "../domain/comment-service";
-import {CommentType} from "../types";
 
 
 export const postsRouter = Router({})
@@ -29,10 +25,9 @@ postsRouter.get('/',
 
 postsRouter.post('/',
     authMiddleware,
-    titleValidationCreate,
+    titleValidation,
     shortDescriptionValidation,
     contentValidation,
-    bloggerIdValidation,
     inputValidation,
     async (req: Request, res: Response) => {
         const newPost = await postsService.createPost(
@@ -52,10 +47,9 @@ postsRouter.post('/',
 
 postsRouter.put('/:postId',
     authMiddleware,
-    titleValidationCreate,
+    titleValidation,
     shortDescriptionValidation,
     contentValidation,
-    bloggerIdValidation,
     inputValidation,
     async (req: Request, res: Response) => {
 
@@ -109,7 +103,7 @@ postsRouter.delete('/:postId', authMiddleware,
         }
     })
 
-postsRouter.post('/:postId/comments', authBearer, commentValidator, inputValidation, async (req: Request, res: Response) => {
+postsRouter.post('/:postId/comments', authBearer, contentValidation, inputValidation, async (req: Request, res: Response) => {
         const post = await postsService.findPostById(req.params.postId)
 
         if (post) {
