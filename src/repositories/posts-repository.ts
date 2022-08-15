@@ -38,7 +38,8 @@ export const postDbRepository = {
             .insertOne(newPost)
         const post = await postsCollection
             .find({id: newPost.id},
-                {projection: {_id: 0}})
+                //{projection: {_id: 0}}
+            )
             .toArray()
 
         return post[0]
@@ -48,7 +49,7 @@ export const postDbRepository = {
     ): Promise<PostType | null> {
         const post = await postsCollection
             .findOne({id: postId},
-                {projection: {_id: 0}}
+                //{projection: {_id: 0}}
             )
         return post;
     },
@@ -91,7 +92,9 @@ export const postDbRepository = {
 
 
     async findPostById(id: string) {
-        return await postsCollection.findOne({id: id}, {projection: {_id: 0}})
+        return await postsCollection.findOne({id: id},
+            //{projection: {_id: 0}}
+        )
     },
 
 

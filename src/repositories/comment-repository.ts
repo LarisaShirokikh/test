@@ -13,11 +13,15 @@ export const commentRepository = {
             userLogin, addedAt}
     },
     async findComment(id:string){
-        return await commentsCollection.findOne({id: id}, {projection: {_id: 0}})
+        return await commentsCollection.findOne({id: id},
+            //{projection: {_id: 0}}
+        )
     },
     async findCommentWithPag(postId: string, pageSize:number, pageNumber:number){
         let comment =  await commentsCollection
-            .find({postId: postId}, {projection: {_id: 0}})
+            .find({postId: postId},
+                //{projection: {_id: 0}}
+            )
             .skip((pageNumber-1)*pageSize).limit(pageSize).toArray()
         const comment1 = comment.map((c: any) => ({
             id: c.id,
@@ -49,7 +53,8 @@ export const commentRepository = {
     },
     async findUser(userId:string, commentId: string){
         return await commentsCollection.findOne({userId: userId, id:commentId},
-            {projection: {_id: 0}})
+            //{projection: {_id: 0}}
+        )
     },
 
 }
