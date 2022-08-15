@@ -30,15 +30,16 @@ export const commentsService = {
                         postId: string,
                         user: string): Promise<CommentType | undefined> {
 
-        const newComment: CommentType = {
+        const newComment = {
+            id: postId,
             content,
-            login,
-            userId,
-            userLogin,
-            addedAt
+            userId: user,
+            userLogin: login,
+            addedAt: "2022-08-13T15:40:25.835Z"
 
         }
         const createdCommentDb = await commentRepository
+            //@ts-ignore
             .createComment(newComment)
         return createdCommentDb
     }

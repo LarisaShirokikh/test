@@ -157,6 +157,7 @@ postsRouter.post('/:postsId/comments',
                     req.user,
                     req.user.id,
                     req.user.login,
+                    //@ts-ignore
                     post.id
                 )
 

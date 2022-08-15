@@ -7,7 +7,7 @@ import cors from "cors"
 import {commentRouter} from "./router/comment-router";
 import {usersRouter} from "./router/users-route";
 import {authRouter} from "./router/auth-router";
-import {feedbackRouter} from "./router/feedback-router";
+
 
 
 
@@ -23,7 +23,7 @@ app.use('/posts', postsRouter)
 app.use('/users', usersRouter)
 app.use('/comment', commentRouter)
 app.use('/auth', authRouter)
-app.use('/feedback', feedbackRouter)
+
 
 
 

@@ -1,4 +1,3 @@
-
 import {commentCollection, postsCollection} from "../settings";
 import {CommentType} from "../types";
 
@@ -20,7 +19,7 @@ export const commentRepository = {
 
     async updateComment(commentId: string, content: string): Promise<CommentType | undefined> {
         const result = await commentCollection.updateOne({id: commentId}, {
-            $set: { content }
+            $set: {content}
         })
         return
 
@@ -40,12 +39,20 @@ export const commentRepository = {
         return result.deletedCount === 1;
     },
 
-    async createComment(newComment: CommentType
+    async createComment(newComment: {
+                            id: string,
+                            content: string,
+                            userId: string,
+                            userLogin: string,
+                            addedAt: "2022-08-13T15:40:25.835Z"
+                        }
     ): Promise<CommentType | undefined> {
         const result = await commentCollection
             .insertOne(newComment)
         const comment = await commentCollection
-            .find({id: newComment.id}, {projection: {_id: 0}}).toArray()
+            .find({id: newComment.id},
+                {projection: {_id: 0}})
+            .toArray()
 
         return comment[0]
     },
