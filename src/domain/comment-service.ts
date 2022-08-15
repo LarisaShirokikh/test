@@ -13,7 +13,7 @@ export const commentService = {
             userId: userId,
             userLogin: userLogin,
             addedAt: new Date(),
-            //postId: postId
+            postId: postId
         }
         return await commentRepository.createComment(newComment)
     },
