@@ -5,7 +5,7 @@ import {ObjectId} from "mongodb";
 
 
 
-export const commentsService = {
+export const commentService = {
     async createComment (comment: string, userId: string, userLogin:string, postId:string){
         const newComment:any = {
             id: new ObjectId().toString(),
@@ -17,7 +17,6 @@ export const commentsService = {
         }
         return await commentRepository.createComment(newComment)
     },
-    
     async findComment (id: string){
         return await commentRepository.findComment(id)
     },

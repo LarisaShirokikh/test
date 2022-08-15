@@ -7,7 +7,8 @@ import {
 } from "../middlewares/validations";
 import {inputValidation} from "../middlewares/input-validation";
 import {bloggersDbRepository} from "../repositories/bloggers-repository";
-import {commentsService} from "../domain/comment-service";
+import {commentService} from "../domain/comment-service";
+
 
 
 export const postsRouter = Router({})
@@ -107,7 +108,7 @@ postsRouter.post('/:postId/comments', authBearer, contentValidation, inputValida
         const post = await postsService.findPostById(req.params.postId)
 
         if (post) {
-            const newComment = await commentsService.createComment(req.body.content, req.user!.id, req.user!.login, req.params.postId)
+            const newComment = await commentService.createComment(req.body.content, req.user!.id, req.user!.login, req.params.postId)
             res.status(201).send(newComment)
         } else {
             res.send(404)
@@ -120,8 +121,8 @@ postsRouter.get('/:postId/comments', async (req: Request, res: Response) => {
 
     const findPost = await postsService.findPostById(req.params.postId)
     if (findPost) {
-        const findComment = await commentsService.findCommentWithPag(req.params.postId, pageSize, pageNumber)
-        const getCount = await commentsService.getCount(req.params.postId)
+        const findComment = await commentService.findCommentWithPag(req.params.postId, pageSize, pageNumber)
+        const getCount = await commentService.getCount(req.params.postId)
         const result = {
             "pagesCount": Math.ceil(getCount / pageSize),
             "page": pageNumber,
