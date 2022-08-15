@@ -23,7 +23,10 @@ export const authBarer = async (req: Request, res: Response, next: NextFunction)
     if (userId) {
         const user = await usersService.findUserById(userId)
 
+        req.user = user;
         next()
+        return
     }
     res.sendStatus(401)
+
 }

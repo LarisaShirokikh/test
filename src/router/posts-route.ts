@@ -11,6 +11,7 @@ import {inputValidation} from "../middlewares/input-validation";
 import {bloggersDbRepository} from "../repositories/bloggers-repository";
 import {postDbRepository} from "../repositories/posts-repository";
 import {commentsService} from "../domain/comment-service";
+import {CommentType} from "../types";
 
 
 
@@ -138,6 +139,9 @@ postsRouter.post('/:postsId/comments',
     inputValidation,
     async (req: Request, res: Response) => {
 
+    if (!req.user) {
+    return res.sendStatus(401)
+}
         const post = await postDbRepository
             .isPost(req.params.postId);
         if (!post) {
@@ -147,9 +151,13 @@ postsRouter.post('/:postsId/comments',
                             message: "Problem with a postId field",
                             field: "postId"}]});
         } else {
-            const newComment = await commentsService
+            const newComment: CommentType | undefined = await commentsService
                 .creatComments(
                     req.body.content,
+                    req.user,
+                    req.user.id,
+                    req.user.login,
+                    post.id
                 )
 
             if (newComment) {

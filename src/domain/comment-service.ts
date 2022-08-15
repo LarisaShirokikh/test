@@ -24,10 +24,19 @@ export const commentsService = {
         return commentRepository.deleteComment(commentId)
     },
 
-    async creatComments(content: string): Promise<CommentType | undefined> {
-        //@ts-ignore
+    async creatComments(content: string,
+                        login: string,
+                        userId:string,
+                        postId: string,
+                        user: string): Promise<CommentType | undefined> {
+
         const newComment: CommentType = {
-            content
+            content,
+            login,
+            userId,
+            userLogin,
+            addedAt
+
         }
         const createdCommentDb = await commentRepository
             .createComment(newComment)
