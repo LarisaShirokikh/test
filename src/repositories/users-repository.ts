@@ -68,4 +68,7 @@ export const usersRepository = {
             .findOne({login: login}, {projection: {_id: 0}})
         return user;
     },
+    async findUsersById(userId:string){
+        return await usersCollection.findOne({id: userId})
+    }
 }

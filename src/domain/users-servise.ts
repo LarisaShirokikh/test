@@ -62,5 +62,8 @@ export const usersService = {
         const hash = await bcrypt.hash(password, salt)
         console.log('hash: ' + hash)
         return hash
+    },
+    async findUsersById (userId:string){
+        return await usersRepository.findUsersById(userId)
     }
 }

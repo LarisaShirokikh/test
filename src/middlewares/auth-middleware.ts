@@ -21,12 +21,10 @@ export const authBarer = async (req: Request, res: Response, next: NextFunction)
     const token = req.headers.authorization.split(' ')[1]
     const userId = await jwtService.getUserIdByToken(token)
     if (userId) {
-        const user = await usersService.findUserById(userId)
-
-        req.user = user;
+        req.user = await usersService.findUsersById(userId)
         next()
-        return
-    }
-    res.sendStatus(401)
+    } else {
+        res.sendStatus(401)
 
+    }
 }

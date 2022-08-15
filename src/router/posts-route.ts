@@ -2,7 +2,7 @@ import {Request, Response, Router} from "express"
 import {postsService} from "../domain/posts-service";
 import {authBarer, authMiddleware} from "../middlewares/auth-middleware";
 import {
-    bloggerIdValidation,
+    bloggerIdValidation, commentValidator,
     contentValidation,
     shortDescriptionValidation,
     titleValidationCreate
@@ -132,7 +132,7 @@ postsRouter.get('/:postId/comments', async (req: Request, res: Response) => {
         res.sendStatus(404)
     }
 
-    postsRouter.post('/:postId/comments', authBarer, contentValidation, inputValidation,
+    postsRouter.post('/:postId/comments', authBarer, commentValidator, inputValidation,
         async (req: Request, res: Response) => {
             const post = await postsService.findPostById(req.params.postId)
 
