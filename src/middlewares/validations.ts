@@ -36,7 +36,7 @@ export const bloggerIdValidation = body('bloggerId').isString();
 
 export const loginValidator = body('login').trim().isLength({min: 3, max: 10}).isString();
 export const passwordValidator = body('password').trim().isLength({min: 6, max: 20}).isString();
-
+export const commentValidator = body('comments').trim().isLength({min: 20, max: 300}).isString();
 
 
 

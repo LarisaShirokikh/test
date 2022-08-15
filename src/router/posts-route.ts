@@ -112,62 +112,36 @@ postsRouter.delete('/:postId',
         }
     })
 
-postsRouter.get('/:postsId/comments',
-    async (req: Request, res: Response) => {
+postsRouter.get('/:postId/comments', async (req: Request, res: Response) => {
+    const pageSize: number = Number(req.query.PageSize) || 10
+    const pageNumber: number = Number(req.query.PageNumber) || 1
 
-        const post = await postDbRepository.isPost(req.params.postId);
-        if (!post) {
-            res.status(404)
-                .send({errorsMessages: [{message: "Problem with a postId field", field: "postId"}]});
-        } else {
-
-            const comments = await postsService
-
-                .getCommentsByPostId
-                (
-                    req.params.postId,
-                    //@ts-ignore
-                    req.query.pageNumber,
-                    req.query.pageSize);
-            res.status(200).send(comments);
+    const findPost = await postsService.findPostById(req.params.postId)
+    if (findPost) {
+        const findComment = await commentsService.findCommentWithPag(req.params.postId, pageSize, pageNumber)
+        const getCount = await commentsService.getCount(req.params.postId)
+        const result = {
+            "pagesCount": Math.ceil(getCount / pageSize),
+            "page": pageNumber,
+            "pageSize": pageSize,
+            "totalCount": getCount,
+            "items": findComment
         }
-    })
+        res.send(result)
+    } else {
+        res.sendStatus(404)
+    }
 
-postsRouter.post('/:postsId/comments',
-    authBarer,
-    contentValidation,
-    inputValidation,
-    async (req: Request, res: Response) => {
+    postsRouter.post('/:postId/comments', authBarer, contentValidation, inputValidation,
+        async (req: Request, res: Response) => {
+            const post = await postsService.findPostById(req.params.postId)
 
-    if (!req.user) {
-    return res.sendStatus(401)
-}
-        const post = await postDbRepository
-            .isPost(req.params.postId);
-        if (!post) {
-            res.status(404)
-                .send({errorsMessages:
-                        [{
-                            message: "Problem with a postId field",
-                            field: "postId"}]});
-        } else {
-            const newComment: CommentType | undefined = await commentsService
-                .creatComments(
-                    req.body.content,
-                    req.user,
-                    req.user.id,
-                    req.user.login,
-                    //@ts-ignore
-                    post.id
-                )
-
-            if (newComment) {
+            if (post) {
+                const newComment = await commentsService.createComment(req.body.content, req.user!.id, req.user!.login, req.params.postId)
                 res.status(201).send(newComment)
             } else {
-                res.status(400).send({errorsMessages:
-                        [{
-                            message: "Problem with a postId field",
-                            field: "postId"}]})
+                res.send(404)
             }
-        }
-    })
+        })
+})
+

@@ -128,4 +128,8 @@ export type CommentType = {
     addedAt: "2022-08-13T15:40:25.835Z"
 }
 
+export type FeedbackDbType = {
+
+}
+
 

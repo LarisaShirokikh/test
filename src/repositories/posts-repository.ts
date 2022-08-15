@@ -1,5 +1,5 @@
 
-import {bloggersCollection, commentCollection, postsCollection} from "../settings";
+import {commentsCollection, postsCollection} from "../settings";
 import {CommentType, Pagination, PostType} from "../types";
 
 
@@ -92,13 +92,13 @@ export const postDbRepository = {
                               pageSize: number
     ): Promise<Pagination<CommentType[]> | null> {
 
-        const comments: CommentType[] = await commentCollection
+        const comments: CommentType[] = await commentsCollection
             .find({})
             .skip((pageNumber - 1) * pageSize)
             .limit(pageSize)
             .toArray()
 
-        const commentsCount = await commentCollection
+        const commentsCount = await commentsCollection
             .count({})
         const pagesCount = Math.ceil(commentsCount / pageSize)
 
@@ -119,6 +119,9 @@ export const postDbRepository = {
         }
         return result
 
+    },
+    async findPostById(id: string) {
+        return await postsCollection.findOne({id: id}, {projection: {_id: 0}})
     },
 
 

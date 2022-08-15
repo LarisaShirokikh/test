@@ -1,60 +1,38 @@
-import {commentCollection, postsCollection} from "../settings";
-import {CommentType} from "../types";
+import {commentsCollection} from "../settings";
+
 
 export const commentRepository = {
-
-
-    async isComment(commentId: string) {
-
-        const comment: CommentType | null = await commentCollection
-            .findOne({id: commentId}, {projection: {_id: 0}})
-        return comment;
-
-        if (comment) {
-            return true;
-        } else {
-            return false;
-        }
+    async createComment(newComment: any) {
+        await commentsCollection.insertOne(newComment)
+        const {id, content, userId, userLogin, addedAt} = newComment
+        return {id, content, userId, userLogin, addedAt}
     },
+    async findComment(id:string){
+        return await commentsCollection.findOne({id: id}, {projection: {_id: 0}})
+    },
+    async findCommentWithPag(postId: string, pageSize:number, pageNumber:number){
+        return await commentsCollection
+            .find({postId: postId}, {projection: {_id: 0}}).skip((pageNumber-1)*pageSize).limit(pageSize).toArray()
+    },
+    async getCount(postId:string){
+        return await commentsCollection.count({postId: postId})
+    },
+    async deleteComment(id: string) {
 
-    async updateComment(commentId: string, content: string): Promise<CommentType | undefined> {
-        const result = await commentCollection.updateOne({id: commentId}, {
-            $set: {content}
+        const result = await commentsCollection.deleteOne({id: id})
+        return result.deletedCount === 1
+    },
+    async updateComment(content:string, id:string ){
+        const result = await commentsCollection.updateOne({id: id}, {
+            $set: {
+                content: content,
+            }
         })
-        return
+        return result.matchedCount === 1
 
     },
-
-    async getCommentById(commentId: string
-    ): Promise<CommentType | null> {
-        const comment: CommentType | null = await commentCollection
-            .findOne({id: commentId},
-                {projection: {_id: 0}})
-        return comment;
-    },
-
-    async deleteComment(commentId: string): Promise<boolean> {
-        const result = await commentCollection
-            .deleteOne({id: commentId})
-        return result.deletedCount === 1;
-    },
-
-    async createComment(newComment: {
-                            id: string,
-                            content: string,
-                            userId: string,
-                            userLogin: string,
-                            addedAt: "2022-08-13T15:40:25.835Z"
-                        }
-    ): Promise<CommentType | undefined> {
-        const result = await commentCollection
-            .insertOne(newComment)
-        const comment = await commentCollection
-            .find({id: newComment.id},
-                {projection: {_id: 0}})
-            .toArray()
-
-        return comment[0]
+    async findUser(userId:string, commentId: string){
+        return await commentsCollection.findOne({userId: userId, id:commentId})
     },
 
 }

@@ -1,47 +1,39 @@
 import {commentRepository} from "../repositories/comment-repository";
-import {CommentType} from "../types";
+import {ObjectId} from "mongodb";
 
 
 
 
 
 export const commentsService = {
-    async updateComment(commentId: string, content: string): Promise<CommentType | undefined> {
-        return commentRepository.updateComment(commentId, content)
-    },
-
-
-    async getCommentById (
-        commentId: string
-    ): Promise<CommentType | null> {
-
-        const comment =  commentRepository
-            .getCommentById(commentId);
-        return comment
-    },
-
-    async deleteComment(commentId: string): Promise<boolean> {
-        return commentRepository.deleteComment(commentId)
-    },
-
-    async creatComments(content: string,
-                        login: string,
-                        userId:string,
-                        postId: string,
-                        user: string): Promise<CommentType | undefined> {
-
-        const newComment = {
-            id: postId,
-            content,
-            userId: user,
-            userLogin: login,
-            addedAt: "2022-08-13T15:40:25.835Z"
-
+    async createComment (comment: string, userId: string, userLogin:string, postId:string){
+        const newComment:any = {
+            id: new ObjectId().toString(),
+            content: comment,
+            userId: userId,
+            userLogin: userLogin,
+            addedAt: new Date(),
+            postId: postId
         }
-        const createdCommentDb = await commentRepository
-            //@ts-ignore
-            .createComment(newComment)
-        return createdCommentDb
-    }
+        return await commentRepository.createComment(newComment)
+    },
+    async findComment (id: string){
+        return await commentRepository.findComment(id)
+    },
+    async findCommentWithPag (postId: string, pageSize:number, pageNumber:number){
+        return await commentRepository.findCommentWithPag(postId, pageSize, pageNumber)
+    },
+    async getCount(postId:string){
+        return await commentRepository.getCount(postId)
+    },
+    async deleteComment(id:string){
+        return await commentRepository.deleteComment(id)
+    },
+    async updateComment(content: string, id:string){
+        return await commentRepository.updateComment(content, id)
+    },
+    async findUser(userId:string, commentId:string){
+        return await commentRepository.findUser(userId, commentId)
+    },
 
 }

@@ -62,6 +62,10 @@ export const postsService = {
                 +pageNumber
             );
         return commentsDb
-    }
+    },
+
+    async findPostById(id: string) {
+        return await postDbRepository.findPostById(id)
+    },
 
 }

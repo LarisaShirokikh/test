@@ -1,60 +1,57 @@
 import {Request, Response, Router} from "express";
-import {commentRepository} from "../repositories/comment-repository";
 import {commentsService} from "../domain/comment-service";
-import {authMiddleware} from "../middlewares/auth-middleware";
+import {authBarer} from "../middlewares/auth-middleware";
+import {inputValidation} from "../middlewares/input-validation";
+import {commentValidator} from "../middlewares/validations";
 
 
 
-export const commentRouter = Router({})
+export const commentsRouter = Router({})
 
-commentRouter.put('/:commentId',
-    authMiddleware,
+commentsRouter.get('/:id', async (req: Request, res: Response) => {
+    const comment = await commentsService.findComment(req.params.id)
 
+    if(comment){
+        res.status(200).send(comment)
+    } else {
+        res.sendStatus(404)
+    }
 
-    async (req: Request, res: Response) => {
-        const comment = await commentRepository
-            .isComment(req.body.commentId);
-        if (!comment) {
-            res.status(400).send({
-                errorsMessages: [{
-                    message: "Problem with a commentId field", field: "commentId"
-                }]
-            })
-            return
-        }
-        const isUpdated = await commentsService.updateComment(
-            req.params.commentId,
-            req.body.content
-        )
-        if (isUpdated) {
-            const comment = await commentsService.getCommentById(
-                req.params.commentId
-            )
-            res.status(200).send(comment);
-        } else {
-            res.send(404)
-        }
-    })
+})
+commentsRouter.delete('/:id', authBarer, async (req: Request, res: Response) => {
+    let comment = await commentsService.findComment(req.params.id)
+    let user = await commentsService.findUser(req.user!.id, req.params.id)
+    if (!comment){
+        res.sendStatus(404)
+    }
 
-commentRouter.delete('/:commentId',
-    authMiddleware, async (req: Request, res: Response) => {
-
-        const isDeleted = await commentsService.deleteComment(req.params.commentId)
-
+    if(user){
+        const isDeleted = await commentsService.deleteComment(req.params.id)
         if (isDeleted) {
             res.send(204)
         } else {
             res.send(404)
         }
-    })
-
-commentRouter.get('/:id',
-    async (req: Request, res: Response) => {
-        const comment = await commentsService.getCommentById(req.params.id);
-        if (comment) {
-            res.status(200).send(comment);
-        } else {
-            res.send(404);
-        }
+    }else{
+        res.sendStatus(403)
     }
-)
+})
+commentsRouter.put('/:commentId',authBarer, commentValidator, inputValidation, async (req: Request, res: Response) => {
+    let comment = await commentsService.findComment(req.params.commentId)
+    let user = await commentsService.findUser(req.user!.id, req.params.commentId)
+    if (!comment) {
+        return res.status(404).send({errorsMessages: [{message: 'Invalid comment', field: "comment"}]})
+    }
+    if (user){
+        const isUpdate = await commentsService.updateComment(req.body.content, req.params.commentId)
+        if (isUpdate) {
+            res.sendStatus(204)
+        } else {
+            res.sendStatus(404)
+        }
+    } else {
+        res.sendStatus(403)
+    }
+
+
+})
