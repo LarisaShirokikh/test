@@ -1,7 +1,12 @@
 import {Request, Response, Router} from "express"
 import {postsService} from "../domain/posts-service";
 import {authBearer, authMiddleware} from "../middlewares/auth-middleware";
-import {contentValidation, shortDescriptionValidation, titleValidation} from "../middlewares/validations";
+import {
+    commentValidation,
+    contentValidation,
+    shortDescriptionValidation,
+    titleValidation
+} from "../middlewares/validations";
 import {inputValidation} from "../middlewares/input-validation";
 import {bloggersDbRepository} from "../repositories/bloggers-repository";
 import {commentService} from "../domain/comment-service";
@@ -102,7 +107,11 @@ postsRouter.delete('/:postId', authMiddleware,
         }
     })
 
-postsRouter.post('/:postId/comments', authBearer, contentValidation, inputValidation, async (req: Request, res: Response) => {
+postsRouter.post('/:postId/comments',
+    authBearer,
+    commentValidation,
+    contentValidation,
+    inputValidation, async (req: Request, res: Response) => {
         const post = await postsService.findPostById(req.params.postId)
 
         if (post) {

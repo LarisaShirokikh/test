@@ -9,12 +9,12 @@ export const commentRepository = {
             userId,
             userLogin, addedAt} = newComment
         return {id, content,
-            //userId,
+            userId,
             userLogin, addedAt}
     },
     async findComment(id:string){
         return await commentsCollection.findOne({id: id},
-            //{projection: {_id: 0}}
+            {projection: {_id: 0}}
         )
     },
     async findCommentWithPag(postId: string, pageSize:number, pageNumber:number){
@@ -53,7 +53,7 @@ export const commentRepository = {
     },
     async findUser(userId:string, commentId: string){
         return await commentsCollection.findOne({userId: userId, id:commentId},
-            //{projection: {_id: 0}}
+            {projection: {_id: 0}}
         )
     },
 
