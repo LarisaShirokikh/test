@@ -8,21 +8,22 @@ import {loginValidation, passwordValidation} from "../middlewares/validations";
 export const usersRouter = Router({})
 
 
-usersRouter.post('/', authMiddleware, loginValidation, passwordValidation, inputValidation, async (req: Request, res: Response) => {
+usersRouter.post('/', authMiddleware, loginValidation,passwordValidation, inputValidation, async (req: Request, res: Response) => {
     const newUser = await usersService.createUser(req.body.login, req.body.password)
     res.status(201).send(newUser)
 
 })
+
 usersRouter.get('/', async (req: Request, res: Response) => {
 
     const pageSize: number = Number(req.query.PageSize) || 10
     const pageNumber: number = Number(req.query.PageNumber) || 1
 
-    const foundUsers = await usersService.findUsers(pageSize, pageNumber)
+    const foundUsers = await usersService.findUsers(pageSize, pageNumber )
     const getCount = await usersService.getCount()
 
     res.send({
-        "pagesCount": Math.ceil(getCount / pageSize),
+        "pagesCount": Math.ceil(getCount/ pageSize),
         "page": pageNumber,
         "pageSize": pageSize,
         "totalCount": getCount,
