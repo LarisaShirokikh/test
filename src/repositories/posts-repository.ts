@@ -5,96 +5,43 @@ import {CommentType, Pagination, PostType} from "../types";
 
 
 export const postDbRepository = {
-    async getAllPosts(pageNumber: number, pageSize: number): Promise<PostType | undefined | null> {
-
-        const postsCount = await postsCollection.count({})
-        const pagesCount = Math.ceil(postsCount / pageSize)
-        const posts: PostType[] | PostType = await postsCollection
-            .find({}, {projection : {_id: 0 } })
-            .skip((pageNumber - 1) * pageSize)
-            .limit(pageSize)
-            .toArray()
-
-        const result = {
-            pagesCount: pagesCount,
-            page: pageNumber,
-            pageSize,
-            totalCount: postsCount,
-            items: posts
+    async findPosts(pageSize:number, pageNumber:number) {
+        return await postsCollection.find({}, {projection: {_id: 0}}).skip((pageNumber-1)*pageSize).limit(pageSize).toArray()
+    },
+    async findPostById(id: string) {
+        return await postsCollection.findOne({id: id}, {projection: {_id: 0}})
+    },
+    async createPost(newPosts: PostType) {
+        await postsCollection.insertOne(newPosts)
+        const {id, title, shortDescription, content, bloggerId, bloggerName} = newPosts
+        return {
+            id, title, shortDescription, content, bloggerId, bloggerName
         }
-        // @ts-ignore
-        return result
     },
-
-    async createPost(newPost: {
-        bloggerName: string;
-        id: string;
-        shortDescription: string;
-        title: string;
-        content: string;
-        bloggerId: string
-    }): Promise<PostType | undefined> {
-        const result = await postsCollection
-            .insertOne(newPost)
-        const post = await postsCollection
-            .find({id: newPost.id},
-                {projection: {_id: 0}}
-            )
-            .toArray()
-
-        return post[0]
-    },
-
-    async getPostById(postId: string
-    ): Promise<PostType | null> {
-        const post = await postsCollection
-            .findOne({id: postId},
-                {projection: {_id: 0}}
-            )
-        return post;
-    },
-
-    async updatePost(postId: string, title: string, shortDescription: string, content: string, bloggerId: string): Promise<boolean> {
-        const result = await postsCollection.updateOne({id: postId}, {
+    async updatePost(id: string, title: string, shortDescription: string, content: string, bloggerId: string) {
+        const result = await postsCollection.updateOne({id: id}, {
             $set: {
-                title,
-                shortDescription,
-                content,
-                bloggerId
+                title: title,
+                shortDescription: shortDescription,
+                content: content,
+                bloggerId: bloggerId,
             }
         })
         return result.matchedCount === 1
-
     },
+    async deletePosts(id: string) {
 
-    async deletePost(postId: string): Promise<boolean> {
-
-        const result = await postsCollection
-            .deleteOne({id: postId})
-
+        const result = await postsCollection.deleteOne({id: id})
         return result.deletedCount === 1
-
-
     },
-
-    async isPost(postId: string) {
-
-        const post: PostType | null = await postsCollection
-            .findOne({id: postId}, {projection: {_id: 0}})
-        return post;
-
-        if (post) {
-            return true;
-        } else {
-            return false;
-        }
+    async getCount() {
+        return await postsCollection.count({})
     },
-
-
-    async findPostById(id: string) {
-        return await postsCollection.findOne({id: id},
-            {projection: {_id: 0}}
-        )
+    async findBloggersPost(pageSize:number, pageNumber:number, bloggerId: string){
+        return await postsCollection.find({bloggerId: bloggerId}, {projection: {_id: 0}}).skip((pageNumber-1)*pageSize).limit(pageSize).toArray()
+    },
+    async getCountBloggerId(bloggerId: string) {
+        return await postsCollection.count({bloggerId: bloggerId})
     },
 
 

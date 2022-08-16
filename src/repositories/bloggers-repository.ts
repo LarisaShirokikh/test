@@ -127,6 +127,10 @@ export const bloggersDbRepository = {
         } else {
             return false;
         }
+    },
+    async findBloggersById(id: string) {
+        return await bloggersCollection.findOne({id: id}, {projection: {_id: 0}})
+
     }
 }
 

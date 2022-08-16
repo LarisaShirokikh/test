@@ -3,53 +3,40 @@ import { v4 as uuidv4 } from 'uuid';
 import {postDbRepository} from "../repositories/posts-repository";
 import {bloggersDbRepository} from "../repositories/bloggers-repository";
 import {CommentType, Pagination, PostType} from "../types";
+import {ObjectId} from "mongodb";
 
 export const postsService = {
-    async getAllPosts (
-        pageNumber: string = "1" || undefined || null,
-        pageSize: string = "10" || undefined || null
-    ): Promise<PostType | undefined | null> {
-
-        const postsDb = await postDbRepository
-            .getAllPosts(+pageNumber, +pageSize)
-        return postsDb
-
-
+    async findPosts(pageSize:number, pageNumber:number) {
+        return await postDbRepository.findPosts(pageSize, pageNumber )
     },
-
-    async createPost (title: string, shortDescription: string, content: string, bloggerId: string): Promise<PostType | undefined> {
-        const blogger = await bloggersDbRepository.getBloggerById(bloggerId)
-        if (blogger) {
-            const newPost: PostType = {
-
-                id: uuidv4(),
-                title,
-                shortDescription,
-                content,
-                bloggerId,
-                bloggerName: blogger.name
-            }
-
-            await postDbRepository.createPost(newPost)
-            return newPost
-        }
-    },
-
-    async getPostById (postId: string): Promise<PostType | null> {
-
-        return postDbRepository.getPostById(postId)
-    },
-
-    async updatePost (postId: string, title: string, shortDescription: string, content: string, bloggerId: string): Promise<boolean>  {
-        return postDbRepository.updatePost(postId, title, shortDescription, content, bloggerId)
-    },
-
-    async deletePost (postId: string): Promise<boolean>  {
-        return postDbRepository.deletePost(postId)
-    },
-
     async findPostById(id: string) {
         return await postDbRepository.findPostById(id)
     },
+    async createPost(id: string, title: string, shortDescription: string, content: string, bloggerId: string) {
+        const newPosts = {
+            id: new ObjectId().toString(),
+            title: title,
+            shortDescription: shortDescription,
+            content: content,
+            bloggerId: bloggerId,
+            bloggerName: "Brendan Eich"
+        }
+        return await postDbRepository.createPost(newPosts)
 
+    },
+    async updatePost(id: string, title: string, shortDescription: string, content: string, bloggerId: string) {
+        return await postDbRepository.updatePost(id, title, shortDescription, content, bloggerId)
+    },
+    async deletePosts(id: string) {
+        return await postDbRepository.deletePosts(id)
+    },
+    async getCount() {
+        return await postDbRepository.getCount()
+    },
+    async findBloggersPost(pageSize:number, pageNumber:number,bloggerId:string) {
+        return await postDbRepository.findBloggersPost(pageSize, pageNumber, bloggerId)
+    },
+    async getCountBloggerId(bloggerId: string) {
+        return await postDbRepository.getCountBloggerId(bloggerId)
+    },
 }

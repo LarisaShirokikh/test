@@ -93,7 +93,11 @@ export const bloggersService = {
                 .createPost(newPost)
             return createdPostDb
         }
-    }
+    },
+    async findBloggersById(id: string) {
+        return await bloggersDbRepository.findBloggersById(id)
+
+    },
 }
 
 

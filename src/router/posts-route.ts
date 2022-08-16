@@ -7,116 +7,90 @@ import {
     shortDescriptionValidation,
     titleValidation
 } from "../middlewares/validations";
-import {inputValidation} from "../middlewares/input-validation";
-import {bloggersDbRepository} from "../repositories/bloggers-repository";
 import {commentService} from "../domain/comment-service";
+import {bloggersService} from "../domain/bloggers-service";
+import {inputValidation} from "../middlewares/input-validation";
 
 
 
 export const postsRouter = Router({})
 
 
-postsRouter.get('/',
-    async (req: Request, res: Response) => {
+postsRouter.get('/', async (req: Request, res: Response) => {
 
-        const posts = await postsService.getAllPosts(
-            // @ts-ignore
-            req.query.PageNumber,
-            req.query.PageSize)
-        res.status(200).send(posts);
+    const pageSize: number = Number(req.query.PageSize) || 10
+    const pageNumber: number = Number(req.query.PageNumber) || 1
+
+
+    const findPost = await postsService.findPosts(pageSize, pageNumber)
+    const getCount = await postsService.getCount()
+    res.send({
+        "pagesCount": Math.ceil(getCount / pageSize),
+        "page": pageNumber,
+        "pageSize": pageSize,
+        "totalCount": getCount,
+        "items": findPost
     })
+})
+postsRouter.post('/', authMiddleware, titleValidation, shortDescriptionValidation, contentValidation, inputValidation, async (req: Request, res: Response) => {
 
-postsRouter.post('/',
-   authMiddleware,
-    titleValidation,
-    shortDescriptionValidation,
-   contentValidation,
-    inputValidation,
-    async (req: Request, res: Response) => {
-
+    let blogger = await bloggersService.findBloggersById(req.body.bloggerId)
+    if (!blogger) {
+        return res.status(400).send({errorsMessages: [{message: 'Invalid bloggerId', field: "bloggerId"}]})
+    } else {
         const newPost = await postsService.createPost(
+            req.params.id,
             req.body.title,
             req.body.shortDescription,
             req.body.content,
             req.body.bloggerId)
-
-        if (!newPost) {
-            res.status(400).send(
-                {errorsMessages: [{message: "Problem with a bloggerId field", field: "bloggerId"}]})
-            return
-        }
 
         res.status(201).send(newPost)
-    })
+    }
+})
+postsRouter.get('/:id', async (req: Request, res: Response) => {
+    const post = await postsService.findPostById(req.params.id)
 
-postsRouter.put('/:postId',
-    authMiddleware,
-    titleValidation,
-    shortDescriptionValidation,
-    contentValidation,
-    inputValidation,
-    async (req: Request, res: Response) => {
+    if (post) {
+        res.send(post)
+    } else {
+        res.sendStatus(404)
+    }
+})
+postsRouter.put('/:id', authMiddleware, titleValidation, shortDescriptionValidation, contentValidation, inputValidation, async (req: Request, res: Response) => {
 
-
-        const blogger = await bloggersDbRepository.isBlogger(req.body.bloggerId);
-
-        if (!blogger) {
-            res.status(400).send(
-                {errorsMessages: [{message: "Problem with a bloggerId field", field: "bloggerId"}]})
-            return
-        }
-
-        const isUpdated = await postsService.updatePost(
-            req.params.postId,
+    let blogger = await bloggersService.findBloggersById(req.body.bloggerId)
+    if (!blogger) {
+        return res.status(400).send({errorsMessages: [{message: 'Invalid bloggerId', field: "bloggerId"}]})
+    } else {
+        const isUpdate = await postsService.updatePost(req.params.id,
             req.body.title,
             req.body.shortDescription,
             req.body.content,
             req.body.bloggerId)
-
-        if (isUpdated) {
-            const blogPost = await postsService.getPostById(
-                req.params.postId
-            )
-            res.status(204).send(blogPost);
+        if (isUpdate) {
+            const post = await postsService.findPostById(req.params.id)
+            res.status(204).send({post})
         } else {
             res.send(404)
         }
-    })
+    }
 
-postsRouter.get('/:postId', async (req: Request, res: Response) => {
+})
+postsRouter.delete('/:id', authMiddleware, async (req: Request, res: Response) => {
+    const isDeleted = await postsService.deletePosts(req.params.id)
+    if (isDeleted) {
+        res.send(204)
+    } else {
+        res.send(404)
+    }
+})
 
-        const post = await postsService.getPostById(
-            req.params.postId)
-
-        if (post) {
-            res.status(200).send(post);
-        } else {
-            res.send(404);
-        }
-    })
-
-postsRouter.delete('/:postId', authMiddleware,
-    async (req: Request, res: Response) => {
-
-        const isDeleted = await postsService.deletePost(req.params.postId)
-
-        if (isDeleted) {
-            res.send(204)
-        } else {
-            res.send(404)
-        }
-    })
-
-postsRouter.post('/:postId/comments',
-    authBearer,
-    commentValidation,
-    contentValidation,
-    inputValidation, async (req: Request, res: Response) => {
+postsRouter.post('/:postId/comments', authBearer, commentValidation, inputValidation, async (req: Request, res: Response) => {
         const post = await postsService.findPostById(req.params.postId)
 
         if (post) {
-            const newComment = await commentService
-                .createComment(req.body.content, req.user.id, req.user.login, req.params.postId)
+            const newComment = await commentService.createComment(req.body.content, req.user!.id, req.user!.login, req.params.postId)
             res.status(201).send(newComment)
         } else {
             res.send(404)
@@ -143,5 +117,3 @@ postsRouter.get('/:postId/comments', async (req: Request, res: Response) => {
         res.sendStatus(404)
     }
 })
-
-
