@@ -20,7 +20,7 @@ export const commentRepository = {
     async findCommentWithPag(postId: string, pageSize:number, pageNumber:number){
         let comment =  await commentsCollection
             .find({postId: postId},
-                //{projection: {_id: 0}}
+                {projection: {_id: 0}}
             )
             .skip((pageNumber-1)*pageSize).limit(pageSize).toArray()
         const comment1 = comment.map((c: any) => ({
