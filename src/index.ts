@@ -1,6 +1,6 @@
 import express from 'express'
 import bodyParser from "body-parser"
-import {bloggersRoute} from "./router/bloggers-route";
+import {bloggersRouter} from "./router/bloggers-route";
 import {postsRouter} from "./router/posts-route";
 import {runDb} from "./settings"
 import cors from "cors"
@@ -18,7 +18,7 @@ const parserMiddleware = bodyParser.json()
 app.use(cors())
 app.use(parserMiddleware)
 
-app.use('/bloggers', bloggersRoute)
+app.use('/bloggers', bloggersRouter)
 app.use('/posts', postsRouter)
 app.use('/users', usersRouter)
 app.use('/comments', commentsRouter)

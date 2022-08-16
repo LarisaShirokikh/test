@@ -1,5 +1,7 @@
-import {Request, Response, Router} from "express"
+import {Request, Response, Router} from "express";
+import {bloggersService} from "../domain/bloggers-service";
 import {postsService} from "../domain/posts-service";
+import {commentService} from "../domain/comment-service";
 import {authBearer, authMiddleware} from "../middlewares/auth-middleware";
 import {
     commentValidation,
@@ -7,9 +9,7 @@ import {
     shortDescriptionValidation,
     titleValidation
 } from "../middlewares/validations";
-import {commentService} from "../domain/comment-service";
-import {bloggersService} from "../domain/bloggers-service";
-import {inputValidation} from "../middlewares/input-validation";
+import {inputValidationMiddleWare} from "../middlewares/input-validation";
 
 
 export const postsRouter = Router({})
@@ -30,7 +30,8 @@ postsRouter.get('/', async (req: Request, res: Response) => {
         "items": findPost
     })
 })
-postsRouter.post('/', authMiddleware, titleValidation, shortDescriptionValidation, contentValidation, inputValidation, async (req: Request, res: Response) => {
+postsRouter.post('/', authMiddleware, titleValidation, shortDescriptionValidation, contentValidation,
+    inputValidationMiddleWare, async (req: Request, res: Response) => {
 
     let blogger = await bloggersService.findBloggersById(req.body.bloggerId)
     if (!blogger) {
@@ -55,7 +56,7 @@ postsRouter.get('/:id', async (req: Request, res: Response) => {
         res.sendStatus(404)
     }
 })
-postsRouter.put('/:id', authMiddleware, titleValidation, shortDescriptionValidation, contentValidation, inputValidation, async (req: Request, res: Response) => {
+postsRouter.put('/:id', authMiddleware, titleValidation, shortDescriptionValidation, contentValidation, inputValidationMiddleWare, async (req: Request, res: Response) => {
 
     let blogger = await bloggersService.findBloggersById(req.body.bloggerId)
     if (!blogger) {
@@ -84,7 +85,7 @@ postsRouter.delete('/:id', authMiddleware, async (req: Request, res: Response) =
     }
 })
 
-postsRouter.post('/:postId/comments', authBearer, commentValidation, inputValidation, async (req: Request, res: Response) => {
+postsRouter.post('/:postId/comments', authBearer, commentValidation, inputValidationMiddleWare, async (req: Request, res: Response) => {
         const post = await postsService.findPostById(req.params.postId)
 
         if (post) {

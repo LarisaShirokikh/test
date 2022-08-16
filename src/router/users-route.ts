@@ -1,14 +1,15 @@
 import {Request, Response, Router} from "express";
-import {usersService} from "../domain/users-servise";
 import {authMiddleware} from "../middlewares/auth-middleware";
-import {inputValidation} from "../middlewares/input-validation";
 import {loginValidation, passwordValidation} from "../middlewares/validations";
+import {inputValidationMiddleWare} from "../middlewares/input-validation";
+import {usersService} from "../domain/users-servise";
 
 
 export const usersRouter = Router({})
 
 
-usersRouter.post('/', authMiddleware, loginValidation,passwordValidation, inputValidation, async (req: Request, res: Response) => {
+usersRouter.post('/', authMiddleware, loginValidation,
+    passwordValidation, inputValidationMiddleWare, async (req: Request, res: Response) => {
     const newUser = await usersService.createUser(req.body.login, req.body.password)
     res.status(201).send(newUser)
 

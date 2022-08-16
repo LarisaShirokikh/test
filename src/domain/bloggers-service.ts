@@ -3,7 +3,6 @@ import {ObjectId} from "mongodb";
 
 
 export const bloggersService = {
-
     async findBloggers(pageSize:number, pageNumber:number, searchNameTerm:string) {
 
         return await bloggersRepository.findBloggers(pageSize, pageNumber, searchNameTerm)
@@ -30,6 +29,9 @@ export const bloggersService = {
     async getCount(searchNameTerm:string) {
         return await bloggersRepository.getCount(searchNameTerm)
     },
+
+
+
 }
 
 
