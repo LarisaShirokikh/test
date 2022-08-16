@@ -1,6 +1,14 @@
-
-import {usersCollection} from "../settings";
 import {UsersType} from "../types";
+import {usersCollection} from "../settings";
+
+
+const options = {
+    projection: {
+        _id: 0,
+        passwordHash: 0,
+        passwordSalt: 0
+    },
+}
 
 export const usersRepository = {
 
@@ -12,7 +20,7 @@ export const usersRepository = {
         }
     },
     async findUsers(pageSize:number, pageNumber:number) {
-        return await usersCollection.find({}, {projection: {_id: 0}}).skip((pageNumber-1)*pageSize).limit(pageSize).toArray()
+        return await usersCollection.find({}, options).skip((pageNumber-1)*pageSize).limit(pageSize).toArray()
     },
     async getCount(){
         return await usersCollection.countDocuments()
@@ -28,3 +36,5 @@ export const usersRepository = {
         return await usersCollection.findOne({id: userId})
     }
 }
+
+
