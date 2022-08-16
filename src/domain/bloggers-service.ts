@@ -1,8 +1,8 @@
 
-import { v4 as uuidv4 } from 'uuid';
+
 import {bloggersDbRepository} from "../repositories/bloggers-repository";
-import {BloggerType, Pagination, PostType} from "../types";
-import {postDbRepository} from "../repositories/posts-repository";
+
+import {ObjectId} from "mongodb";
 
 
 
@@ -11,92 +11,31 @@ import {postDbRepository} from "../repositories/posts-repository";
 
 export const bloggersService = {
 
-    async getAllBloggers(
-        pageNumber: string,
-        pageSize: string,
-        searchNameTerm: string | null = null
-    ): Promise<Pagination<BloggerType[]> | null> {
+    async findBloggers(pageSize:number, pageNumber:number, searchNameTerm:string) {
 
-        const bloggersDb = await bloggersDbRepository
-            .getAllBloggers(
-                +pageNumber,
-                +pageSize,
-                searchNameTerm
-            )
-        return bloggersDb
-    },
-
-
-    async createBlogger(
-        name: string,
-        youtubeUrl: string
-    ): Promise<BloggerType> {
-        const newBlogger: BloggerType = {
-            id: uuidv4(),
-            name,
-            youtubeUrl
-        }
-
-        const createdBloggerDb = await bloggersDbRepository
-            .createBlogger(newBlogger)
-
-        return createdBloggerDb;
-    },
-
-    async getBloggerById(
-        bloggerId: string
-    ): Promise<BloggerType | null> {
-        const bloggerDb = await bloggersDbRepository
-            .getBloggerById(bloggerId);
-
-        return bloggerDb
-    },
-
-
-
-    async updateBlogger(bloggerId: string, name: string, youtubeUrl: string): Promise<boolean> {
-        return await bloggersDbRepository.updateBlogger(bloggerId, name, youtubeUrl)
-    },
-
-
-    async deleteBlogger(bloggerId: string): Promise<boolean> {
-        return bloggersDbRepository.deleteBlogger(bloggerId)
-    },
-
-    async getPostsByBloggerId(
-        bloggerId: string,
-        pageNumber: string = '1' || undefined || null,
-        pageSize: string = '10' || undefined || null
-    ): Promise<PostType | null> {
-        const postsDb = await bloggersDbRepository
-            .getPostsByBloggerId
-            (bloggerId, +pageNumber, +pageSize);
-        return postsDb
-    },
-
-    async createPostByBloggerId (bloggerId: string,
-                                 title: string,
-                                 shortDescription: string,
-                                 content: string) {
-        const blogger = await bloggersDbRepository
-            .getBloggerById(bloggerId)
-        if (blogger) {
-            const newPost: PostType = {
-                id: uuidv4(),
-                title,
-                shortDescription,
-                content,
-                bloggerId,
-                bloggerName: blogger.name
-            }
-            const createdPostDb = await postDbRepository
-                .createPost(newPost)
-            return createdPostDb
-        }
+        return await bloggersDbRepository.findBloggers(pageSize, pageNumber, searchNameTerm)
     },
     async findBloggersById(id: string) {
         return await bloggersDbRepository.findBloggersById(id)
 
+    },
+    async createBloggers(name: string, youtubeUrl: string) {
+        const newBlogger = {
+            id: new ObjectId().toString(),
+            name: name,
+            youtubeUrl: youtubeUrl,
+        }
+
+        return await bloggersDbRepository.createBloggers(newBlogger)
+    },
+    async updateBlogger(id: string, name: string, youtubeUrl: string) {
+        return await bloggersDbRepository.updateBlogger(id, name, youtubeUrl)
+    },
+    async deleteBloggers(id: string) {
+        return await bloggersDbRepository.deleteBloggers(id)
+    },
+    async getCount(searchNameTerm:string) {
+        return await bloggersDbRepository.getCount(searchNameTerm)
     },
 }
 
