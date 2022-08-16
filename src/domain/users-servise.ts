@@ -1,12 +1,12 @@
 
-import bcrypt  from 'bcrypt';
 import {usersRepository} from "../repositories/users-repository";
 
-import {UsersType} from "../types";
 import {ObjectId} from "mongodb";
+import bcrypt from "bcrypt";
+import {UsersType} from "../types";
+
 
 export const usersService = {
-
     async createUser (login: string, password: string){
 
         const passwordSalt = await bcrypt.genSalt(10)

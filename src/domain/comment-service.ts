@@ -1,9 +1,6 @@
-import {commentRepository} from "../repositories/comment-repository";
 import {ObjectId} from "mongodb";
 
-
-
-
+import {commentRepository} from "../repositories/comment-repository";
 
 export const commentService = {
     async createComment (comment: string, userId: string, userLogin:string, postId:string){
@@ -35,4 +32,5 @@ export const commentService = {
     async findUser(userId:string, commentId:string){
         return await commentRepository.findUser(userId, commentId)
     },
+
 }
