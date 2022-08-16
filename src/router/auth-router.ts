@@ -5,7 +5,6 @@ import {jwtService} from "../application/jwt-service";
 
 
 
-
 export const authRouter = Router({})
 
 authRouter.post('/login',

@@ -6,6 +6,11 @@ import {BloggersType, CommentsType, PostsType, UsersType} from "../types";
 
 export const mongoUri = "mongodb+srv://LoraDB:p-fkFTpRiB5r6h6@cluster0.zszv3.mongodb.net/test"
 
+export const settings = {
+    MONGO_URI: process.env.mongoURI || "mongodb+srv://LoraDB:p-fkFTpRiB5r6h6@cluster0.zszv3.mongodb.net/test",
+    JWT_SECRET: process.env.JWT_SECRET || '123'
+}
+
 
 const client = new MongoClient(mongoUri);
 const db = client.db("blog")
