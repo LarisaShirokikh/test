@@ -1,5 +1,5 @@
-import {commentsCollection, postsCollection} from "../settings";
-import {CommentType, Pagination, PostType} from "../types";
+import {postsCollection} from "../settings";
+import {PostsType} from "../types";
 
 
 export const postDbRepository = {
@@ -9,7 +9,7 @@ export const postDbRepository = {
     async findPostById(id: string) {
         return await postsCollection.findOne({id: id}, {projection: {_id: 0}})
     },
-    async createPost(newPosts: PostType) {
+    async createPost(newPosts: PostsType) {
         await postsCollection.insertOne(newPosts)
         const {id, title, shortDescription, content, bloggerId, bloggerName} = newPosts
         return {

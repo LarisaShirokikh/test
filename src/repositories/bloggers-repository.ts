@@ -1,5 +1,5 @@
 import {bloggersCollection} from "../settings";
-import {BloggerType} from "../types";
+import {BloggersType} from "../types";
 
 
 export const bloggersDbRepository = {
@@ -12,7 +12,7 @@ export const bloggersDbRepository = {
         return await bloggersCollection.findOne({id: id}, {projection: {_id: 0}})
 
     },
-    async createBloggers(newBlogger: BloggerType) {
+    async createBloggers(newBlogger: BloggersType) {
 
         await bloggersCollection.insertOne(newBlogger)
         const {id, name, youtubeUrl} = newBlogger

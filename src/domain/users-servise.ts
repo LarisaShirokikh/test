@@ -1,67 +1,50 @@
 
 import bcrypt  from 'bcrypt';
 import {usersRepository} from "../repositories/users-repository";
-import { v4 as uuidv4 } from 'uuid';
-import {Pagination, UsersType, UsersWithHashType} from "../types";
+
+import {UsersType} from "../types";
 import {ObjectId} from "mongodb";
 
 export const usersService = {
 
-    async createUser(
-        login: string,
-        password: string
-    ): Promise<UsersWithHashType | null> {
+    async createUser (login: string, password: string){
 
         const passwordSalt = await bcrypt.genSalt(10)
         const passwordHash = await this._generateHash(password, passwordSalt)
-
-        const newUser: UsersWithHashType = {
-            id: uuidv4(),
+        const newUser: UsersType = {
+            id: new ObjectId().toString(),
             login: login,
-            passwordHash,
             passwordSalt,
-        }
+            passwordHash,
 
+        }
         return usersRepository.createUser(newUser)
     },
+    async findUsers(pageSize:number, pageNumber:number) {
 
-    async findUserById(id: string): Promise<UsersWithHashType | null> {
-        return usersRepository.findUserById(id)
+        return await usersRepository.findUsers(pageSize, pageNumber)
+    },
+    async getCount() {
+
+        return await usersRepository.getCount()
+    },
+    async deleteUsers(id:string){
+
+        return await usersRepository.deleteUsers(id)
     },
 
-
-    async checkCredentials(login: string, password: string) {
-        const user = await usersRepository.findByLogin(login)
+    async _generateHash(password: string, salt: string){
+        return await bcrypt.hash(password, salt)
+    },
+    async checkCredentials(login: string, password: string){
+        const user = await usersRepository.findLogin(login)
         if (!user) return false
-        const passwordHash = await this._generateHash(password,
-            user.passwordSalt)
-        if (user.passwordHash !== passwordHash) {
+        const passwordHash = await this._generateHash(password, user.passwordSalt)
+        if(user.passwordHash !== passwordHash){
             return false
         }
         return user
-    },
 
-
-    async getAllUsers(
-        pageNumber: string,
-        pageSize:string
-    ): Promise<Pagination<UsersType[]> | null> {
-
-        const users = await usersRepository
-            .getAllUsersDb(+pageNumber, +pageSize)
-
-        return users
-    },
-
-    async deleteUser (id: string
-    ): Promise<boolean> {
-        return usersRepository.deleteUser(id)
-    },
-
-    async _generateHash(password: string, salt: string) {
-        const hash = await bcrypt.hash(password, salt)
-        console.log('hash: ' + hash)
-        return hash
     },
     async findUsersById (userId:string){
         return await usersRepository.findUsersById(userId)

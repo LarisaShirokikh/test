@@ -1,8 +1,5 @@
-import {ObjectId} from "mongodb";
-import {v4 as uuidv4} from "uuid";
 
-
-export const bloggersCollection: BloggerType[] = [
+export const bloggersCollection: BloggersType[] = [
     {
         id: "1",
         name: 'Blogger - 01',
@@ -32,7 +29,7 @@ export const bloggersCollection: BloggerType[] = [
 ]
 
 
-export let postsCollection: PostType[] | null = [
+export let postsCollection: PostsType[] | null = [
     {
         id: "1",
         title: 'About JS - 01',
@@ -75,57 +72,30 @@ export let postsCollection: PostType[] | null = [
     },
 ]
 
-export type BloggerType = {
-    id: string,
+export type BloggersType = {
+    id: string
     name: string
-    youtubeUrl: string,
-};
-
-export type Pagination<T> = {
-    page: number
-    pageSize: number
-    totalCount: number
-    pagesCount: number
-    items: T
-};
-
-export type PostType = {
-    id: string,
-    title: string,
-    shortDescription: string,
-    content: string,
-    bloggerId: string,
-    bloggerName: string
-};
-
-
-export type PostsOfBloggerType = {
-    pagesCount: number
-    page: number
-    pageSize: number
-    totalCount: number
-    items: [ PostType | PostType[] ]
+    youtubeUrl: string
 }
 
+export type PostsType = {
+    id: string
+    title: string
+    shortDescription: string
+    content: string
+    bloggerId: string
+    bloggerName: string
+}
 export type UsersType = {
     id: string
-    login: string
-
+    login:string
+    passwordHash: string
+    passwordSalt: string
 }
-
-export type UsersWithHashType = {
-    id: string,
-    login: string,
-    passwordHash: string,
-    passwordSalt: string,
+export type CommentsType = {
+    id: string
+    content:string
 }
-
-export type CommentType = {
-    id: string,
-    content: string,
-
-}
-
 
 
 
