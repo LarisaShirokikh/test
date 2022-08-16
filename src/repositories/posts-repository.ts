@@ -1,4 +1,4 @@
-import {postsCollection} from "../settings";
+import {postsCollection} from "../settingses/settings";
 import {PostsType} from "../types";
 
 

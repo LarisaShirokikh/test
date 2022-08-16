@@ -1,4 +1,4 @@
-import {commentsCollection} from "../settings";
+import {commentsCollection} from "../settingses/settings";
 
 
 const options = {

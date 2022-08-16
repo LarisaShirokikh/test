@@ -1,5 +1,5 @@
 import {UsersType} from "../types";
-import {usersCollection} from "../settings";
+import {usersCollection} from "../settingses/settings";
 
 
 const options = {
