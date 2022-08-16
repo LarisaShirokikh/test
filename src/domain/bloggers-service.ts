@@ -1,15 +1,15 @@
-import {bloggersDbRepository} from "../repositories/bloggers-repository";
+import { bloggersRepository} from "../repositories/bloggers-repository";
 import {ObjectId} from "mongodb";
 
 
 export const bloggersService = {
 
-    async findBloggers(pageSize: number, pageNumber: number, searchNameTerm: string) {
+    async findBloggers(pageSize:number, pageNumber:number, searchNameTerm:string) {
 
-        return await bloggersDbRepository.findBloggers(pageSize, pageNumber, searchNameTerm)
+        return await bloggersRepository.findBloggers(pageSize, pageNumber, searchNameTerm)
     },
     async findBloggersById(id: string) {
-        return await bloggersDbRepository.findBloggersById(id)
+        return await bloggersRepository.findBloggersById(id)
 
     },
     async createBloggers(name: string, youtubeUrl: string) {
@@ -19,16 +19,16 @@ export const bloggersService = {
             youtubeUrl: youtubeUrl,
         }
 
-        return await bloggersDbRepository.createBloggers(newBlogger)
+        return await bloggersRepository.createBloggers(newBlogger)
     },
     async updateBlogger(id: string, name: string, youtubeUrl: string) {
-        return await bloggersDbRepository.updateBlogger(id, name, youtubeUrl)
+        return await bloggersRepository.updateBlogger(id, name, youtubeUrl)
     },
     async deleteBloggers(id: string) {
-        return await bloggersDbRepository.deleteBloggers(id)
+        return await bloggersRepository.deleteBloggers(id)
     },
-    async getCount(searchNameTerm: string) {
-        return await bloggersDbRepository.getCount(searchNameTerm)
+    async getCount(searchNameTerm:string) {
+        return await bloggersRepository.getCount(searchNameTerm)
     },
 }
 

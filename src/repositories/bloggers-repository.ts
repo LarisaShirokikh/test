@@ -2,7 +2,7 @@ import {bloggersCollection} from "../settings";
 import {BloggersType} from "../types";
 
 
-export const bloggersDbRepository = {
+export const bloggersRepository = {
 
     async findBloggers(pageSize: number, pageNumber: number, searchNameTerm: string) {
         return await bloggersCollection.find({name: {$regex: searchNameTerm}},
