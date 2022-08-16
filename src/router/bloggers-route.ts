@@ -3,34 +3,34 @@ import {Request, Response, Router} from "express";
 import {bloggersService} from "../domain/bloggers-service";
 import {authMiddleware} from "../middlewares/auth-middleware";
 import {inputValidation} from "../middlewares/input-validation";
-import {contentValidation, nameValidation,shortDescriptionValidation, titleValidation,
-    urlValidation} from "../middlewares/validations";
+import {
+    contentValidation, nameValidation, shortDescriptionValidation, titleValidation,
+    urlValidation
+} from "../middlewares/validations";
 import {postsService} from "../domain/posts-service";
 
 
 export const bloggersRoute = Router({});
 
-
 bloggersRoute.get('/', async (req: Request, res: Response) => {
 
     const pageSize: number = Number(req.query.PageSize) || 10
     const pageNumber: number = Number(req.query.PageNumber) || 1
-    // @ts-ignore
-    const searchNameTerm = toString(req.query.SearchNameTerm)
+
+    const searchNameTerm = typeof (req.query.SearchNameTerm)
 
 
-    const foundBloggers = await bloggersService.findBloggers(pageSize, pageNumber,searchNameTerm )
+    const foundBloggers = await bloggersService.findBloggers(pageSize, pageNumber, searchNameTerm)
     const getCount = await bloggersService.getCount(searchNameTerm)
 
     res.send({
-        "pagesCount": Math.ceil(getCount/ pageSize),
+        "pagesCount": Math.ceil(getCount / pageSize),
         "page": pageNumber,
         "pageSize": pageSize,
         "totalCount": getCount,
         "items": foundBloggers
     })
 })
-
 bloggersRoute.post('/', authMiddleware, nameValidation, urlValidation, inputValidation, async (req: Request, res: Response) => {
     let name = req.body.name
     let youtubeUrl = req.body.youtubeUrl
@@ -67,8 +67,6 @@ bloggersRoute.delete('/:id', authMiddleware, async (req: Request, res: Response)
         res.send(404)
     }
 })
-
-
 bloggersRoute.post('/:bloggerId/posts', authMiddleware, titleValidation, shortDescriptionValidation, contentValidation, inputValidation, async (req: Request, res: Response) => {
     let blogger = await bloggersService.findBloggersById(req.params.bloggerId)
     if (!blogger) {
@@ -84,8 +82,7 @@ bloggersRoute.post('/:bloggerId/posts', authMiddleware, titleValidation, shortDe
         res.status(201).send(newPost)
     }
 })
-
-bloggersRoute.get('/:bloggerId/posts',async (req: Request, res: Response) => {
+bloggersRoute.get('/:bloggerId/posts', async (req: Request, res: Response) => {
     const pageSize: number = Number(req.query.PageSize) || 10
     const pageNumber: number = Number(req.query.PageNumber) || 1
     const findPost = await postsService.findBloggersPost(pageSize, pageNumber, req.params.bloggerId)

@@ -1,17 +1,10 @@
-
-
 import {bloggersDbRepository} from "../repositories/bloggers-repository";
-
 import {ObjectId} from "mongodb";
-
-
-
-
 
 
 export const bloggersService = {
 
-    async findBloggers(pageSize:number, pageNumber:number, searchNameTerm:string) {
+    async findBloggers(pageSize: number, pageNumber: number, searchNameTerm: string) {
 
         return await bloggersDbRepository.findBloggers(pageSize, pageNumber, searchNameTerm)
     },
@@ -34,7 +27,7 @@ export const bloggersService = {
     async deleteBloggers(id: string) {
         return await bloggersDbRepository.deleteBloggers(id)
     },
-    async getCount(searchNameTerm:string) {
+    async getCount(searchNameTerm: string) {
         return await bloggersDbRepository.getCount(searchNameTerm)
     },
 }

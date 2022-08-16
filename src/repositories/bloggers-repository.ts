@@ -1,23 +1,17 @@
-
-import {bloggersCollection, postsCollection} from "../settings";
-import {BloggerType, Pagination, PostType} from "../types";
-
-
+import {bloggersCollection} from "../settings";
+import {BloggerType} from "../types";
 
 
 export const bloggersDbRepository = {
 
-    async findBloggers(pageSize:number, pageNumber:number, searchNameTerm:string) {
+    async findBloggers(pageSize: number, pageNumber: number, searchNameTerm: string) {
         return await bloggersCollection.find({name: {$regex: searchNameTerm}},
-            {projection: {_id:0}}).skip((pageNumber-1)*pageSize).limit(pageSize).toArray()
+            {projection: {_id: 0}}).skip((pageNumber - 1) * pageSize).limit(pageSize).toArray()
     },
-
-
     async findBloggersById(id: string) {
-        return await bloggersCollection.findOne({id: id}, {projection: {_id:0}})
+        return await bloggersCollection.findOne({id: id}, {projection: {_id: 0}})
 
     },
-
     async createBloggers(newBlogger: BloggerType) {
 
         await bloggersCollection.insertOne(newBlogger)
@@ -26,8 +20,7 @@ export const bloggersDbRepository = {
             id, name, youtubeUrl
         }
 
-    }
-    ,
+    },
     async updateBlogger(id: string, name: string, youtubeUrl: string) {
         const result = await bloggersCollection.updateOne({id: id}, {
             $set: {

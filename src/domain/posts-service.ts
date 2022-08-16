@@ -1,8 +1,4 @@
-
-import { v4 as uuidv4 } from 'uuid';
 import {postDbRepository} from "../repositories/posts-repository";
-import {bloggersDbRepository} from "../repositories/bloggers-repository";
-import {CommentType, Pagination, PostType} from "../types";
 import {ObjectId} from "mongodb";
 
 export const postsService = {
