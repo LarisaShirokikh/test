@@ -1,12 +1,6 @@
 import {commentsCollection} from "../settingses/settings";
 
 
-const options = {
-    projection: {
-        _id: 0,
-        postId: 0
-    }
-}
 
 export const commentRepository = {
     async createComment(newComment: any) {
@@ -15,10 +9,10 @@ export const commentRepository = {
         return {id, content, userId, userLogin, addedAt}
     },
     async findComment(id:string){
-        return await commentsCollection.findOne({id: id}, options)
+        return await commentsCollection.findOne({id: id}, {projection: {_id: 0, postId: 0}})
     },
     async findCommentWithPag(postId: string, pageSize:number, pageNumber:number){
-        return await commentsCollection.find({postId: postId}, options).skip((pageNumber-1)*pageSize).limit(pageSize).toArray()
+        return await commentsCollection.find({postId: postId}, {projection: {_id: 0, postId: 0}}).skip((pageNumber-1)*pageSize).limit(pageSize).toArray()
     },
     async getCount(postId:string){
         return await commentsCollection.count({postId: postId})
