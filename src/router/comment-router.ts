@@ -11,9 +11,7 @@ import {commentService} from "../domain/comment-service";
 export const commentsRouter = Router({})
 
 commentsRouter.get('/:id', async (req: Request, res: Response) => {
-    console.log(1111)
     const comment = await commentService.findComment(req.params.id)
-
     if(comment){
         res.status(200).send(comment)
     } else {
@@ -39,7 +37,8 @@ commentsRouter.delete('/:id', authBearer, async (req: Request, res: Response) =>
         res.sendStatus(403)
     }
 })
-commentsRouter.put('/:commentId',authBearer, commentValidation, inputValidation, async (req: Request, res: Response) => {
+commentsRouter.put('/:commentId'
+    ,authBearer, commentValidation, inputValidation, async (req: Request, res: Response) => {
     let comment = await commentService.findComment(req.params.commentId)
     let user = await commentService.findUser(req.user!.id, req.params.commentId)
     if (!comment) {

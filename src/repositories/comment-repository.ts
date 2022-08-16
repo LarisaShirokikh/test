@@ -5,34 +5,14 @@ import {commentsCollection} from "../settings";
 export const commentRepository = {
     async createComment(newComment: any) {
         await commentsCollection.insertOne(newComment)
-        const {id, content,
-            userId,
-            userLogin, addedAt} = newComment
-        return {id, content,
-            userId,
-            userLogin, addedAt}
+        const {id, content, userId, userLogin, addedAt} = newComment
+        return {id, content, userId, userLogin, addedAt}
     },
     async findComment(id:string){
-        return await commentsCollection.findOne({id: id},
-            {projection: {_id: 0}}
-        )
+        return await commentsCollection.findOne({id: id}, {projection: {_id: 0}})
     },
     async findCommentWithPag(postId: string, pageSize:number, pageNumber:number){
-        let comment =  await commentsCollection
-            .find({postId: postId},
-                {projection: {_id: 0}}
-            )
-            .skip((pageNumber-1)*pageSize).limit(pageSize).toArray()
-        const comment1 = comment.map((c: any) => ({
-            id: c.id,
-            content: c.content,
-            userId: c.userId,
-            userLogin: c.userLogin,
-            addedAt: c.addedAt
-        }))
-            return comment1
-
-
+        return await commentsCollection.find({postId: postId}, {projection: {_id: 0}}).skip((pageNumber-1)*pageSize).limit(pageSize).toArray()
     },
     async getCount(postId:string){
         return await commentsCollection.count({postId: postId})
@@ -52,9 +32,8 @@ export const commentRepository = {
 
     },
     async findUser(userId:string, commentId: string){
-        return await commentsCollection.findOne({userId: userId, id:commentId},
-            {projection: {_id: 0}}
-        )
+        return await commentsCollection.findOne({userId: userId, id:commentId})
     },
+
 
 }
