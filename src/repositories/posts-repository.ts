@@ -2,9 +2,9 @@ import {postsCollection} from "../settings";
 import {PostsType} from "../types";
 
 
-export const postDbRepository = {
-    async findPosts(pageSize: number, pageNumber: number) {
-        return await postsCollection.find({}, {projection: {_id: 0}}).skip((pageNumber - 1) * pageSize).limit(pageSize).toArray()
+export const postsRepository = {
+    async findPosts(pageSize:number, pageNumber:number) {
+        return await postsCollection.find({}, {projection: {_id: 0}}).skip((pageNumber-1)*pageSize).limit(pageSize).toArray()
     },
     async findPostById(id: string) {
         return await postsCollection.findOne({id: id}, {projection: {_id: 0}})
@@ -35,12 +35,10 @@ export const postDbRepository = {
     async getCount() {
         return await postsCollection.count({})
     },
-    async findBloggersPost(pageSize: number, pageNumber: number, bloggerId: string) {
-        return await postsCollection.find({bloggerId: bloggerId}, {projection: {_id: 0}}).skip((pageNumber - 1) * pageSize).limit(pageSize).toArray()
+    async findBloggersPost(pageSize:number, pageNumber:number, bloggerId: string){
+        return await postsCollection.find({bloggerId: bloggerId}, {projection: {_id: 0}}).skip((pageNumber-1)*pageSize).limit(pageSize).toArray()
     },
     async getCountBloggerId(bloggerId: string) {
         return await postsCollection.count({bloggerId: bloggerId})
     },
-
-
 }

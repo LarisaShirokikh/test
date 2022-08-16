@@ -1,12 +1,12 @@
-import {postDbRepository} from "../repositories/posts-repository";
+import {postsRepository} from "../repositories/posts-repository";
 import {ObjectId} from "mongodb";
 
 export const postsService = {
     async findPosts(pageSize:number, pageNumber:number) {
-        return await postDbRepository.findPosts(pageSize, pageNumber )
+        return await postsRepository.findPosts(pageSize, pageNumber )
     },
     async findPostById(id: string) {
-        return await postDbRepository.findPostById(id)
+        return await postsRepository.findPostById(id)
     },
     async createPost(id: string, title: string, shortDescription: string, content: string, bloggerId: string) {
         const newPosts = {
@@ -17,22 +17,22 @@ export const postsService = {
             bloggerId: bloggerId,
             bloggerName: "Brendan Eich"
         }
-        return await postDbRepository.createPost(newPosts)
+        return await postsRepository.createPost(newPosts)
 
     },
     async updatePost(id: string, title: string, shortDescription: string, content: string, bloggerId: string) {
-        return await postDbRepository.updatePost(id, title, shortDescription, content, bloggerId)
+        return await postsRepository.updatePost(id, title, shortDescription, content, bloggerId)
     },
     async deletePosts(id: string) {
-        return await postDbRepository.deletePosts(id)
+        return await postsRepository.deletePosts(id)
     },
     async getCount() {
-        return await postDbRepository.getCount()
+        return await postsRepository.getCount()
     },
     async findBloggersPost(pageSize:number, pageNumber:number,bloggerId:string) {
-        return await postDbRepository.findBloggersPost(pageSize, pageNumber, bloggerId)
+        return await postsRepository.findBloggersPost(pageSize, pageNumber, bloggerId)
     },
     async getCountBloggerId(bloggerId: string) {
-        return await postDbRepository.getCountBloggerId(bloggerId)
+        return await postsRepository.getCountBloggerId(bloggerId)
     },
 }

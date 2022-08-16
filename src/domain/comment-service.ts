@@ -35,6 +35,4 @@ export const commentService = {
     async findUser(userId:string, commentId:string){
         return await commentRepository.findUser(userId, commentId)
     },
-
-
 }
