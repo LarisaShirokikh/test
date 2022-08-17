@@ -23,6 +23,7 @@ commentsRouter.delete('/:id', authBearer, async (req: Request, res: Response) =>
     let user = await commentService.findUser(req.user!.id, req.params.id)
     if (!comment){
         res.sendStatus(404)
+        return
     }
 
     if(user){
