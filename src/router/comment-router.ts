@@ -40,11 +40,14 @@ commentsRouter.put('/:commentId',
     authBearer, commentValidation, inputValidationMiddleWare,
     async (req: Request, res: Response) => {
     let comment = await commentService.findComment(req.params.commentId)
+        console.log(111,comment)
     let user = await commentService.findUser(req.user!.id, req.params.commentId)
     if (!comment) {
-        return res.status(404).send({errorsMessages: [{message: 'Invalid comment', field: "comment"}]})
+        console.log(222, user)
+        return res.status(404).send({errorsMessages: [{message: 'Invalid commentId', field: "comment"}]})
     }
     if (user){
+        console.log(333, user)
         const isUpdate = await commentService.updateComment(req.body.content, req.params.commentId)
         if (isUpdate) {
             res.sendStatus(204)
