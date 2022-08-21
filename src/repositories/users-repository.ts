@@ -108,6 +108,11 @@ export const usersRepository = {
     async deleteUserUnconfirmedEmail(email: string): Promise<boolean> {
         const result = await usersEmailConfDataCollection.deleteOne({email})
         return result.deletedCount === 1
+    },
+    async deleteAllUsers(): Promise<boolean> {
+        const result = usersCollection.deleteMany({})
+        return true
+
     }
 }
 

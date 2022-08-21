@@ -46,4 +46,8 @@ export const postsRepository = {
     async getCountBloggerId(bloggerId: string) {
         return await postsCollection.count({bloggerId: bloggerId})
     },
+    async deleteAllPost(): Promise<boolean> {
+        const result = postsCollection.deleteMany({})
+        return true
+    }
 }

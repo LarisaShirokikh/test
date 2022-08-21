@@ -12,13 +12,10 @@ export const bloggersRepository = {
     async findBloggers(pageSize:number, pageNumber:number, searchNameTerm:string) {
         return await bloggersCollection.find({name: {$regex: searchNameTerm}}, options).skip((pageNumber-1)*pageSize).limit(pageSize).toArray()
     },
-
-
     async findBloggersById(id: string) {
         return await bloggersCollection.findOne({id: id}, options)
 
     },
-
     async createBloggers(newBlogger: BloggersType) {
 
         await bloggersCollection.insertOne(newBlogger)
@@ -27,8 +24,7 @@ export const bloggersRepository = {
             id, name, youtubeUrl
         }
 
-    }
-    ,
+    },
     async updateBlogger(id: string, name: string, youtubeUrl: string) {
         const result = await bloggersCollection.updateOne({id: id}, {
             $set: {
@@ -45,9 +41,11 @@ export const bloggersRepository = {
     },
     async getCount(searchNameTerm: string) {
         return await bloggersCollection.countDocuments({name: {$regex: searchNameTerm}})
+    },
+    async deleteAllBloggers(): Promise<boolean> {
+        const result = bloggersCollection.deleteMany({})
+        return true
     }
-
-
 }
 
 

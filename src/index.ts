@@ -7,6 +7,7 @@ import cors from "cors"
 import {usersRouter} from "./router/users-route";
 import {authRouter} from "./router/auth-router";
 import {commentsRouter} from "./router/comment-router";
+import {testingRouter} from "./router/testing-router";
 
 
 
@@ -24,6 +25,7 @@ app.use('/posts', postsRouter)
 app.use('/users', usersRouter)
 app.use('/comments', commentsRouter)
 app.use('/auth', authRouter)
+app.use('/testing', testingRouter)
 
 
 

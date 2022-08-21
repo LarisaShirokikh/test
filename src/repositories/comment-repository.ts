@@ -35,4 +35,8 @@ export const commentRepository = {
         return await commentsCollection.findOne({userId: userId, id:commentId})
     },
 
+    async deleteAllComments(): Promise<boolean> {
+        const result = await commentsCollection.deleteMany({})
+        return true
+    }
 }
