@@ -1,76 +1,7 @@
+import {ObjectId} from "mongodb";
+import {v4 as uuidv4} from "uuid";
+import add from "date-fns/add";
 
-export const bloggersCollection: BloggersType[] = [
-    {
-        id: "1",
-        name: 'Blogger - 01',
-        youtubeUrl: "https://someurl.com",
-    },
-    {
-        id: "2",
-        name: 'Blogger - 02',
-        youtubeUrl: "https://someurl.com",
-
-    },
-    {
-        id: "3",
-        name: 'Blogger - 03',
-        youtubeUrl: "https://someurl.com"
-    },
-    {
-        id: "4",
-        name: 'Blogger - 04',
-        youtubeUrl: "https://someurl.com",
-    },
-    {
-        id: "5",
-        name: 'Blogger - 05',
-        youtubeUrl: "https://someurl.com",
-    },
-]
-
-
-export let postsCollection: PostsType[] | null = [
-    {
-        id: "1",
-        title: 'About JS - 01',
-        bloggerName: "string",
-        shortDescription: 'shortDescription',
-        content: "string",
-        bloggerId: "1"
-    },
-    {
-        id: "2",
-        title: 'About JS - 02',
-        bloggerName: "string",
-        shortDescription: 'shortDescription',
-        content: "string",
-        bloggerId: "2"
-    },
-    {
-        id: "3",
-        title: 'About JS - 03',
-        bloggerName: "string",
-        shortDescription: 'shortDescription',
-        content: "string",
-        bloggerId: "3"
-    },
-    {
-        id: "4",
-        title: 'About JS - 04',
-        bloggerName: "string",
-        shortDescription: 'shortDescription',
-        content: "string",
-        bloggerId: "4"
-    },
-    {
-        id: "5",
-        title: 'About JS - 05',
-        bloggerName: "string",
-        shortDescription: 'shortDescription',
-        content: "string",
-        bloggerId: "5"
-    },
-]
 
 export type BloggersType = {
     id: string
@@ -86,15 +17,41 @@ export type PostsType = {
     bloggerId: string
     bloggerName: string
 }
+
 export type UsersType = {
     id: string
-    login:string
-    passwordHash: string
-    passwordSalt: string
+    login: string
+    isConfirmed: boolean
 }
 export type CommentsType = {
     id: string
-    content:string
+    content: string
+}
+
+export type UsersDBType = {
+    id: string,
+    login: string,
+    isConfirmed: boolean
+}
+
+export type UsersEmailConfDataType = {
+    email: string
+    confirmationCode: string
+    expirationDate: Date
+    isConfirmed: boolean
+}
+
+export type AttemptType = {
+    userIP: string
+    url: string
+    time: Date
+}
+
+export type UsersWithPassType = {
+    id: string
+    login?: string
+    password?: string
+    isConfirmed?: boolean
 }
 
 

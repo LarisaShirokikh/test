@@ -45,19 +45,12 @@ commentsRouter.put('/:commentId',
     let user = await commentService.findUser(req.user!.id, req.params.commentId)
     if (!comment) {
         console.log(222, user)
-        return res.status(404).send({errorsMessages: [{message: 'Invalid commentId', field: "comment"}]})
-    }
-    if (user){
+        return res.status(404)}
+    if (user) {
         console.log(333, user)
         const isUpdate = await commentService.updateComment(req.body.content, req.params.commentId)
         if (isUpdate) {
             res.sendStatus(204)
-        } else {
-            res.sendStatus(404)
         }
-    } else {
-        res.sendStatus(403)
     }
-
-
 })
