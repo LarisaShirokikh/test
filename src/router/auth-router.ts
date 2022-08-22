@@ -31,6 +31,7 @@ authRouter.post('/registration',
         if (!findEmailOrlogin) {
             const user = await authService.userRegistration(req.body.login, req.body.email, req.body.password)
             res.status(204).send(user)
+            console.log(555)
             return
         }
         res.status(400).send({ errorsMessages: [{ message: "Invalid data", field: "email" }] })
