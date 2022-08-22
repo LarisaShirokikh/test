@@ -27,8 +27,10 @@ authRouter.post('/registration',
     passwordValidation,
     inputValidationMiddleWare, limitMiddleware,
     async (req: Request, res: Response) => {
-        const findEmailOrlogin = await usersRepository.findUserByEmailOrlogin(req.body.email, req.body.login)
-        if (!findEmailOrlogin) {
+        //const findEmailOrlogin = await usersRepository.findUserByEmailOrlogin(req.body.email, req.body.login)
+        const findEmail = await usersRepository.findUserByEmail(req.body.email)
+        const findLogin = await usersRepository.findUserByLogin(req.body.login)
+        if (!findEmail || !findLogin) {
             const user = await authService.userRegistration(req.body.login, req.body.email, req.body.password)
             res.status(204).send(user)
             console.log(555)
