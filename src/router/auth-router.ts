@@ -19,16 +19,13 @@ authRouter.post('/registration-confirmation', inputValidationMiddleWare, checkLi
     })
 
 authRouter.post('/registration',
-    //loginValidation, emailValidation, passwordValidation,
-    //inputValidationMiddleWare, checkLimitsIpAttemptsMiddleware,
+    loginValidation, emailValidation, passwordValidation,
+    inputValidationMiddleWare, checkLimitsIpAttemptsMiddleware,
     async (req: Request, res: Response) => {
-        console.log(111)
         const findEmailOrlogin = await usersRepository.findUserByEmailOrlogin(req.body.email, req.body.login)
         //const findLogin = await usersRepository.findUserByLogin(req.body.login)
         if (!findEmailOrlogin) {
-            console.log(222)
             const user = await authService.userRegistration(req.body.login, req.body.email, req.body.password)
-            console.log(444)
             res.status(204).send(user)
             return
         }
