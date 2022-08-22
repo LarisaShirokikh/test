@@ -5,7 +5,9 @@ import {authService} from "../domain/auth-service";
 import {emailValidation, loginValidation, passwordValidation} from "../middlewares/validations";
 import {checkLimitsIpAttemptsMiddleware} from "../middlewares/checkLimitsIpAttemptsMiddleware";
 import {usersRepository} from "../repositories/users-repository";
-import {rateLimiterMiddleware} from "../middlewares/rate-Limit-Controller";
+import {limitMiddleware} from "../middlewares/limit-middleware";
+
+
 
 
 export const authRouter = Router({})
@@ -23,7 +25,7 @@ authRouter.post('/registration',
     loginValidation,
     emailValidation,
     passwordValidation,
-    inputValidationMiddleWare, rateLimiterMiddleware,
+    inputValidationMiddleWare, limitMiddleware,
     async (req: Request, res: Response) => {
         const findEmailOrlogin = await usersRepository.findUserByEmailOrlogin(req.body.email, req.body.login)
         if (!findEmailOrlogin) {
