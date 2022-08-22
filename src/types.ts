@@ -1,6 +1,4 @@
-import {ObjectId} from "mongodb";
-import {v4 as uuidv4} from "uuid";
-import add from "date-fns/add";
+
 
 
 export type BloggersType = {
@@ -28,11 +26,6 @@ export type CommentsType = {
     content: string
 }
 
-export type UsersDBType = {
-    id: string,
-    login: string,
-    isConfirmed: boolean
-}
 
 export type UsersEmailConfDataType = {
     email: string

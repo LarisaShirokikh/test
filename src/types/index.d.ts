@@ -1,11 +1,11 @@
 
-import {UsersType} from "../types";
+import {UsersEmailConfDataType, UsersType} from "../types";
 
 declare global {
     declare namespace Express {
 
         export interface Request {
-            user: UserType | null
+            user: UsersType | null
         }
     }
 }

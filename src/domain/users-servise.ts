@@ -1,6 +1,6 @@
-import {v4 as uuidv4} from 'uuid';
+
 import {usersRepository} from "../repositories/users-repository";
-import {UsersDBType, UsersType} from "../types";
+
 
 
 export const usersService = {
@@ -23,7 +23,7 @@ export const usersService = {
         return await usersRepository.findUsersById(userId)
     },
 
-    async createUser(login: string, password: string): Promise<UsersType> {
+   /* async createUser(login: string, password: string): Promise<UsersEmailConfDataType> {
         const newUser = {
             id: (uuidv4).toString(),
             login,
@@ -31,6 +31,6 @@ export const usersService = {
             isConfirmed: false
         }
         const createUserDb = await usersRepository.createUser(newUser)
-        return createUserDb
-    }
+        return newUser
+    }*/
 }

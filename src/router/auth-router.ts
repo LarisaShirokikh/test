@@ -19,24 +19,21 @@ authRouter.post('/registration-confirmation', inputValidationMiddleWare, checkLi
     })
 
 authRouter.post('/registration',
-    loginValidation, emailValidation, passwordValidation, inputValidationMiddleWare, checkLimitsIpAttemptsMiddleware,
+    //loginValidation, emailValidation, passwordValidation,
+    //inputValidationMiddleWare, checkLimitsIpAttemptsMiddleware,
     async (req: Request, res: Response) => {
+        console.log(111)
+        const findEmailOrlogin = await usersRepository.findUserByEmailOrlogin(req.body.email, req.body.login)
+        //const findLogin = await usersRepository.findUserByLogin(req.body.login)
+        if (!findEmailOrlogin) {
+            console.log(222)
+            const user = await authService.userRegistration(req.body.login, req.body.email, req.body.password)
+            console.log(444)
+            res.status(204).send(user)
+            return
+        }
+        res.sendStatus(400)
 
-        const findEmail = await usersRepository.findUserByEmail(req.body.email)
-        const findLogin = await usersRepository.findUserByLogin(req.body.login)
-        // @ts-ignore
-        if (req.body.email !== findEmail.email) {
-            res.status(400)
-            return false
-        }
-        // @ts-ignore
-        if (req.body.login !== findLogin.login) {
-            res.status(400)
-            return false
-        }
-        const user = await authService.userRegistration(req.body.login, req.body.email, req.body.password)
-        res.status(204).send(user)
-        return
     })
 
 authRouter.post('/registration-email-resending', emailValidation, inputValidationMiddleWare, checkLimitsIpAttemptsMiddleware,
@@ -59,7 +56,7 @@ authRouter.post('/registration-email-resending', emailValidation, inputValidatio
 
 authRouter.post('/login',
     async (req: Request, res: Response) => {
-        const user = await authService.checkCredentials(req.body.login, req.body.password)
+        const user = await authService.checkCredentials(req.body.loginOrEmail, req.body.password)
         if (user) {
             const token = await jwtService.createJWT(user)
             res.status(200).send({token: token})

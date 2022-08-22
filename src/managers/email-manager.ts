@@ -13,8 +13,9 @@ export const emailManager = {
     async sendEmailConfirmationCode(conformationCode: string, email: string) {
         await emailAdapter.sendEmail(email,
             "Confirm your email",
-            `<div> Confirm your email: 
-            <a href='http://localhost:3000/auth/registration-confirmation?code=${conformationCode}'>Click here</a> </div>`)
+            conformationCode
+        )
+
     },
 
     async sendEmailConfirmation(email: string) {

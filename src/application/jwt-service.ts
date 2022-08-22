@@ -1,7 +1,4 @@
 import jwt from 'jsonwebtoken'
-
-import {ObjectId} from "mongodb";
-import {toString} from "express-validator/src/utils";
 import {settings} from "../settingses/settings";
 
 export const jwtService = {
@@ -12,7 +9,7 @@ export const jwtService = {
 
     async getUserIdByToken (token: string){
         try{
-            const result:any =  jwt.verify(token, settings.JWT_SECRET)
+            const result: any =  jwt.verify(token, settings.JWT_SECRET)
             return result.userId
         } catch (error) {
             return null

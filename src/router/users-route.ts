@@ -3,6 +3,7 @@ import {authMiddleware} from "../middlewares/auth-middleware";
 import {loginValidation, passwordValidation} from "../middlewares/validations";
 import {inputValidationMiddleWare} from "../middlewares/input-validation";
 import {usersService} from "../domain/users-servise";
+import {authService} from "../domain/auth-service";
 
 
 export const usersRouter = Router({})
@@ -10,7 +11,7 @@ export const usersRouter = Router({})
 
 usersRouter.post('/', authMiddleware, loginValidation,
     passwordValidation, inputValidationMiddleWare, async (req: Request, res: Response) => {
-    const newUser = await usersService.createUser(req.body.login, req.body.password)
+    const newUser = await authService.userRegistration(req.body.login, req.body.password, req.body.email)
     res.status(201).send(newUser)
 
 })

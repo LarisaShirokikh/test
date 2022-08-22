@@ -1,17 +1,13 @@
-import {UsersDBType, UsersEmailConfDataType, UsersType, UsersWithPassType} from "../types";
+import { UsersEmailConfDataType, UsersType, UsersWithPassType} from "../types";
 import {usersCollection, usersEmailConfDataCollection} from "../settingses/settings";
 
 
 
 export const usersRepository = {
 
-    async createUser(user: UsersWithPassType): Promise<UsersType> {
-// @ts-ignore
-        const result = await usersCollection.insertOne(user)
-        const newUser = await usersCollection
-            .findOne({id: user?.id}, {projection: {_id: 0, password: 0, email: 0, isConfirmed: 0}})
-        // @ts-ignore
-        return newUser
+    async createUser(user: UsersEmailConfDataType): Promise<UsersEmailConfDataType> {
+        const newUser = await usersCollection.insertOne(user)
+        return user
 
     },
 
@@ -67,7 +63,7 @@ export const usersRepository = {
             return user
         }
     },
-    async updateEmailConfirmation(email: string): Promise<UsersDBType | null> {
+    async updateEmailConfirmation(email: string): Promise<UsersEmailConfDataType | null> {
         const accountDataRes = await usersCollection.updateOne({email}, {$set: {isConfirmed: true}})
         if (!accountDataRes) {
             return null
@@ -112,6 +108,11 @@ export const usersRepository = {
     async deleteAllUsers(): Promise<boolean> {
         const result = usersCollection.deleteMany({})
         return true
+
+    },
+    async findUserByEmailOrlogin(email: string, login: string) {
+        const result = await usersCollection.findOne({email, login}, {projection: {_id: 0}})
+        return result
 
     }
 }

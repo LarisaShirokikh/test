@@ -4,38 +4,33 @@ import {v4 as uuidv4} from 'uuid';
 import add from 'date-fns/add'
 
 export const authService = {
-    async userRegistration(login: string, email: string, password: string) {
-
+    async userRegistration(login: string, email: string, passwordHash: string) {
         const newUser = {
             accountData: {
                 id: uuidv4(),
                 login,
                 email,
-                password,
+                passwordHash,
                 isConfirmed: false
             },
             emailConfirmation: {
                 email,
                 confirmationCode: uuidv4(),
                 expirationDate: add(new Date(), {
-                    hours: 1,
+                    hours: 3,
                     minutes: 3
                 }),
                 isConfirmed: false
             }
         }
-
+//@ts-ignore
         await usersRepository.createUser(newUser.accountData)
         await usersRepository.insertDbUnconfirmedEmail(newUser.emailConfirmation)
-        try {
-            await emailManager.sendEmailConfirmationCode(newUser.emailConfirmation.confirmationCode, email)
-        } catch (err) {
-            console.error(err)
-            usersRepository.deleteUsers(newUser.accountData.id)
-            usersRepository.deleteUserUnconfirmedEmail(newUser.emailConfirmation.email)
-            return null
-        }
-        return true
+        console.log(newUser.emailConfirmation)
+        await emailManager.sendEmailConfirmationCode(newUser.emailConfirmation.confirmationCode, email)
+
+        return newUser
+
     },
 
     async checkCredentials(login: string, password: string) {
