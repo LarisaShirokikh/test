@@ -30,8 +30,7 @@ authRouter.post('/registration',
             res.status(204).send(user)
             return
         }
-        res.sendStatus(400)
-
+        res.status(400).send({ errorsMessages: [{ message: "Invalid data", field: "email" }] })
     })
 
 authRouter.post('/registration-email-resending', emailValidation, inputValidationMiddleWare, checkLimitsIpAttemptsMiddleware,
