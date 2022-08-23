@@ -13,7 +13,7 @@ export const checkLimitsIpAttemptsMiddleware = async (req: Request, res: Respons
     const limitTime: Date = new Date(currentTime.getTime() - LIMIT_OF_ATTEMPTS)
     await attemptsRepository.addAttempt(ip, url, currentTime)
     const countOfAttempts = await attemptsRepository.getLastAttempts(ip, url, limitTime)
-
+    console.log(countOfAttempts)
 
 
     if(countOfAttempts! < 5 ) {
