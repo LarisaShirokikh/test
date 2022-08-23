@@ -5,6 +5,7 @@ import {authService} from "../domain/auth-service";
 import {emailValidation, loginValidation, passwordValidation} from "../middlewares/validations";
 import {usersRepository} from "../repositories/users-repository";
 import {limitMiddleware} from "../middlewares/limit-middleware";
+import {checkLimitsIpAttemptsMiddleware} from "../middlewares/checkLimitsIpAttemptsMiddleware";
 
 
 
@@ -23,7 +24,7 @@ authRouter.post('/registration-confirmation', inputValidationMiddleWare, limitMi
 authRouter.post('/registration',
     loginValidation,
     emailValidation,
-    passwordValidation, limitMiddleware, inputValidationMiddleWare,
+    passwordValidation, inputValidationMiddleWare, checkLimitsIpAttemptsMiddleware,
     async (req: Request, res: Response) => {
         //const findEmailOrlogin = await usersRepository.findUserByEmailOrlogin(req.body.email, req.body.login)
         const isEmail = await usersRepository.findUserByEmail(req.body.email)
@@ -42,7 +43,7 @@ authRouter.post('/registration',
     })
 
 authRouter.post('/registration-email-resending',
-    emailValidation, inputValidationMiddleWare, limitMiddleware,
+    emailValidation, inputValidationMiddleWare, checkLimitsIpAttemptsMiddleware,
     async (req: Request, res: Response) => {
         const user = await usersRepository.findUserByEmail(req.body.email)
         if (user?.isConfirmed === true || !user) {
