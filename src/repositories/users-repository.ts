@@ -45,11 +45,11 @@ export const usersRepository = {
         return user
     },
     async findUserByConfirmCode(confirmationCode: string) {
-        const emailData = await usersEmailConfDataCollection
-            .findOne({confirmationCode: confirmationCode}, {projection: {_id: 0}})
-        const accountData = await usersCollection
-            .findOne({email: emailData?.email}, {projection: {_id: 0}})
-        if (emailData === null && accountData === null) {
+        const emailData = await usersEmailConfDataCollection.findOne({confirmationCode: confirmationCode}, {projection: {_id: 0}})
+
+        const accountData = await usersCollection.findOne({email: emailData?.email}, {projection: {_id: 0}})
+
+        if(emailData === null && accountData === null) {
             const user = {
                 accountData: undefined,
                 emailConfirmation: undefined
@@ -64,19 +64,16 @@ export const usersRepository = {
         }
     },
     async updateEmailConfirmation(email: string): Promise<UsersType | null> {
+
         const accountDataRes = await usersCollection.updateOne({email}, {$set: {isConfirmed: true}})
+
         if (!accountDataRes) {
             return null
         } else {
             await usersEmailConfDataCollection.deleteOne({email})
-            const result = await usersCollection.findOne({email}, {
-                projection: {
-                    _id: 0,
-                    password: 0,
-                    email: 0,
-                    isConfirmed: 0
-                }
-            })
+            const result = await usersCollection.findOne({email},
+                {projection: {_id: 0, password: 0, email: 0, isConfirmed: 0}})
+
             return result
         }
 
