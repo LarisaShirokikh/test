@@ -25,7 +25,7 @@ const db = client.db("blog")
 
 export const bloggersCollection = db.collection<BloggersType>("bloggers")
 export const postsCollection = db.collection<PostsType>("posts")
-export const usersCollection = db.collection<UsersEmailConfDataType>("users")
+export const usersCollection = db.collection<UsersType>("users")
 export const commentsCollection = db.collection<CommentsType>("comments")
 export const usersEmailConfDataCollection = db.collection<UsersEmailConfDataType>("usersEmailConfData")
 export const endpointsAttemptsTrysCollection = db.collection<AttemptType>("attempts")

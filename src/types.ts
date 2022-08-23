@@ -18,6 +18,7 @@ export type PostsType = {
 
 export type UsersType = {
     id: string
+    email: string
     login: string
     isConfirmed: boolean
 }
@@ -29,6 +30,7 @@ export type CommentsType = {
 
 export type UsersEmailConfDataType = {
     email: string
+
     confirmationCode: string
     expirationDate: Date
     isConfirmed: boolean
