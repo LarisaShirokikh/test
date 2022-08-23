@@ -69,8 +69,10 @@ export const authService = {
             }),
             isConfirmed: false
         }
+
         await usersRepository.updateUnconfirmedEmailData(newEmailConfirmation)
+
         await emailManager.sendEmailConfirmationCode(email, newEmailConfirmation.confirmationCode)
         return true
-    }
+    },
 }

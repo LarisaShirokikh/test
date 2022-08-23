@@ -24,7 +24,7 @@ authRouter.post('/registration-confirmation', inputValidationMiddleWare, limitMi
 authRouter.post('/registration',
     loginValidation,
     emailValidation,
-    passwordValidation, inputValidationMiddleWare, checkLimitsIpAttemptsMiddleware,
+    passwordValidation, inputValidationMiddleWare, limitMiddleware,
     async (req: Request, res: Response) => {
         //const findEmailOrlogin = await usersRepository.findUserByEmailOrlogin(req.body.email, req.body.login)
         const isEmail = await usersRepository.findUserByEmail(req.body.email)
@@ -43,21 +43,21 @@ authRouter.post('/registration',
     })
 
 authRouter.post('/registration-email-resending',
-    emailValidation, inputValidationMiddleWare, checkLimitsIpAttemptsMiddleware,
+    emailValidation, inputValidationMiddleWare, limitMiddleware,
     async (req: Request, res: Response) => {
         const user = await usersRepository.findUserByEmail(req.body.email)
         if (user?.isConfirmed === true || !user) {
-            res.status(400)
 
+            res.status(400).send({errorsMessages: [{message: "ErrorMessage", field: "email"}]})
         } else {
             const result = await authService.resendingEmailConfirm(req.body.email)
             if (result) {
-                res.status(204)
+                res.sendStatus(204)
             } else {
-                res.status(400)
-                return
+                res.sendStatus(400)
             }
         }
+
     })
 
 authRouter.post('/login',
