@@ -13,11 +13,12 @@ export const emailAdapter = {
 
 // send mail with defined transport object
         let info = await transport.sendMail({
-            from: `"Lora" <${email}>`, // sender address
+            from: `"Lora" <200920092022august@gmail.com>`,
+            //from: `"Lora" <${email}>`, // sender address
             to: email, // list of receivers
             subject: subject, // Subject line
             text: `https://some-front.com/confirm-registration?code=${conformationCode}`
         });
-        return info
+        return
     }
 }

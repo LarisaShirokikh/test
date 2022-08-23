@@ -46,11 +46,14 @@ authRouter.post('/registration',
 authRouter.post('/registration-email-resending',
     emailValidation, inputValidationMiddleWare, checkLimitsIpAttemptsMiddleware,
     async (req: Request, res: Response) => {
+
         const user = await usersRepository.findUserByEmail(req.body.email)
+
         if (user?.isConfirmed === true || !user) {
 
             res.status(400).send({errorsMessages: [{message: "ErrorMessage", field: "email"}]})
         } else {
+
             const result = await authService.resendingEmailConfirm(req.body.email)
             if (result) {
                 res.sendStatus(204)

@@ -8,6 +8,7 @@ export const checkLimitsIpAttemptsMiddleware = async (req: Request, res: Respons
 
     const ip = req.ip
     console.log(ip)
+    console.log(req.ips)
     const url = req.url
     const currentTime = Date.now()
     const limitTime = currentTime - LIMIT_OF_ATTEMPTS

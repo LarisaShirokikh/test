@@ -23,7 +23,7 @@ export const authService = {
                 isConfirmed: false
             }
         }
-//@ts-ignore
+
         await usersRepository.createUser(newUser.accountData)
         await usersRepository.insertDbUnconfirmedEmail(newUser.emailConfirmation)
         console.log(newUser.emailConfirmation)
@@ -72,7 +72,7 @@ export const authService = {
 
         await usersRepository.updateUnconfirmedEmailData(newEmailConfirmation)
 
-        await emailManager.sendEmailConfirmationCode(email, newEmailConfirmation.confirmationCode)
+        await emailManager.sendEmailConfirmationCode( newEmailConfirmation.confirmationCode, email)
         return true
     },
 }

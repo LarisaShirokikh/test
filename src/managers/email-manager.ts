@@ -10,11 +10,13 @@ export const emailManager = {
             )
     },
 
+
     async sendEmailConfirmationCode(conformationCode: string, email: string) {
         await emailAdapter.sendEmail(email,
             "Confirm your email",
             conformationCode
         )
+        return
 
     },
 
