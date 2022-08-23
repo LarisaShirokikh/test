@@ -45,10 +45,10 @@ export const authService = {
 
     async userRegisrationConfirmation(confirmationCode: string): Promise<boolean> {
         const user = await usersRepository.findUserByConfirmCode(confirmationCode)
-        if (!!user.emailConfirmation && user.emailConfirmation.isConfirmed === false) {
+        if (user.emailConfirmation) {
             const result = await usersRepository.updateEmailConfirmation(user.emailConfirmation.email)
             if (result) {
-                emailManager.sendEmailConfirmation(user.emailConfirmation.email)
+                await emailManager.sendEmailConfirmation(user.emailConfirmation.email)
             }
             return true
         } else {

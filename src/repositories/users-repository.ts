@@ -82,7 +82,7 @@ export const usersRepository = {
 
     },
     async findUserByEmail(email: string) {
-        const user = await usersCollection.findOne({email}, {projection: {_id: 0, password: 0}})
+        const user = await usersCollection.findOne({email}, {projection: {_id: 0}})
         return user
     },
     async findUserByLogin(login: string) {

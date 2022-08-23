@@ -35,10 +35,12 @@ authRouter.post('/registration',
             console.log(555)
             return
         }
+        console.log(111)
         res.status(400).send({ errorsMessages: [{ message: "Invalid data", field: "email" }] })
     })
 
-authRouter.post('/registration-email-resending', emailValidation, inputValidationMiddleWare, limitMiddleware,
+authRouter.post('/registration-email-resending',
+    emailValidation, inputValidationMiddleWare, limitMiddleware,
     async (req: Request, res: Response) => {
         const user = await usersRepository.findUserByEmail(req.body.email)
         if (user?.isConfirmed === true || !user) {
@@ -52,9 +54,7 @@ authRouter.post('/registration-email-resending', emailValidation, inputValidatio
                 res.sendStatus(400)
             }
         }
-
-    }
-)
+    })
 
 authRouter.post('/login',
     async (req: Request, res: Response) => {
