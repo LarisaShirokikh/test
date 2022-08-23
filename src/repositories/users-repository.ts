@@ -5,7 +5,7 @@ import {usersCollection, usersEmailConfDataCollection} from "../settingses/setti
 
 export const usersRepository = {
 
-    async createUser(user: UsersEmailConfDataType): Promise<UsersEmailConfDataType> {
+    async createUser(user: UsersType): Promise<UsersType> {
         const newUser = await usersCollection.insertOne(user)
         return user
 
@@ -63,7 +63,7 @@ export const usersRepository = {
             return user
         }
     },
-    async updateEmailConfirmation(email: string): Promise<UsersEmailConfDataType | null> {
+    async updateEmailConfirmation(email: string): Promise<UsersType | null> {
         const accountDataRes = await usersCollection.updateOne({email}, {$set: {isConfirmed: true}})
         if (!accountDataRes) {
             return null
