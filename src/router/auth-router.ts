@@ -12,7 +12,7 @@ import {checkLimitsIpAttemptsMiddleware} from "../middlewares/checkLimitsIpAttem
 
 export const authRouter = Router({})
 
-authRouter.post('/registration-confirmation', inputValidationMiddleWare, limitMiddleware,
+authRouter.post('/registration-confirmation', inputValidationMiddleWare, checkLimitsIpAttemptsMiddleware,
     async (req: Request, res: Response) => {
         const result = await authService.userRegisrationConfirmation(req.body.code)
         if (result) {
@@ -24,7 +24,7 @@ authRouter.post('/registration-confirmation', inputValidationMiddleWare, limitMi
 authRouter.post('/registration',
     loginValidation,
     emailValidation,
-    passwordValidation, inputValidationMiddleWare, limitMiddleware,
+    passwordValidation, inputValidationMiddleWare, checkLimitsIpAttemptsMiddleware,
     async (req: Request, res: Response) => {
         //const findEmailOrlogin = await usersRepository.findUserByEmailOrlogin(req.body.email, req.body.login)
         const isEmail = await usersRepository.findUserByEmail(req.body.email)
@@ -40,10 +40,11 @@ authRouter.post('/registration',
         }
         const userRegistration = await authService.userRegistration(req.body.login, req.body.email, req.body.password)
         res.status(204).send(userRegistration)
+
     })
 
 authRouter.post('/registration-email-resending',
-    emailValidation, inputValidationMiddleWare, limitMiddleware,
+    emailValidation, inputValidationMiddleWare, checkLimitsIpAttemptsMiddleware,
     async (req: Request, res: Response) => {
         const user = await usersRepository.findUserByEmail(req.body.email)
         if (user?.isConfirmed === true || !user) {
