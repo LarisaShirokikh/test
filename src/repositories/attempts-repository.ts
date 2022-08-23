@@ -5,10 +5,10 @@ export const attemptsRepository = {
 
     async getLastAttempts(ip: string, url: string, limitTime: number): Promise<number | undefined | null> {
 
-        const countAttempts = await endpointsAttemptsTrysCollection.countDocuments({
+        const countAttempts = await endpointsAttemptsTrysCollection.count({
             userIP: ip,
             url,
-         //   time: {$gte: limitTime}
+            time: {$gte: limitTime}
         })
         return countAttempts
     },
