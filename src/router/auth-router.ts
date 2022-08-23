@@ -37,6 +37,7 @@ authRouter.post('/registration',
         }
         console.log(111)
         res.status(400).send({ errorsMessages: [{ message: "Invalid data", field: "email" }] })
+        return
     })
 
 authRouter.post('/registration-email-resending',
@@ -49,9 +50,10 @@ authRouter.post('/registration-email-resending',
         } else {
             const result = await authService.resendingEmailConfirm(req.body.email)
             if (result) {
-                res.sendStatus(204)
+                res.status(204)
             } else {
-                res.sendStatus(400)
+                res.status(400)
+                return
             }
         }
     })
@@ -63,7 +65,8 @@ authRouter.post('/login',
             const token = await jwtService.createJWT(user)
             res.status(200).send({token: token})
         } else {
-            res.sendStatus(401)
+            res.status(401)
+            return
         }
     })
 
