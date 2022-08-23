@@ -3,7 +3,6 @@ import {jwtService} from "../application/jwt-service";
 import {inputValidationMiddleWare} from "../middlewares/input-validation";
 import {authService} from "../domain/auth-service";
 import {emailValidation, loginValidation, passwordValidation} from "../middlewares/validations";
-import {checkLimitsIpAttemptsMiddleware} from "../middlewares/checkLimitsIpAttemptsMiddleware";
 import {usersRepository} from "../repositories/users-repository";
 import {limitMiddleware} from "../middlewares/limit-middleware";
 
@@ -12,7 +11,7 @@ import {limitMiddleware} from "../middlewares/limit-middleware";
 
 export const authRouter = Router({})
 
-authRouter.post('/registration-confirmation', inputValidationMiddleWare, checkLimitsIpAttemptsMiddleware,
+authRouter.post('/registration-confirmation', inputValidationMiddleWare, limitMiddleware,
     async (req: Request, res: Response) => {
         const result = await authService.userRegisrationConfirmation(req.body.code)
         if (result) {
@@ -25,7 +24,7 @@ authRouter.post('/registration',
     loginValidation,
     emailValidation,
     passwordValidation,
-    inputValidationMiddleWare, checkLimitsIpAttemptsMiddleware,
+    inputValidationMiddleWare, limitMiddleware,
     async (req: Request, res: Response) => {
         //const findEmailOrlogin = await usersRepository.findUserByEmailOrlogin(req.body.email, req.body.login)
         const findEmail = await usersRepository.findUserByEmail(req.body.email)
@@ -39,7 +38,7 @@ authRouter.post('/registration',
         res.status(400).send({ errorsMessages: [{ message: "Invalid data", field: "email" }] })
     })
 
-authRouter.post('/registration-email-resending', emailValidation, inputValidationMiddleWare, checkLimitsIpAttemptsMiddleware,
+authRouter.post('/registration-email-resending', emailValidation, inputValidationMiddleWare, limitMiddleware,
     async (req: Request, res: Response) => {
         const user = await usersRepository.findUserByEmail(req.body.email)
         if (user?.isConfirmed === true || !user) {
