@@ -66,14 +66,17 @@ authRouter.post('/registration-email-resending',
 
 authRouter.post('/login',
     async (req: Request, res: Response) => {
-        const user = await authService.checkCredentials(req.body.loginOrEmail, req.body.password)
-        if (user) {
-            const token = await jwtService.createJWT(user)
-            res.status(200).send({token: token})
-        } else {
-            res.status(401)
+        const user = await authService.checkCredentials(req.body.login, req.body.password)
+
+        if (!user) {
+            res.send(401)
             return
         }
+        // @ts-ignore
+        const jwtTokenPair = await jwtService.createJWTPair(user)
+        res.cookie('refreshToken', jwtTokenPair.refreshToken, {})
+
+        res.status(200).send(jwtTokenPair.accessToken)
     })
 
 
