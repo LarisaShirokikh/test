@@ -9,8 +9,8 @@ export const checkLimitsIpAttemptsMiddleware = async (req: Request, res: Respons
     const ip = req.ip
     console.log(ip)
     const url = req.url
-    const currentTime: Date = new Date()
-    const limitTime: Date = new Date(currentTime.getTime() - LIMIT_OF_ATTEMPTS)
+    const currentTime = Date.now()
+    const limitTime = currentTime - LIMIT_OF_ATTEMPTS
     await attemptsRepository.addAttempt(ip, url, currentTime)
     const countOfAttempts = await attemptsRepository.getLastAttempts(ip, url, limitTime)
     console.log(countOfAttempts)

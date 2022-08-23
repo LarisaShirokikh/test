@@ -3,7 +3,7 @@ import {endpointsAttemptsTrysCollection} from "../settingses/settings";
 
 export const attemptsRepository = {
 
-    async getLastAttempts(ip: string, url: string, limitTime: Date): Promise<number | undefined | null> {
+    async getLastAttempts(ip: string, url: string, limitTime: number): Promise<number | undefined | null> {
 
         const countAttempts = await endpointsAttemptsTrysCollection.countDocuments({
             userIP: ip,
@@ -13,7 +13,7 @@ export const attemptsRepository = {
         return countAttempts
     },
 
-    async addAttempt(userIP: string, url: string, time: Date):  Promise<AttemptType> {
+    async addAttempt(userIP: string, url: string, time: number):  Promise<AttemptType> {
 
         const result = endpointsAttemptsTrysCollection.insertOne({ userIP, url, time})
         // @ts-ignore

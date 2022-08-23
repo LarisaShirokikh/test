@@ -39,7 +39,7 @@ export type UsersEmailConfDataType = {
 export type AttemptType = {
     userIP: string
     url: string
-    time: Date
+    time: number
 }
 
 export type UsersWithPassType = {
