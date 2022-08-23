@@ -8,7 +8,7 @@ export const attemptsRepository = {
         const countAttempts = await endpointsAttemptsTrysCollection.countDocuments({
             userIP: ip,
             url,
-            time: {$gte: limitTime}
+         //   time: {$gte: limitTime}
         })
         return countAttempts
     },
