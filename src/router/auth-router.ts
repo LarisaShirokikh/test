@@ -23,24 +23,22 @@ authRouter.post('/registration-confirmation', inputValidationMiddleWare, limitMi
 authRouter.post('/registration',
     loginValidation,
     emailValidation,
-    passwordValidation,
-    inputValidationMiddleWare, limitMiddleware,
+    passwordValidation, limitMiddleware, inputValidationMiddleWare,
     async (req: Request, res: Response) => {
         //const findEmailOrlogin = await usersRepository.findUserByEmailOrlogin(req.body.email, req.body.login)
-        const findEmail = await usersRepository.findUserByEmail(req.body.email)
-        const findLogin = await usersRepository.findUserByLogin(req.body.login)
-        if (findEmail || findLogin) {
-            console.log(111)
-            res.status(400).send({ errorsMessages: [{ message: "Invalid data", field: "email" }] })
-            return
-        }
-        if (!findEmail && !findLogin) {
-            const user = await authService.userRegistration(req.body.login, req.body.email, req.body.password)
-            res.status(204).send(user)
-            console.log(555)
-            return
-        }
+        const isEmail = await usersRepository.findUserByEmail(req.body.email)
+        const isLogin = await usersRepository.findUserByLogin(req.body.login)
 
+        if (!!isEmail && isEmail.email) {
+            res.status(400).send({errorsMessages: [{message: "ErrorMessage", field: "email"}]})
+            return false
+        }
+        if (isLogin && isLogin.login) {
+            res.status(400).send({errorsMessages: [{message: "ErrorMessage", field: "login"}]})
+            return false
+        }
+        const userRegistration = await authService.userRegistration(req.body.login, req.body.email, req.body.password)
+        res.status(204).send(userRegistration)
     })
 
 authRouter.post('/registration-email-resending',
