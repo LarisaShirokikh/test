@@ -12,13 +12,13 @@ import {checkLimitsIpAttemptsMiddleware} from "../middlewares/checkLimitsIpAttem
 
 export const authRouter = Router({})
 
-authRouter.post('/registration-confirmation', inputValidationMiddleWare, checkLimitsIpAttemptsMiddleware,
+authRouter.post('/registration-confirmation', checkLimitsIpAttemptsMiddleware,
     async (req: Request, res: Response) => {
-        const result = await authService.userRegisrationConfirmation(req.body.code)
+        const result = await authService.userRegistrationConfirmation(req.body.code)
         if (result) {
             res.sendStatus(204)
         }
-        res.sendStatus(400)
+        res.sendStatus(400).send({errorsMessages: [{message: "ErrorMessage", field: "code"}]})
     })
 
 authRouter.post('/registration',
