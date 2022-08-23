@@ -1,4 +1,5 @@
 import {body} from "express-validator";
+import rateLimit from "express-rate-limit";
 
 export const nameValidation = body('name').trim().isLength({min: 1, max: 15}).trim()
 export const urlValidation = body('youtubeUrl').isURL().trim().isLength({min: 10, max: 100})
@@ -9,5 +10,10 @@ export const loginValidation = body('login').trim().isLength({min: 3, max: 10})
 export const passwordValidation = body('password').trim().isLength({min: 6, max: 20})
 export const commentValidation = body('content').trim().isLength({min: 20, max: 300})
 export const emailValidation = body('email').trim().isString().isEmail()
+
+export const limitMiddleware = rateLimit({
+    max: 3,
+    windowMs: 10000
+})
 
 
