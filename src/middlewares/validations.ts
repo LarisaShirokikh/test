@@ -12,8 +12,9 @@ export const commentValidation = body('content').trim().isLength({min: 20, max: 
 export const emailValidation = body('email').trim().isString().isEmail()
 
 export const limitMiddleware = rateLimit({
-    max: 3,
+    max: 5,
     windowMs: 10000
+
 })
 
 
