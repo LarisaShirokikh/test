@@ -23,6 +23,7 @@ export type UsersType = {
     isConfirmed: boolean
 }
 export type CommentsType = {
+    userId: string
     id: string
     content: string
 }
