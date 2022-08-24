@@ -74,7 +74,7 @@ authRouter.post('/login', checkLimitsIPAttemptsMiddleware,
         const user = await authService.checkCredentials(req.body.login, req.body.password)
         console.log(111)
         if (!user) {
-            res.status(401)
+            res.sendStatus(401)
             console.log(222)
             return
         }

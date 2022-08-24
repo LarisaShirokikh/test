@@ -26,23 +26,8 @@ export const usersRepository = {
         const result = await usersCollection.deleteOne({id: id})
         return result.deletedCount === 1
     },
-    async findLogin(login: string) {
-        const user = await usersCollection
-            .findOne({login: login}, {projection: {_id: 0, email: 0, isConfirmed: 0}})
-        if(user === null) return false
-        return user
-    },
     async findUsersById(userId: string) {
         return await usersCollection.findOne({id: userId})
-    },
-    /*async updateConfirmation(_id: ObjectId): Promise<UsersDBType | boolean> {
-        let result = await usersCollection.updateOne({_id},
-            {$set: {'emailConfirmation.isConfirmed': true}})
-        return result.modifiedCount === 1
-    },*/
-    async findUserByConfirmationCode(emailConfirmationCode: object) {
-        const user = await usersCollection.findOne({'emailConfirmation.confirmationCode': emailConfirmationCode})
-        return user
     },
     async findUserByConfirmCode(confirmationCode: string) {
         const emailData = await usersEmailConfDataCollection.findOne({confirmationCode: confirmationCode}, {projection: {_id: 0}})
@@ -98,21 +83,20 @@ export const usersRepository = {
                 expirationDate: updetedEmailConfirmationData.expirationDate}})
         return result.acknowledged;
     },
-    async deleteUserUnconfirmedEmail(email: string): Promise<boolean> {
-        const result = await usersEmailConfDataCollection.deleteOne({email})
-        return result.deletedCount === 1
-    },
     async deleteAllUsers(): Promise<boolean> {
          await usersCollection.deleteMany({})
         return true
 
     },
-    async findUserByEmailOrlogin(password: string, login: string) {
-        const user = await usersCollection.findOne({password, login}, {projection: {_id: 0}})
-        console.log(100)
-        return user
+    async findByLogin(login: string): Promise<UsersWithPassType | boolean> {
+        console.log(8181)
+        const user = await usersCollection.findOne({login: login}, {projection: {_id: 0, email: 0, isConfirmed: 0}})
 
-    }
+        if(user === null) return false
+        // @ts-ignore
+        console.log(8080)
+        return user
+    },
 }
 
 

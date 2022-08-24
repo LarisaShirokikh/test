@@ -34,9 +34,15 @@ export const authService = {
     },
 
     async checkCredentials(login: string, password: string) {
-        const user = await usersRepository.findUserByEmailOrlogin(login, password)
+        const user = await usersRepository.findByLogin(login)
+        console.log(9090)
         if (!user) return false
-        if (user)  return user
+        // @ts-ignore
+        if (user.password !== password) {
+            console.log(9191)
+            return false
+        }
+        return user
     },
 
     async userRegistrationConfirmation(confirmationCode: string): Promise<boolean> {
