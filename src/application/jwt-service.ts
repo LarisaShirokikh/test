@@ -15,5 +15,14 @@ export const jwtService = {
         } catch (error) {
             return null
         }
+    },
+
+    async userIdByToken (token: string) {
+        try {
+            const result: any = jwt.verify(token, process.env.JWT_SECRET || '123')
+            return result.userId
+        } catch (error) {
+            return null
+        }
     }
 }

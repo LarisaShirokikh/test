@@ -16,17 +16,13 @@ commentsRouter.put('/:commentId',
     commentValidation,
     inputValidationMiddleWare,
     async (req: Request, res: Response) => {
-
         const comment: CommentsType | null | undefined = await commentService.findComment(req.params.commentId)
-
         if (!comment) {
             res.status(404).send({errorsMessages: [{message: "Comment not found", field: "commentId"}]});
             return
         }
-
         const token = req.headers.authorization!.split(' ')[1]
-        const userId = await jwtService.getUserIdByToken(token)
-
+        const userId = await jwtService.userIdByToken(token)
         if (!userId) {
             res.send(401)
         } else {
@@ -35,7 +31,6 @@ commentsRouter.put('/:commentId',
                 return
             }
         }
-
         const updatedComment = await commentService.updateComment(req.params.commentId, req.body.content)
 
         if (updatedComment) {

@@ -57,5 +57,9 @@ export type UsersSaltType = {
     passwordSalt: string
 }
 
+export type CommentContentType = {
+    content: string
+}
+
 
 
