@@ -4,13 +4,13 @@ import {v4 as uuidv4} from 'uuid';
 import add from 'date-fns/add'
 
 export const authService = {
-    async userRegistration(login: string, email: string, passwordHash: string) {
+    async userRegistration(login: string, email: string, password: string) {
         const newUser = {
             accountData: {
                 id: uuidv4(),
                 login,
                 email,
-                passwordHash,
+                password,
                 isConfirmed: false
             },
             emailConfirmation: {
