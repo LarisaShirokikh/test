@@ -2,7 +2,7 @@ import {Request, Response, Router} from "express";
 import {jwtService} from "../application/jwt-service";
 import {inputValidationMiddleWare} from "../middlewares/input-validation";
 import {authService} from "../domain/auth-service";
-import {emailValidation, limitMiddleware, loginValidation, passwordValidation} from "../middlewares/validations";
+import {emailValidation, loginValidation, passwordValidation} from "../middlewares/validations";
 import {usersRepository} from "../repositories/users-repository";
 import {checkLimitsIPAttemptsMiddleware} from "../middlewares/checkLimitsIpAttemptsMiddleware";
 
