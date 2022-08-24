@@ -16,6 +16,9 @@ import {testingRouter} from "./router/testing-router";
 const app = express()
 const port = process.env.PORT || 3000
 
+app.set("trust proxy", true) // fix ip
+// X-Forwardet-For
+
 const parserMiddleware = bodyParser.json()
 app.use(cors())
 app.use(parserMiddleware)

@@ -14,17 +14,14 @@ export const authRouter = Router({})
 
 authRouter.post('/registration-confirmation', checkLimitsIPAttemptsMiddleware,
     async (req: Request, res: Response) => {
-        console.log(999)
         const result = await authService.userRegistrationConfirmation(req.body.code)
-        console.log(123)
         if (result) {
             res.sendStatus(204)
         }
-        console.log(456)
         res.status(400).send({errorsMessages: [{message: "ErrorMessage", field: "code"}]})
-        console.log(909)
         return
     })
+
 
 authRouter.post('/registration',
     loginValidation,
