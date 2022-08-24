@@ -97,6 +97,9 @@ export const usersRepository = {
         console.log(8080)
         return user
     },
+    async findLogin(login:string){
+        return await usersCollection.findOne({login: login})
+    },
 }
 
 

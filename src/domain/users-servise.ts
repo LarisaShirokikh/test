@@ -1,7 +1,6 @@
-
 import {usersRepository} from "../repositories/users-repository";
-
-
+import bcrypt from "bcrypt";
+import {UsersSaltType, UsersType} from "../types";
 
 export const usersService = {
 
@@ -17,20 +16,19 @@ export const usersService = {
 
         return await usersRepository.deleteUsers(id)
     },
-
-
     async findUsersById(userId: string) {
         return await usersRepository.findUsersById(userId)
     },
-
-   /* async createUser(login: string, password: string): Promise<UsersEmailConfDataType> {
-        const newUser = {
-            id: (uuidv4).toString(),
-            login,
-            password,
-            isConfirmed: false
+    async _generateHash(password: string, salt: string) {
+        return await bcrypt.hash(password, salt)
+    },
+    async checkCredentials(login: string, password: string) {
+        const user = await usersRepository.findUserByLogin(login)
+        if (!user) return false
+        // @ts-ignore
+        if (user.password !== password) {
+            return false
         }
-        const createUserDb = await usersRepository.createUser(newUser)
-        return newUser
-    }*/
+        return user
+    }
 }

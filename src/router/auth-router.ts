@@ -5,6 +5,7 @@ import {authService} from "../domain/auth-service";
 import {emailValidation, loginValidation, passwordValidation} from "../middlewares/validations";
 import {usersRepository} from "../repositories/users-repository";
 import {checkLimitsIPAttemptsMiddleware} from "../middlewares/checkLimitsIpAttemptsMiddleware";
+import {usersService} from "../domain/users-servise";
 
 
 
@@ -66,20 +67,17 @@ authRouter.post('/registration-email-resending',
     })
 
 authRouter.post('/login', checkLimitsIPAttemptsMiddleware,
-    async (req: Request, res: Response) => {
-        const user = await authService.checkCredentials(req.body.login, req.body.password)
-
-        if (!user) {
-            res.send(401)
-            return
+    async (req:Request, res:Response) =>{
+        const user = await usersService.checkCredentials(req.body.login, req.body.password)
+        if(user) {
+            const token = await jwtService.createJWT(user)
+            res.status(200).send({token: token})
+        } else {
+            res.sendStatus(401)
         }
-        // @ts-ignore
-        const jwtTokenPair = await jwtService.createJWTPair(user)
-        res.cookie('refreshToken', jwtTokenPair.refreshToken, {})
+    })
 
-        res.status(200).send(jwtTokenPair.accessToken)
-    }
-)
+
 
 
 

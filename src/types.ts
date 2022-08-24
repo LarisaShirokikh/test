@@ -50,5 +50,12 @@ export type UsersWithPassType = {
     isConfirmed?: boolean
 }
 
+export type UsersSaltType = {
+    id: string
+    login:string
+    passwordHash: string
+    passwordSalt: string
+}
+
 
 
