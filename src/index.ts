@@ -8,6 +8,7 @@ import {usersRouter} from "./router/users-route";
 import {authRouter} from "./router/auth-router";
 import {commentsRouter} from "./router/comment-router";
 import {testingRouter} from "./router/testing-router";
+const cookieParser = require('cookie-parser')
 
 
 
@@ -22,6 +23,7 @@ app.set("trust proxy", true) // fix ip
 const parserMiddleware = bodyParser.json()
 app.use(cors())
 app.use(parserMiddleware)
+app.use(cookieParser());
 
 app.use('/bloggers', bloggersRouter)
 app.use('/posts', postsRouter)
@@ -44,4 +46,6 @@ const startApp = async () => {
     })
 }
 
-startApp()
+startApp();
+
+
