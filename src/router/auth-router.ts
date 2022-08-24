@@ -22,7 +22,6 @@ authRouter.post('/registration-confirmation', checkLimitsIPAttemptsMiddleware,
         return
     })
 
-
 authRouter.post('/registration',
     loginValidation,
     emailValidation,
@@ -69,20 +68,18 @@ authRouter.post('/registration-email-resending',
 authRouter.post('/login', checkLimitsIPAttemptsMiddleware,
     async (req: Request, res: Response) => {
         const user = await authService.checkCredentials(req.body.login, req.body.password)
-        console.log(111)
+
         if (!user) {
-            res.sendStatus(401)
-            console.log(222)
+            res.send(401)
             return
         }
         // @ts-ignore
         const jwtTokenPair = await jwtService.createJWTPair(user)
-        console.log(333)
         res.cookie('refreshToken', jwtTokenPair.refreshToken, {})
-        console.log(444)
+
         res.status(200).send(jwtTokenPair.accessToken)
-        return
-    })
+    }
+)
 
 
 
