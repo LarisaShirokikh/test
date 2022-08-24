@@ -92,7 +92,7 @@ postsRouter.post('/:postId/comments', authBearer, commentValidation, inputValida
         const newComment = await commentsService.createCommentByPostId(req.user, req.params.postId, req.body.content)
 
         res.status(201).send(newComment)
-
+        return
     })
 postsRouter.get('/:postId/comments', async (req: Request, res: Response) => {
     const pageSize: number = Number(req.query.PageSize) || 10
