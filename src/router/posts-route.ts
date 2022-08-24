@@ -31,22 +31,18 @@ postsRouter.get('/', async (req: Request, res: Response) => {
     })
 })
 postsRouter.post('/', authMiddleware, titleValidation, shortDescriptionValidation, contentValidation,
-    inputValidationMiddleWare, async (req: Request, res: Response) => {
-
-    let blogger = await bloggersService.findBloggersById(req.body.bloggerId)
-    if (!blogger) {
-        return res.status(400).send({errorsMessages: [{message: 'Invalid bloggerId', field: "bloggerId"}]})
-    } else {
-        const newPost = await postsService.createPost(
-            req.params.id,
-            req.body.title,
-            req.body.shortDescription,
-            req.body.content,
-            req.body.bloggerId)
+    inputValidationMiddleWare,
+    async (req: Request, res: Response) => {
+        const newPost = await postsService.createPost(req.body.title, req.body.shortDescription, req.body.content, req.body.bloggerId)
+        if (!newPost) {
+            res.status(400).send(
+                {errorsMessages: [{message: "Problem with a bloggerId field", field: "bloggerId"}]})
+            return
+        }
 
         res.status(201).send(newPost)
     }
-})
+)
 postsRouter.get('/:id', async (req: Request, res: Response) => {
     const post = await postsService.findPostById(req.params.id)
 
@@ -84,7 +80,6 @@ postsRouter.delete('/:id', authMiddleware, async (req: Request, res: Response) =
         res.send(404)
     }
 })
-
 postsRouter.post('/:postId/comments', authBearer, commentValidation, inputValidationMiddleWare, async (req: Request, res: Response) => {
         const post = await postsService.findPostById(req.params.postId)
 
@@ -94,8 +89,7 @@ postsRouter.post('/:postId/comments', authBearer, commentValidation, inputValida
         } else {
             res.send(404)
         }
-    }
-)
+    })
 postsRouter.get('/:postId/comments', async (req: Request, res: Response) => {
     const pageSize: number = Number(req.query.PageSize) || 10
     const pageNumber: number = Number(req.query.PageNumber) || 1

@@ -39,14 +39,16 @@ bloggersRouter.get('/', async (req: Request, res: Response) => {
     })
 })
 
-bloggersRouter.post('/', authMiddleware, nameValidation, urlValidation, inputValidationMiddleWare, async (req: Request, res: Response) => {
-    let name = req.body.name
-    let youtubeUrl = req.body.youtubeUrl
+bloggersRouter.post('/',
+    authMiddleware,
+    nameValidation,
+    urlValidation, inputValidationMiddleWare,
+    async (req: Request, res: Response) => {
+        const newBlogger = await bloggersService.createBlogger(req.body.name, req.body.youtubeUrl)
+        res.status(201).send(newBlogger)
+    }
+)
 
-    const newBlogger = await bloggersService.createBloggers(name, youtubeUrl)
-    res.status(201).send(newBlogger)
-
-})
 bloggersRouter.get('/:id', async (req: Request, res: Response) => {
     const blogger = await bloggersService.findBloggersById(req.params.id)
     if (blogger) {

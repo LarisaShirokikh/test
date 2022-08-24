@@ -16,14 +16,12 @@ export const bloggersRepository = {
         return await bloggersCollection.findOne({id: id}, options)
 
     },
-    async createBloggers(newBlogger: BloggersType) {
-
+    async createBlogger(newBlogger: BloggersType): Promise<BloggersType> {
         await bloggersCollection.insertOne(newBlogger)
-        const {id, name, youtubeUrl} = newBlogger
-        return {
-            id, name, youtubeUrl
-        }
+        const blogger = await bloggersCollection.findOne({id: newBlogger.id}, {projection: {_id: 0}})
 
+        // @ts-ignore
+        return blogger;
     },
     async updateBlogger(id: string, name: string, youtubeUrl: string) {
         const result = await bloggersCollection.updateOne({id: id}, {
@@ -45,7 +43,11 @@ export const bloggersRepository = {
     async deleteAllBloggers(): Promise<boolean> {
         const result = bloggersCollection.deleteMany({})
         return true
-    }
+    },
+    async getBloggerById(bloggerId: string): Promise<BloggersType | null> {
+        const blogger: BloggersType | null = await bloggersCollection.findOne({id: bloggerId}, {projection: {_id: 0}})
+        return blogger;
+    },
 }
 
 

@@ -1,5 +1,7 @@
 import {postsRepository} from "../repositories/posts-repository";
 import {ObjectId} from "mongodb";
+import {PostsType} from "../types";
+import {bloggersRepository} from "../repositories/bloggers-repository";
 
 
 
@@ -11,17 +13,21 @@ export const postsService = {
     async findPostById(id: string) {
         return await postsRepository.findPostById(id)
     },
-    async createPost(id: string, title: string, shortDescription: string, content: string, bloggerId: string) {
-        const newPosts = {
-            id: new ObjectId().toString(),
-            title: title,
-            shortDescription: shortDescription,
-            content: content,
-            bloggerId: bloggerId,
-            bloggerName: "Brendan Eich"
-        }
-        return await postsRepository.createPost(newPosts)
+    async createPost (title: string, shortDescription: string, content: string, bloggerId: string): Promise<PostsType | undefined> {
+        const blogger = await bloggersRepository.getBloggerById(bloggerId)
+        if (blogger) {
+            const newPost = {
+                id: (+(new Date())).toString(),
+                title,
+                shortDescription,
+                content,
+                bloggerId,
+                bloggerName: blogger.name
+            }
 
+            const createdPost = await postsRepository.createPost(newPost)
+            return createdPost
+        }
     },
     async updatePost(id: string, title: string, shortDescription: string, content: string, bloggerId: string) {
         return await postsRepository.updatePost(id, title, shortDescription, content, bloggerId)

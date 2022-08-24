@@ -1,5 +1,6 @@
 import {bloggersRepository} from "../repositories/bloggers-repository";
 import {ObjectId} from "mongodb";
+import {BloggersType} from "../types";
 
 
 export const bloggersService = {
@@ -11,14 +12,14 @@ export const bloggersService = {
         return await bloggersRepository.findBloggersById(id)
 
     },
-    async createBloggers(name: string, youtubeUrl: string) {
+    async createBlogger(name: string, youtubeUrl: string): Promise<BloggersType> {
         const newBlogger = {
-            id: new ObjectId().toString(),
-            name: name,
-            youtubeUrl: youtubeUrl,
+            id: (+(new Date())).toString(),
+            name,
+            youtubeUrl
         }
-
-        return await bloggersRepository.createBloggers(newBlogger)
+        const createdBloggerDb = await bloggersRepository.createBlogger(newBlogger)
+        return createdBloggerDb;
     },
     async updateBlogger(id: string, name: string, youtubeUrl: string) {
         return await bloggersRepository.updateBlogger(id, name, youtubeUrl)
