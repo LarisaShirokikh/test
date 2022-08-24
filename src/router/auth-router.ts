@@ -21,6 +21,7 @@ authRouter.post('/registration-confirmation',
             res.status(204).send()
         } else {
             res.status(400).send({errorsMessages: [{message: "ErrorMessage", field: "code"}]})
+            return
         }
     }
 )
