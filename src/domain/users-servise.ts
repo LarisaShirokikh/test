@@ -24,7 +24,9 @@ export const usersService = {
     },
     async checkCredentials(login: string, password: string) {
         const user = await usersRepository.findUserByLogin(login)
+        console.log(user)
         if (!user) return false
+        console.log(123)
         // @ts-ignore
         if (user.password !== password) {
             return false

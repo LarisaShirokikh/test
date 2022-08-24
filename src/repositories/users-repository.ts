@@ -68,7 +68,7 @@ export const usersRepository = {
         return user
     },
     async findUserByLogin(login: string) {
-        const user = await usersCollection.findOne({login}, {projection: {_id: 0, password: 0}})
+        const user = await usersCollection.findOne({login}, {projection: {_id: 0}})
         return user
 
     },
