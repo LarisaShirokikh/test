@@ -33,19 +33,7 @@ export const authService = {
 
     },
 
-    async checkCredentials(login: string, password: string) {
-        const user = await usersRepository.findByLogin(login)
-        console.log(9090)
-        if (!user) return false
-        // @ts-ignore
-        if (user.password !== password) {
-            console.log(9191)
-            return false
-        }
-        return user
-    },
-
-    async userRegistrationConfirmation(confirmationCode: string): Promise<boolean> {
+    async userRegConfirmation(confirmationCode: string): Promise<boolean> {
         const user = await usersRepository.findUserByConfirmCode(confirmationCode)
         if (!!user.emailConfirmation && user.emailConfirmation.isConfirmed === false) {
             const result = await usersRepository.updateEmailConfirmation(user.emailConfirmation.email)

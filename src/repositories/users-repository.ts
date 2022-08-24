@@ -56,8 +56,7 @@ export const usersRepository = {
             return null
         } else {
             await usersEmailConfDataCollection.deleteOne({email})
-            const result = await usersCollection.findOne({email},
-                {projection: {_id: 0, password: 0, email: 0, isConfirmed: 0}})
+            const result = await usersCollection.findOne({email}, {projection: {_id: 0, password: 0, email: 0, isConfirmed: 0}})
 
             return result
         }

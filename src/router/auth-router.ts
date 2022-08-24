@@ -13,15 +13,17 @@ import {usersService} from "../domain/users-servise";
 
 export const authRouter = Router({})
 
-authRouter.post('/registration-confirmation', checkLimitsIPAttemptsMiddleware,
+authRouter.post('/registration-confirmation',
+    checkLimitsIPAttemptsMiddleware,
     async (req: Request, res: Response) => {
-        const result = await authService.userRegistrationConfirmation(req.body.code)
+        const result = await authService.userRegConfirmation(req.body.code)
         if (result) {
-            res.sendStatus(204)
+            res.status(204).send()
+        } else {
+            res.status(400).send({errorsMessages: [{message: "ErrorMessage", field: "code"}]})
         }
-        res.status(400).send({errorsMessages: [{message: "ErrorMessage", field: "code"}]})
-        return
-    })
+    }
+)
 
 authRouter.post('/registration',
     loginValidation,

@@ -21,7 +21,8 @@ export const emailManager = {
     },
 
     async sendEmailConfirmation(email: string) {
-        await emailAdapter.sendEmail(email, "Your Email was confirmed", ` <h3> Your Email was confirmed</h3>`)
+        await emailAdapter.resendEmail(email, "Your Email was confirmed",
+            ` <h3> Your Email was confirmed</h3>`)
 
     }
 }
