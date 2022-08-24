@@ -48,6 +48,10 @@ export const bloggersRepository = {
         const blogger: BloggersType | null = await bloggersCollection.findOne({id: bloggerId}, {projection: {_id: 0}})
         return blogger;
     },
+    async isBlogger(bloggerId: string):Promise<boolean> {
+        const blogger: BloggersType | null = await bloggersCollection.findOne({id: bloggerId}, {projection: {_id: 0}})
+        return !!blogger;
+    },
 }
 
 
