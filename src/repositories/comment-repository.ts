@@ -1,12 +1,14 @@
 import {commentsCollection} from "../settingses/settings";
+import {CommentsType} from "../types";
 
 
 
 export const commentRepository = {
-    async createComment(newComment: any) {
-        await commentsCollection.insertOne(newComment)
-        const {id, content, userId, userLogin, addedAt} = newComment
-        return {id, content, userId, userLogin, addedAt}
+    async createComment (newComment: CommentsType): Promise<CommentsType | undefined> {
+        const result = await commentsCollection.insertOne(newComment)
+        const comment = await commentsCollection.findOne({id: newComment.id}, {projection: {_id: 0, postId: 0}})
+        // @ts-ignore
+        return comment
     },
     async findComment(id:string){
         return await commentsCollection.findOne({id: id}, {projection: {_id: 0, postId: 0}})

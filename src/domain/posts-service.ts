@@ -45,7 +45,6 @@ export const postsService = {
         return await postsRepository.getCountBloggerId(bloggerId)
     },
     async getPostById (postId: string): Promise<PostsType | null> {
-
         return postsRepository.getPostById(postId)
     },
 }
