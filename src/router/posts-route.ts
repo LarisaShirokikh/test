@@ -83,14 +83,11 @@ postsRouter.delete('/:id', authMiddleware, async (req: Request, res: Response) =
 postsRouter.post('/:postId/comments', authBearer, commentValidation, inputValidationMiddleWare,
     async (req: Request, res: Response) => {
         const post = await postsService.getPostById(req.params.postId)
-
         if (!post) {
             res.status(404).send({errorsMessages: [{message: "Post with specified postId doesn't exists", field: "postId"}]});
             return
         }
-        // @ts-ignore
-        const newComment = await commentsService.createCommentByPostId(req.user, req.params.postId, req.body.content)
-
+        const newComment = await commentService.createCommentByPostId(req.user, req.params.postId, req.body.content)
         res.status(201).send(newComment)
         return
     })

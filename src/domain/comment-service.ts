@@ -1,18 +1,24 @@
 import {ObjectId} from "mongodb";
 
 import {commentRepository} from "../repositories/comment-repository";
+import {postsRepository} from "../repositories/posts-repository";
+import {CommentsType} from "../types";
 
 export const commentService = {
-    async createComment (comment: string, userId: string, userLogin:string, postId:string){
-        const newComment:any = {
-            id: new ObjectId().toString(),
-            content: comment,
-            userId: userId,
-            userLogin: userLogin,
-            addedAt: new Date(),
-            postId: postId
+    async createCommentByPostId (user:any, postId: string, content:string): Promise<CommentsType | undefined> {
+        const post = await postsRepository.getPostById(postId)
+        if (post) {
+            const newComment = {
+                postId: postId,
+                id: (+(new Date())).toString(),
+                content: content,
+                userId: user.id,
+                userLogin: user.login,
+                addedAt: new Date
+            }
+            const createdComment = await commentRepository.createComment(newComment)
+            return createdComment
         }
-        return await commentRepository.createComment(newComment)
     },
     async findComment (id: string){
         return await commentRepository.findComment(id)
