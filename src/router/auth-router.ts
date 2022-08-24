@@ -68,13 +68,9 @@ authRouter.post('/registration-email-resending',
 
 authRouter.post('/login', checkLimitsIPAttemptsMiddleware,
     async (req:Request, res:Response) =>{
-        console.log(9090)
         const user = await usersService.checkCredentials(req.body.login, req.body.password)
-        console.log(8080)
         if(user) {
-            console.log(1111)
             const token = await jwtService.createJWT(user)
-            console.log(22)
             res.status(200).send({token: token})
         } else {
             res.sendStatus(401)

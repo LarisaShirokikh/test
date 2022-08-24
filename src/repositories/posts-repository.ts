@@ -49,5 +49,9 @@ export const postsRepository = {
     async deleteAllPost(): Promise<boolean> {
         const result = postsCollection.deleteMany({})
         return true
-    }
+    },
+    async getPostById (postId: string): Promise<PostsType | null> {
+        const post  = await postsCollection.findOne({id: postId}, {projection: {_id: 0}})
+        return post;
+    },
 }
