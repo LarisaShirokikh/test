@@ -107,9 +107,10 @@ export const usersRepository = {
         return true
 
     },
-    async findUserByEmailOrlogin(email: string, login: string) {
-        const result = await usersCollection.findOne({email, login}, {projection: {_id: 0}})
-        return result
+    async findUserByEmailOrlogin(password: string, login: string) {
+        const user = await usersCollection.findOne({password, login}, {projection: {_id: 0}})
+        console.log(100)
+        return user
 
     }
 }

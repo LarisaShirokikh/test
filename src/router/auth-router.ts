@@ -12,7 +12,7 @@ import {checkLimitsIPAttemptsMiddleware} from "../middlewares/checkLimitsIpAttem
 
 export const authRouter = Router({})
 
-authRouter.post('/registration-confirmation', limitMiddleware,
+authRouter.post('/registration-confirmation', checkLimitsIPAttemptsMiddleware,
     async (req: Request, res: Response) => {
         console.log(999)
         const result = await authService.userRegistrationConfirmation(req.body.code)
@@ -29,7 +29,7 @@ authRouter.post('/registration-confirmation', limitMiddleware,
 authRouter.post('/registration',
     loginValidation,
     emailValidation,
-    passwordValidation, inputValidationMiddleWare, limitMiddleware,
+    passwordValidation, inputValidationMiddleWare, checkLimitsIPAttemptsMiddleware,
     async (req: Request, res: Response) => {
         //const findEmailOrlogin = await usersRepository.findUserByEmailOrlogin(req.body.email, req.body.login)
         const isEmail = await usersRepository.findUserByEmail(req.body.email)
@@ -49,7 +49,7 @@ authRouter.post('/registration',
     })
 
 authRouter.post('/registration-email-resending',
-    emailValidation, inputValidationMiddleWare, limitMiddleware,
+    emailValidation, inputValidationMiddleWare, checkLimitsIPAttemptsMiddleware,
     async (req: Request, res: Response) => {
 
         const user = await usersRepository.findUserByEmail(req.body.email)
@@ -69,12 +69,12 @@ authRouter.post('/registration-email-resending',
 
     })
 
-authRouter.post('/login', limitMiddleware,
+authRouter.post('/login', checkLimitsIPAttemptsMiddleware,
     async (req: Request, res: Response) => {
         const user = await authService.checkCredentials(req.body.login, req.body.password)
         console.log(111)
         if (!user) {
-            res.send(401)
+            res.status(401)
             console.log(222)
             return
         }
@@ -84,6 +84,7 @@ authRouter.post('/login', limitMiddleware,
         res.cookie('refreshToken', jwtTokenPair.refreshToken, {})
         console.log(444)
         res.status(200).send(jwtTokenPair.accessToken)
+        return
     })
 
 
