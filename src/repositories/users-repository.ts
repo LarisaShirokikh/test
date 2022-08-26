@@ -1,5 +1,6 @@
-import { UsersEmailConfDataType, UsersType, UsersWithPassType} from "../types";
+import {UsersDBType, UsersEmailConfDataType, UsersType, UsersWithPassType} from "../types";
 import {usersCollection, usersEmailConfDataCollection} from "../settingses/db";
+import {usersService} from "../domain/users-servise";
 
 
 
@@ -10,7 +11,6 @@ export const usersRepository = {
         return user
 
     },
-
     async findUsers(pageSize: number, pageNumber: number) {
         return await usersCollection.find({}, {
             projection: {
@@ -73,6 +73,7 @@ export const usersRepository = {
     },
     async insertDbUnconfirmedEmail(newUserEmail: UsersEmailConfDataType): Promise<boolean> {
         const result = await usersEmailConfDataCollection.insertOne(newUserEmail)
+        console.log(555)
         return result.acknowledged
     },
     async updateUnconfirmedEmailData(updetedEmailConfirmationData: UsersEmailConfDataType): Promise<boolean> {
@@ -99,6 +100,16 @@ export const usersRepository = {
     async findLogin(login:string){
         return await usersCollection.findOne({login: login})
     },
+
+    async createNewUser(newUser: UsersDBType) {
+        //@ts-ignore
+        let user = await usersCollection.insertOne(newUser)
+        const newUserDb = {
+            id: newUser.id,
+            login: newUser.userName
+        }
+        return newUserDb
+    }
 }
 
 

@@ -11,21 +11,25 @@ export const usersRouter = Router({})
 
 usersRouter.post('/', authMiddleware, loginValidation,
     passwordValidation, inputValidationMiddleWare, async (req: Request, res: Response) => {
-    const newUser = await authService.userRegistration(req.body.login, req.body.password, req.body.email)
-    res.status(201).send(newUser)
-
-})
+        const newUser = await usersService.createNewUser(req.body.login, req.body.password, req.body.email)
+        if (newUser) {
+            res.status(201).send(newUser)
+            return
+        }
+        res.status(400)
+        return
+    })
 
 usersRouter.get('/', async (req: Request, res: Response) => {
 
     const pageSize: number = Number(req.query.PageSize) || 10
     const pageNumber: number = Number(req.query.PageNumber) || 1
 
-    const foundUsers = await usersService.findUsers(pageSize, pageNumber )
+    const foundUsers = await usersService.findUsers(pageSize, pageNumber)
     const getCount = await usersService.getCount()
 
     res.send({
-        "pagesCount": Math.ceil(getCount/ pageSize),
+        "pagesCount": Math.ceil(getCount / pageSize),
         "page": pageNumber,
         "pageSize": pageSize,
         "totalCount": getCount,

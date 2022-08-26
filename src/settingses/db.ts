@@ -14,7 +14,6 @@ import {
 export const mongoUri = "mongodb+srv://LoraDB:p-fkFTpRiB5r6h6@cluster0.zszv3.mongodb.net/test"
 
 
-
 const client = new MongoClient(mongoUri);
 const db = client.db("blog")
 

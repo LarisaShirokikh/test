@@ -49,6 +49,14 @@ export type CommentContentType = {
 export type RefreshTokensCollectionType = {
     refreshToken: string
 }
+export type UsersDBType = {
+    id: string,
+    userName: string,
+    email: string,
+    passwordSalt: string,
+    passwordHash: string,
+    createdAt: Object
+}
 
 
 

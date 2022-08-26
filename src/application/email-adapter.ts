@@ -2,7 +2,6 @@ import nodemailer from "nodemailer";
 
 export const emailAdapter = {
     async sendEmail(email: string, subject: string, conformationCode: string) {
-
         let transport = nodemailer.createTransport({
             service: 'gmail',
             auth: {
@@ -20,6 +19,7 @@ export const emailAdapter = {
     },
 
     async resendEmail(email: string, subject: string, message: string) {
+        console.log(message)
         let transporter = nodemailer.createTransport({
             service: "gmail",
             auth: {
