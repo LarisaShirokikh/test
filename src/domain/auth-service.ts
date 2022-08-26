@@ -78,6 +78,7 @@ export const authService = {
         }
         return false
     },
+
     async checkTokenInBlackList(refreshToken: string) {
         return refreshRepository.checkTokenInBlackList(refreshToken)
     },
