@@ -51,7 +51,7 @@ export type RefreshTokensCollectionType = {
 }
 export type UsersDBType = {
     id: string,
-    userName: string,
+    login: string,
     email: string,
     passwordSalt: string,
     passwordHash: string,

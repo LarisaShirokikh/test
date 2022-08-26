@@ -3,6 +3,8 @@ import {emailManager} from "../managers/email-manager";
 import {v4 as uuidv4} from 'uuid';
 import add from 'date-fns/add'
 import {refreshRepository} from "../repositories/refresh-repository";
+import bcrypt from "bcrypt";
+import {usersService} from "./users-servise";
 
 export const authService = {
     async userRegistration(login: string, email: string, password: string) {
@@ -64,12 +66,17 @@ export const authService = {
     },
     async checkCredentials(login: string, password: string) {
         const user = await usersRepository.findUserByLogin(login)
-        if (!user) return false
-        // @ts-ignore
-        if (user.password !== password) {
-            return false
+        console.log(user)
+        const passwordSalt = await bcrypt.genSalt(10)
+        console.log(passwordSalt)
+        const passwordHash = await usersService._generateHash(password, passwordSalt)
+        console.log(passwordHash)
+//@ts-ignore
+        if (passwordSalt[1] === user!.passwordSalt[1]) {
+            console.log(80)
+            return user
         }
-        return user
+        return false
     },
     async checkTokenInBlackList(refreshToken: string) {
         return refreshRepository.checkTokenInBlackList(refreshToken)

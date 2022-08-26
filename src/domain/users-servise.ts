@@ -37,7 +37,7 @@ export const usersService = {
         const passwordHash = await this._generateHash(password, passwordSalt)//гененрируем хэш
         const newUser: UsersDBType = {
             id: uuidv4(),
-            userName: login,
+            login: login,
             email,
             passwordSalt,
             passwordHash,

@@ -67,8 +67,7 @@ export const usersRepository = {
         return user
     },
     async findUserByLogin(login: string) {
-        const user = await usersCollection.findOne({login}, {projection: {_id: 0}})
-        if (user === null) return false
+        const user = await usersCollection.findOne({userName: login})
         return user
     },
     async insertDbUnconfirmedEmail(newUserEmail: UsersEmailConfDataType): Promise<boolean> {
@@ -106,7 +105,7 @@ export const usersRepository = {
         let user = await usersCollection.insertOne(newUser)
         const newUserDb = {
             id: newUser.id,
-            login: newUser.userName
+            login: newUser.login
         }
         return newUserDb
     }
