@@ -7,6 +7,7 @@ import {usersRepository} from "../repositories/users-repository";
 import {checkLimitsIPAttemptsMiddleware} from "../middlewares/checkLimitsIpAttemptsMiddleware";
 import {usersService} from "../domain/users-servise";
 import {authBearer} from "../middlewares/auth-middleware";
+import {usersCollection} from "../settingses/db";
 
 
 export const authRouter = Router({})
@@ -106,9 +107,13 @@ authRouter.post('/logout',
 
     })
 
-authRouter.post('/me', authBearer,
+authRouter.get('/me', authBearer,
     async (req: Request, res: Response) => {
-
+    res.render('/profile', {
+        email: req.user?.email,
+        login: req.user?.login,
+        userId: req.user?.id
+    })
     })
 
 
