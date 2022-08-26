@@ -4,7 +4,7 @@ import {bloggersRepository} from "../repositories/bloggers-repository";
 import {usersRepository} from "../repositories/users-repository";
 import {commentRepository} from "../repositories/comment-repository";
 import {attemptsRepository} from "../repositories/attempts-repository";
-import {usersEmailConfDataCollection} from "../settingses/settings";
+import {usersEmailConfDataCollection} from "../settingses/db";
 
 export const testingRouter = Router({})
 

@@ -2,6 +2,7 @@ import {usersRepository} from "../repositories/users-repository";
 import {emailManager} from "../managers/email-manager";
 import {v4 as uuidv4} from 'uuid';
 import add from 'date-fns/add'
+import {refreshRepository} from "../repositories/refresh-repository";
 
 export const authService = {
     async userRegistration(login: string, email: string, password: string) {
@@ -32,7 +33,6 @@ export const authService = {
         return newUser
 
     },
-
     async userRegConfirmation(confirmationCode: string): Promise<boolean> {
         const user = await usersRepository.findUserByConfirmCode(confirmationCode)
         if (!!user.emailConfirmation && user.emailConfirmation.isConfirmed === false) {
@@ -45,7 +45,6 @@ export const authService = {
             return false
         }
     },
-
     async resendingEmailConfirm(email: string) {
         const user = await usersRepository.findUserByEmail(email)
         if (!user) return false
@@ -64,5 +63,23 @@ export const authService = {
 
         await emailManager.sendEmailConfirmationCode( newEmailConfirmation.confirmationCode, email)
         return true
+    },
+    async checkCredentials(login: string, password: string) {
+        const user = await usersRepository.findUserByLogin(login)
+        if (!user) return false
+        // @ts-ignore
+        if (user.password !== password) {
+            return false
+        }
+        return user
+    },
+    async checkTokenInBlackList(refreshToken: string) {
+        return refreshRepository.checkTokenInBlackList(refreshToken)
+    },
+    async addRefreshTokenToBlackList(refreshToken: string) {
+        debugger
+        const result =  await refreshRepository.addRefreshTokenToBlackList(refreshToken)
+
+        return result
     },
 }

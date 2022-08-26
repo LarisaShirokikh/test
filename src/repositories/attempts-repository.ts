@@ -1,5 +1,5 @@
 import {AttemptType} from "../types";
-import {endpointsAttemptsTrysCollection} from "../settingses/settings";
+import {endpointsAttemptsTrysCollection} from "../settingses/db";
 
 export const attemptsRepository = {
 

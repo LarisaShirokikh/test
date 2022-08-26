@@ -1,7 +1,7 @@
 import {emailAdapter} from "../application/email-adapter";
 
 export const emailManager = {
-    async sendPasswordRecoveryMessage(user: any) {
+    async sendPasswordRecoveryMessage() {
         await emailAdapter
             .sendEmail(
                 "user.email",

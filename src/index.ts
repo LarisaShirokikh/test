@@ -2,7 +2,7 @@ import express from 'express'
 import bodyParser from "body-parser"
 import {bloggersRouter} from "./router/bloggers-route";
 import {postsRouter} from "./router/posts-route";
-import {runDb} from "./settingses/settings"
+import {runDb} from "./settingses/db"
 import cors from "cors"
 import {usersRouter} from "./router/users-route";
 import {authRouter} from "./router/auth-router";

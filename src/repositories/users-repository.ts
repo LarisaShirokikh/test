@@ -1,5 +1,5 @@
 import { UsersEmailConfDataType, UsersType, UsersWithPassType} from "../types";
-import {usersCollection, usersEmailConfDataCollection} from "../settingses/settings";
+import {usersCollection, usersEmailConfDataCollection} from "../settingses/db";
 
 
 

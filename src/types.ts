@@ -6,7 +6,6 @@ export type BloggersType = {
     name: string
     youtubeUrl: string
 }
-
 export type PostsType = {
     id: string
     title: string
@@ -15,7 +14,6 @@ export type PostsType = {
     bloggerId: string
     bloggerName: string
 }
-
 export type UsersType = {
     id: string
     email: string
@@ -27,8 +25,6 @@ export type CommentsType = {
     id: string
     content: string
 }
-
-
 export type UsersEmailConfDataType = {
     email: string
 
@@ -36,29 +32,22 @@ export type UsersEmailConfDataType = {
     expirationDate: Date
     isConfirmed: boolean
 }
-
 export type AttemptType = {
     userIP: string
     url: string
     time: Date
 }
-
 export type UsersWithPassType = {
     id: string
     login?: string
     password?: string
     isConfirmed?: boolean
 }
-
-export type UsersSaltType = {
-    id: string
-    login:string
-    passwordHash: string
-    passwordSalt: string
-}
-
 export type CommentContentType = {
     content: string
+}
+export type RefreshTokensCollectionType = {
+    refreshToken: string
 }
 
 

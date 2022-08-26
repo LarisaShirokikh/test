@@ -1,4 +1,4 @@
-import {bloggersCollection} from "../settingses/settings";
+import {bloggersCollection} from "../settingses/db";
 import {BloggersType} from "../types";
 
 

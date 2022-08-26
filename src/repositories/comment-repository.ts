@@ -1,4 +1,4 @@
-import {commentsCollection} from "../settingses/settings";
+import {commentsCollection} from "../settingses/db";
 import {CommentContentType, CommentsType} from "../types";
 
 

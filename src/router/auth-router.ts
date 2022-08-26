@@ -6,9 +6,7 @@ import {emailValidation, loginValidation, passwordValidation} from "../middlewar
 import {usersRepository} from "../repositories/users-repository";
 import {checkLimitsIPAttemptsMiddleware} from "../middlewares/checkLimitsIpAttemptsMiddleware";
 import {usersService} from "../domain/users-servise";
-
-
-
+import {authBearer} from "../middlewares/auth-middleware";
 
 
 export const authRouter = Router({})
@@ -69,18 +67,49 @@ authRouter.post('/registration-email-resending',
 
     })
 
-authRouter.post('/login', checkLimitsIPAttemptsMiddleware,
-    async (req:Request, res:Response) =>{
-        const user = await usersService.checkCredentials(req.body.login, req.body.password)
-        if(user) {
-            const token = await jwtService.createJWT(user)
-            res.status(200).send({token: token})
+authRouter.post('/login', loginValidation, passwordValidation,
+    inputValidationMiddleWare, checkLimitsIPAttemptsMiddleware,
+    async (req: Request, res: Response) => {
+        const user = await authService.checkCredentials(req.body.login, req.body.password)
+        if (!user) {
+            res.send(401)
+            return
+        }
+        const jwtTokenPair = await jwtService.createJWTPair(user)
+        res.cookie('refreshToken', jwtTokenPair.refreshToken, {
+        })
+        res.status(200).send(jwtTokenPair.accessToken)
+    })
+
+authRouter.post('/refresh-token',
+    async (req: Request, res: Response) => {
+        const refreshToken = await req.cookies?.refreshToken
+
+        const isRefreshTokenInBlackList = await authService.checkTokenInBlackList(refreshToken)
+        if (isRefreshTokenInBlackList) return false
+        if (refreshToken) {
+            const user = {id: ""}
+            user.id = await jwtService.getUserIdByToken(refreshToken)
+            const jwtTokenPair = await jwtService.createJWTPair(user)
+            res.cookie('refreshToken', jwtTokenPair.refreshToken, {
+            })
+
+            await authService.addRefreshTokenToBlackList(refreshToken)
+            res.status(200).send(jwtTokenPair.accessToken)
         } else {
             res.sendStatus(401)
         }
     })
 
+authRouter.post('/logout',
+    async (req: Request, res: Response) => {
 
+    })
+
+authRouter.post('/me', authBearer,
+    async (req: Request, res: Response) => {
+
+    })
 
 
 
