@@ -1,4 +1,4 @@
-import {UsersDBType, UsersEmailConfDataType} from "../types";
+import {UsersDBType, UsersEmailConfDataType, UsersType} from "../types";
 import {UserModelClass, UsersEmailConfDataModel} from "../settingses/db";
 import {ObjectId} from "mongodb";
 
@@ -96,13 +96,10 @@ export const usersRepository = {
     async findLogin(login:string){
         return  UserModelClass.findOne({login: login})
     },
-    async createNewUser(newUser: any) {
-        let user = UserModelClass.create(newUser)
-        const newUserDb = {
-            id: newUser.accountData.id,
-            login: newUser.accountData.login
-        }
-        return newUserDb
+    async createNewUser(newUser: UsersType): Promise<UsersType> {
+        let user = UserModelClass.insertMany(newUser)
+        return newUser
+
     },
     async findUserByEmailOrlogin(email: string, login: string) {
         const user = await UserModelClass.find({'accountData.login': login, 'accountData.email': email})

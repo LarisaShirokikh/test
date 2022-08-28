@@ -16,9 +16,9 @@ export type PostsType = {
 }
 export type UsersType = {
     id: string
-    email: string
+
     login: string
-    isConfirmed: boolean
+
 }
 export type CommentsType = {
     userId: string
