@@ -3,10 +3,9 @@ import {RefreshTokensBlackListModel} from "../settingses/db";
 
 export const refreshRepository = {
     async addRefreshTokenToBlackList(token: string) {
-        const result = await RefreshTokensBlackListModel.create({refreshToken: token})
+        const result = await RefreshTokensBlackListModel.insertMany([{refreshToken: token}])
         return result
     },
-
     async checkTokenInBlackList(refreshToken: string) {
         const result  = await RefreshTokensBlackListModel
             .findOne({refreshToken}, {projection: {_id: 0}})

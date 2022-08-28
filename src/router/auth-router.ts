@@ -6,6 +6,7 @@ import {emailValidation, loginValidation, passwordValidation} from "../middlewar
 import {usersRepository} from "../repositories/users-repository";
 import {checkLimitsIPAttemptsMiddleware} from "../middlewares/checkLimitsIpAttemptsMiddleware";
 import {authBearer} from "../middlewares/auth-middleware";
+import {ObjectId} from "mongodb";
 
 
 
@@ -88,7 +89,8 @@ authRouter.post('/refresh-token',
         if (refreshToken) {
             const user = {id: ""}
             user.id = await jwtService.getUserIdByToken(refreshToken)
-            const jwtTokenPair = await jwtService.createJWTPair(user)
+            //@ts-ignore
+            const jwtTokenPair = await jwtService.createJWTPair( {user})
             res.cookie('refreshToken', jwtTokenPair.refreshToken, {
             })
 
