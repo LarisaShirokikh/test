@@ -1,18 +1,19 @@
-import {refreshTokensBlackListCollection} from "../settingses/db";
+import {RefreshTokensBlackListModel} from "../settingses/db";
+
 
 export const refreshRepository = {
     async addRefreshTokenToBlackList(token: string) {
-        const result = await refreshTokensBlackListCollection.insertOne({refreshToken: token})
+        const result = await RefreshTokensBlackListModel.create({refreshToken: token})
         return result
     },
 
     async checkTokenInBlackList(refreshToken: string) {
-        const result  = await refreshTokensBlackListCollection
+        const result  = await RefreshTokensBlackListModel
             .findOne({refreshToken}, {projection: {_id: 0}})
         return result;
     },
     async deleteAllTokensInBlackList(): Promise<boolean> {
-        await refreshTokensBlackListCollection.deleteMany({})
+        await RefreshTokensBlackListModel.deleteMany({})
         return true
     }
 }

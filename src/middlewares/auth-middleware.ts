@@ -1,5 +1,4 @@
 import {NextFunction, Request, Response} from "express";
-import {validationResult} from "express-validator";
 import {jwtService} from "../application/jwt-service";
 import {usersService} from "../domain/users-servise";
 
@@ -21,7 +20,8 @@ export const authBearer = async (req: Request, res: Response, next: NextFunction
     const token = req.headers.authorization.split(' ')[1]
     const userId = await jwtService.getUserIdByToken(token)
     if(userId){
-        //@ts-ignore
+
+        // @ts-ignore
         req.user = await usersService.findUsersById(userId)
         next()
     } else {

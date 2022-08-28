@@ -1,43 +1,39 @@
-import {commentsCollection} from "../settingses/db";
-import {CommentContentType, CommentsType} from "../types";
+
+import {CommentsType} from "../types";
+import {CommentsModel} from "../settingses/db";
 
 
 
 export const commentRepository = {
-    async createComment (newComment: CommentsType): Promise<CommentsType | undefined> {
-        const result = await commentsCollection.insertOne(newComment)
-        const comment = await commentsCollection.findOne({id: newComment.id}, {projection: {_id: 0, postId: 0}})
-        // @ts-ignore
+    async createComment (newComment: CommentsType) {
+        const result = await CommentsModel.create(newComment)
+        const comment = await CommentsModel.findOne({id: newComment.id}, {projection: {_id: 0, postId: 0}})
         return comment
     },
     async findComment (commentId: string): Promise<CommentsType | undefined | null> {
-        const comment = await commentsCollection.findOne({id: commentId}, {projection: {_id: 0, postId: 0}})
-
+        const comment = await CommentsModel.findOne({id: commentId}, {projection: {_id: 0, postId: 0}})
         return comment
     },
     async findCommentWithPag(postId: string, pageSize:number, pageNumber:number){
-        return await commentsCollection.find({postId: postId}, {projection: {_id: 0, postId: 0}}).skip((pageNumber-1)*pageSize).limit(pageSize).toArray()
+        return CommentsModel.find({postId: postId}, {projection: {_id: 0, postId: 0}}).skip((pageNumber-1)*pageSize).limit(pageSize).lean()
     },
     async getCount(postId:string){
-        return await commentsCollection.count({postId: postId})
+        return CommentsModel.count({postId: postId})
     },
     async deleteComment(id: string) {
-
-        const result = await commentsCollection.deleteOne({id: id})
+        const result = await CommentsModel.deleteOne({id: id})
         return result.deletedCount === 1
     },
-    async updateComment (commentId: string, content: string): Promise<CommentContentType>  {
-        const update = await commentsCollection.updateOne({id: commentId}, {$set: {content}})
-
-        const updatedComment = await commentsCollection.findOne({id: commentId}, {projection: {_id: 0, postId: 0, id: 0, userId: 0, userLogin: 0, addedAt: 0}})
-        // @ts-ignore
+    async updateComment (commentId: string, content: string) {
+        const update = await CommentsModel.updateOne({id: commentId}, {$set: {content}})
+        const updatedComment = await CommentsModel.findOne({id: commentId}, {projection: {_id: 0, postId: 0, id: 0, userId: 0, userLogin: 0, addedAt: 0}})
         return updatedComment
     },
     async findUser(userId:string, commentId: string){
-        return await commentsCollection.findOne({userId: userId, id:commentId})
+        return CommentsModel.findOne({userId: userId, id:commentId})
     },
-    async deleteAllComments(): Promise<boolean> {
-        const result = await commentsCollection.deleteMany({})
-        return true
+    async deleteAllComments() {
+        const result = await CommentsModel.deleteMany({})
+        return result
     }
 }

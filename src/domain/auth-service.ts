@@ -4,16 +4,24 @@ import {v4 as uuidv4} from 'uuid';
 import add from 'date-fns/add'
 import {refreshRepository} from "../repositories/refresh-repository";
 import bcrypt from "bcrypt";
-import {usersService} from "./users-servise";
+import {Schema, Types} from "mongoose";
+
+import {UsersDBType} from "../types";
+import {ObjectId} from "mongodb";
+
+
 
 export const authService = {
     async userRegistration(login: string, email: string, password: string) {
-        const newUser = {
+            const salt = await bcrypt.genSalt(10);
+            const passwordHash = await bcrypt.hash(password, salt);
+
+            const newUser: UsersDBType = {
             accountData: {
-                id: uuidv4(),
+                id: (new ObjectId()).toString(),
                 login,
                 email,
-                password,
+                passwordHash,
                 isConfirmed: false
             },
             emailConfirmation: {
@@ -26,7 +34,8 @@ export const authService = {
                 isConfirmed: false
             }
         }
-        await usersRepository.createUser(newUser.accountData)
+        console.log(newUser)
+        await usersRepository.createUser(newUser)
         await usersRepository.insertDbUnconfirmedEmail(newUser.emailConfirmation)
         console.log(777)
         await emailManager.sendEmailConfirmationCode(newUser.emailConfirmation.confirmationCode, email)
@@ -48,7 +57,7 @@ export const authService = {
     async resendingEmailConfirm(email: string) {
         const user = await usersRepository.findUserByEmail(email)
         if (!user) return false
-        if (user?.isConfirmed === true) return false
+        if (user?.emailConfirmation.isConfirmed === true) return false
         const newEmailConfirmation = {
             email,
             confirmationCode: uuidv4(),
@@ -64,19 +73,12 @@ export const authService = {
         await emailManager.sendEmailConfirmationCode( newEmailConfirmation.confirmationCode, email)
         return true
     },
-    async checkCredentials(login: string, password: string) {
-        const user = await usersRepository.findUserByLogin(login)
-        console.log(user)
-        const passwordSalt = await bcrypt.genSalt(10)
-        console.log(passwordSalt)
-        const passwordHash = await usersService._generateHash(password, passwordSalt)
-        console.log(passwordHash)
-//@ts-ignore
-        if (passwordSalt[1] === user!.passwordSalt[1]) {
-            console.log(80)
-            return user
-        }
-        return false
+    async checkCredentials(login: string, password: string){
+            const user = await usersRepository.findUserByLogin(login)
+        if (!user) return false
+            const validPassword = await bcrypt.compare(password, user.accountData.passwordHash)
+        if (validPassword) return user
+                return false
     },
 
     async checkTokenInBlackList(refreshToken: string) {

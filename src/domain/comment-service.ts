@@ -1,11 +1,11 @@
-import {ObjectId} from "mongodb";
+
 
 import {commentRepository} from "../repositories/comment-repository";
 import {postsRepository} from "../repositories/posts-repository";
-import {CommentContentType, CommentsType} from "../types";
+
 
 export const commentService = {
-    async createCommentByPostId (user:any, postId: string, content:string): Promise<CommentsType | undefined> {
+    async createCommentByPostId (user:any, postId: string, content:string) {
         const post = await postsRepository.getPostById(postId)
         if (post) {
             const newComment = {
@@ -32,7 +32,7 @@ export const commentService = {
     async deleteComment(id:string){
         return await commentRepository.deleteComment(id)
     },
-    async updateComment (commentId: string, content: string): Promise<CommentContentType>  {
+    async updateComment (commentId: string, content: string)  {
         return commentRepository.updateComment(commentId, content)
     },
     async findUser(userId:string, commentId:string){

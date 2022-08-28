@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken'
 import { db } from '../settingses/setting';
-import {UsersType, UsersWithPassType} from "../types";
+import {UsersDBType, UsersType, UsersWithPassType} from "../types";
 
 
 export const jwtService = {
@@ -25,12 +25,12 @@ export const jwtService = {
             return null
         }
     },
-    async createJWTPair(user: UsersWithPassType) {
+    async createJWTPair(user: UsersDBType) {
         const accessToken = jwt
-            .sign({userId: user.id},
+            .sign({userId: user.accountData.id},
                 process.env.JWT_SECRET || '123', {expiresIn: 10})
         const refreshToken = jwt
-            .sign({userId: user.id},
+            .sign({userId: user.accountData.id},
                 process.env.JWT_SECRET || '123', {expiresIn: 20})
         const jwtTokenPair = {accessToken, refreshToken}
         return jwtTokenPair

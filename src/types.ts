@@ -26,8 +26,7 @@ export type CommentsType = {
     content: string
 }
 export type UsersEmailConfDataType = {
-    email: string
-
+email: string
     confirmationCode: string
     expirationDate: Date
     isConfirmed: boolean
@@ -50,12 +49,19 @@ export type RefreshTokensCollectionType = {
     refreshToken: string
 }
 export type UsersDBType = {
-    id: string,
-    login: string,
-    email: string,
-    passwordSalt: string,
-    passwordHash: string,
-    createdAt: Object
+    accountData: {
+        id: string,
+        login: string,
+        email: string,
+        passwordHash: string,
+        isConfirmed: boolean
+    },
+    emailConfirmation: {
+        email: string
+        confirmationCode: string,
+        expirationDate: Date,
+        isConfirmed: boolean
+    }
 }
 
 

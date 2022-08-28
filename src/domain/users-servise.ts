@@ -1,7 +1,7 @@
 import {usersRepository} from "../repositories/users-repository";
 import bcrypt from "bcrypt";
 import {v4 as uuidv4} from "uuid";
-import {UsersDBType, UsersType} from "../types";
+import {UsersDBType} from "../types";
 
 export const usersService = {
 
@@ -35,13 +35,13 @@ export const usersService = {
     async createNewUser(login: string, password: string, email: string) {
         const passwordSalt = await bcrypt.genSalt( 10);//получаем соль с помощью библиотеки бикрипт
         const passwordHash = await this._generateHash(password, passwordSalt)//гененрируем хэш
-        const newUser: UsersDBType = {
+        const newUser = {
             id: uuidv4(),
             login: login,
             email,
-            passwordSalt,
             passwordHash,
-            createdAt: new Date()
+            createdAt: new Date(),
+            isConfirmed: true
         }
         return usersRepository.createNewUser(newUser)
 

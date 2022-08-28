@@ -4,7 +4,8 @@ import {bloggersRepository} from "../repositories/bloggers-repository";
 import {usersRepository} from "../repositories/users-repository";
 import {commentRepository} from "../repositories/comment-repository";
 import {attemptsRepository} from "../repositories/attempts-repository";
-import {usersEmailConfDataCollection} from "../settingses/db";
+import {UsersEmailConfDataModel} from "../settingses/db";
+
 
 export const testingRouter = Router({})
 
@@ -15,7 +16,7 @@ testingRouter.delete('/all-data',
         await usersRepository.deleteAllUsers()
         await commentRepository.deleteAllComments()
         await attemptsRepository.deleteAllAttempts()
-        await usersEmailConfDataCollection.deleteMany({})
+        await UsersEmailConfDataModel.deleteMany({})
 
         res.sendStatus(204)
     }
