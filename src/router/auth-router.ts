@@ -109,7 +109,7 @@ authRouter.post('/logout',
 authRouter.get('/me', authBearer,
     async (req: Request, res: Response) => {
     res.render('/profile', {
-        email: req.user?.email,
+
         login: req.user?.login,
         userId: req.user?.id
     })
