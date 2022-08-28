@@ -34,10 +34,9 @@ export const authService = {
                 isConfirmed: false
             }
         }
-        console.log(newUser)
+
         await usersRepository.createUser(newUser)
         await usersRepository.insertDbUnconfirmedEmail(newUser.emailConfirmation)
-        console.log(777)
         await emailManager.sendEmailConfirmationCode(newUser.emailConfirmation.confirmationCode, email)
         return newUser
 
@@ -47,7 +46,7 @@ export const authService = {
         if (!!user.emailConfirmation && user.emailConfirmation.isConfirmed === false) {
             const result = await usersRepository.updateEmailConfirmation(user.emailConfirmation.email)
             if(result) {
-                emailManager.sendEmailConfirmation(user.emailConfirmation.email)
+               await emailManager.sendEmailConfirmation(user.emailConfirmation.email)
             }
             return true
         } else {
@@ -85,7 +84,6 @@ export const authService = {
         return refreshRepository.checkTokenInBlackList(refreshToken)
     },
     async addRefreshTokenToBlackList(refreshToken: string) {
-        debugger
         const result =  await refreshRepository.addRefreshTokenToBlackList(refreshToken)
 
         return result

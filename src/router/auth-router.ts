@@ -6,7 +6,7 @@ import {emailValidation, loginValidation, passwordValidation} from "../middlewar
 import {usersRepository} from "../repositories/users-repository";
 import {checkLimitsIPAttemptsMiddleware} from "../middlewares/checkLimitsIpAttemptsMiddleware";
 import {authBearer} from "../middlewares/auth-middleware";
-import {ObjectId} from "mongodb";
+
 
 
 
@@ -29,7 +29,7 @@ authRouter.post('/registration',
     loginValidation,
     emailValidation,
     passwordValidation, inputValidationMiddleWare,
-    //checkLimitsIPAttemptsMiddleware,
+    checkLimitsIPAttemptsMiddleware,
 
     async (req: Request, res: Response) => {
         console.log(9090)
@@ -65,7 +65,7 @@ authRouter.post('/registration-email-resending',
 
 authRouter.post('/login', loginValidation, passwordValidation,
     inputValidationMiddleWare,
-    //checkLimitsIPAttemptsMiddleware,
+    checkLimitsIPAttemptsMiddleware,
     async (req: Request, res: Response) => {
 
         const user = await authService.checkCredentials(req.body.login, req.body.password)
