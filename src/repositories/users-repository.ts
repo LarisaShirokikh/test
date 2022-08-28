@@ -97,8 +97,12 @@ export const usersRepository = {
         return  UserModelClass.findOne({login: login})
     },
     async createNewUser(newUser: UsersType): Promise<UsersType> {
-        let user = UserModelClass.insertMany(newUser)
-        return newUser
+        await UserModelClass.insertMany(newUser)
+        const user: UsersType = {
+            id: newUser.id,
+            login: newUser.login
+        }
+        return user
 
     },
     async findUserByEmailOrlogin(email: string, login: string) {

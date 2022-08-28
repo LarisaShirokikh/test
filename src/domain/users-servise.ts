@@ -44,8 +44,5 @@ export const usersService = {
             isConfirmed: true
         }
         return usersRepository.createNewUser(newUser)
-
-
-
     }
 }
