@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken'
 import { db } from '../settingses/setting';
-import {UsersDBType, UsersType, UsersWithPassType} from "../types";
+import {UsersDBType} from "../types";
 
 
 export const jwtService = {
@@ -35,4 +35,17 @@ export const jwtService = {
         const jwtTokenPair = {accessToken, refreshToken}
         return jwtTokenPair
     },
+    async getTokenTime(token: string) {
+        try{
+            const result: any = await jwt.verify(token, process.env.JWT_SECRET || '123')
+            if(result) {
+                return result.exp
+            } else {
+                return false
+            }
+        }
+        catch (error){
+            return false
+        }
+    }
 }

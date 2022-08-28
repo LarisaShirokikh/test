@@ -111,6 +111,11 @@ export const usersRepository = {
         if (!user) return false
         return user
 
+    },
+    async findUserWithEmailById(userId: string) {
+        const user = await UserModelClass.findOne({id: userId}, {_id: 0, password: 0, isConfirmed: 0, __v: 0})
+
+        return user
     }
 }
 
