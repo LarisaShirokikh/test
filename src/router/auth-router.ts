@@ -137,7 +137,11 @@ authRouter.get('/me', authBearer,
         const user = await authService.findUserById(userId)
 
         if (user) {
-            res.status(200).send(user)
+            res.status(200).send({
+                email: user.accountData.email,
+                login: user.accountData.login,
+                userId: user.accountData.id,
+            })
         } else {
             res.sendStatus(401)
         }
