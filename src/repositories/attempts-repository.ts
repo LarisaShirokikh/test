@@ -1,5 +1,5 @@
 import {AttemptType} from "../types";
-import {UsersEmailConfDataModel} from "../settingses/db";
+import {EndpointsAttemptsTrysModel, UsersEmailConfDataModel} from "../settingses/db";
 
 
 export const attemptsRepository = {
@@ -15,12 +15,12 @@ export const attemptsRepository = {
     },
 
     async addAttempt(userIP: string, url: string, time: Date){
-        const result = UsersEmailConfDataModel.create({ userIP, url, time})
+        const result = EndpointsAttemptsTrysModel.insertMany({ userIP, url, time})
         return result
     },
 
     async deleteAllAttempts(): Promise<boolean> {
-        const result = await UsersEmailConfDataModel.deleteMany({})
+        const result = await EndpointsAttemptsTrysModel.deleteMany({})
         return true
     }
 }

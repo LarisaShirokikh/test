@@ -18,7 +18,7 @@ export const checkLimitsIPAttemptsMiddleware = async (req: Request, res: Respons
 
     await attemptsRepository.addAttempt(ip, url, currentTime)
 
-    if(countOfAttempts! < 5 ) {
+    if(countOfAttempts! < 10 ) {
         next()
     } else {
         res.sendStatus(429)
