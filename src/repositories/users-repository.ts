@@ -106,8 +106,9 @@ export const usersRepository = {
 
     },*/
     async findUserByEmailOrlogin(email: string, login: string) {
-        const user = await UserModelClass.find({'accountData.login': login, 'accountData.email': email})
-        console.log(9191)
+        const user = await UserModelClass
+            .findOne( {$or: [{'accountData.login': login}, {'accountData.email': email}]} )
+        console.log(user)
         if (!user) return null
         return user
 

@@ -31,7 +31,7 @@ authRouter.post('/registration',
 
     async (req: Request, res: Response) => {
         const findEmailOrlogin = await usersRepository.findUserByEmailOrlogin(req.body.email, req.body.login)
-
+        console.log(findEmailOrlogin)
         if (findEmailOrlogin) {
 
             res.sendStatus(401)
