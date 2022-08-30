@@ -89,11 +89,11 @@ authRouter.post('/refresh-token',
         if (user.id === null) res.sendStatus(401)
         //@ts-ignore
         const jwtTokenPair = await jwtService.createJWTPair(user)
-        res.cookie('refreshToken', jwtTokenPair.refreshToken, {})
+        res.cookie('refreshToken', jwtTokenPair.refreshToken, {httpOnly: true, secure: true})
 
         await authService.addRefreshTokenToBlackList(refreshToken)
         res.status(200).send({accessToken: jwtTokenPair.accessToken})
-
+return
     })
 
 authRouter.post('/logout',
