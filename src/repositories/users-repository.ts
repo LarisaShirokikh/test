@@ -27,7 +27,7 @@ export const usersRepository = {
         return result.deletedCount === 1
     },
     async findUsersById(userId: string) {
-        return UserModelClass.findOne({id: userId})
+        return UserModelClass.findOne({id: userId},  {projection: {_id: 0}})
     },
     async findUserByConfirmCode(confirmationCode: string) {
         const emailData = await UsersEmailConfDataModel.findOne({confirmationCode: confirmationCode}, {projection: {_id: 0}})

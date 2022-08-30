@@ -6,6 +6,7 @@ import {emailValidation, loginValidation, passwordValidation} from "../middlewar
 import {usersRepository} from "../repositories/users-repository";
 import {checkLimitsIPAttemptsMiddleware} from "../middlewares/checkLimitsIpAttemptsMiddleware";
 import {authBearer} from "../middlewares/auth-middleware";
+import {usersService} from "../domain/users-servise";
 
 
 export const authRouter = Router({})
@@ -78,22 +79,31 @@ authRouter.post('/login', loginValidation, passwordValidation,
 
 authRouter.post('/refresh-token',
     async (req: Request, res: Response) => {
-        const refreshToken = await req.cookies?.refreshToken
+
+        const refreshToken = req.cookies.refreshToken
         if (!refreshToken) return res.sendStatus(401)
+
         const tokenTime = await jwtService.getTokenTime(refreshToken)
         if (!tokenTime) return res.sendStatus(401)
+
         const isRefreshTokenInBlackList = await authService.checkTokenInBlackList(refreshToken)
         if (isRefreshTokenInBlackList) return res.sendStatus(401)
-        const user = {id: ""}
-        user.id = await jwtService.getUserIdByToken(refreshToken)
-        if (user.id === null) res.sendStatus(401)
-        //@ts-ignore
-        const jwtTokenPair = await jwtService.createJWTPair(user)
-        res.cookie('refreshToken', jwtTokenPair.refreshToken, {httpOnly: true, secure: true})
+
+        // достаём юзерАйди из токена
+        const userId = await jwtService.getUserIdByToken(refreshToken)
+        // проверяем что юзер в базе
+        const user = await usersService.findUsersById(userId)
+        if (!user) return res.sendStatus(401)
 
         await authService.addRefreshTokenToBlackList(refreshToken)
+        const jwtTokenPair = await jwtService.createJWTPair(user)
+
+        res.cookie('refreshToken', jwtTokenPair.refreshToken, {httpOnly: true, secure: true})
         res.status(200).send({accessToken: jwtTokenPair.accessToken})
-return
+        return
+
+
+
     })
 
 authRouter.post('/logout',

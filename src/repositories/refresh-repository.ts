@@ -7,8 +7,7 @@ export const refreshRepository = {
         return result
     },
     async checkTokenInBlackList(refreshToken: string) {
-        const result  = await RefreshTokensBlackListModel
-            .findOne({refreshToken}, {projection: {_id: 0}})
+        const result  = await RefreshTokensBlackListModel.findOne({refreshToken})
         return result;
     },
     async deleteAllTokensInBlackList(): Promise<boolean> {
