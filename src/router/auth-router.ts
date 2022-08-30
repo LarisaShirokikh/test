@@ -30,14 +30,13 @@ authRouter.post('/registration',
     checkLimitsIPAttemptsMiddleware,
 
     async (req: Request, res: Response) => {
-        console.log(9090)
         const findEmailOrlogin = await usersRepository.findUserByEmailOrlogin(req.body.email, req.body.login)
 
-        if (!findEmailOrlogin) {
-            res.status(401)
+        if (findEmailOrlogin) {
+
+            res.sendStatus(401)
             return
         }
-        console.log(222)
         const userRegistration = await authService.userRegistration(req.body.login, req.body.email, req.body.password)
         res.status(204).send(userRegistration)
         return

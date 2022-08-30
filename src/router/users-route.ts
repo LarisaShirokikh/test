@@ -4,6 +4,7 @@ import {loginValidation, passwordValidation} from "../middlewares/validations";
 import {inputValidationMiddleWare} from "../middlewares/input-validation";
 import {usersService} from "../domain/users-servise";
 import {authService} from "../domain/auth-service";
+import {usersRepository} from "../repositories/users-repository";
 
 
 export const usersRouter = Router({})
@@ -11,7 +12,14 @@ export const usersRouter = Router({})
 
 usersRouter.post('/', authMiddleware, loginValidation,
     passwordValidation, inputValidationMiddleWare, async (req: Request, res: Response) => {
+        const findEmailOrlogin = await usersRepository.findUserByEmailOrlogin(req.body.email, req.body.login)
+
+        if (findEmailOrlogin) {
+            res.sendStatus(401)
+            return
+        }
         const newUser = await authService.userRegistration(req.body.login, req.body.email, req.body.password)
+
         if (newUser) {
             res.status(201).send({
                 id: newUser.accountData.id,
@@ -19,8 +27,6 @@ usersRouter.post('/', authMiddleware, loginValidation,
             })
             return
         }
-        res.status(400)
-        return
     })
 
 usersRouter.get('/', async (req: Request, res: Response) => {

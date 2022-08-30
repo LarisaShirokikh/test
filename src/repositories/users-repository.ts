@@ -8,7 +8,6 @@ export const usersRepository = {
 
     async createUser(user: UsersDBType) {
         const newUser = await UserModelClass.insertMany([user])
-
         return newUser
 
     },
@@ -97,19 +96,19 @@ export const usersRepository = {
     async findLogin(login:string){
         return  UserModelClass.findOne({login: login})
     },
-    async createNewUser(newUser: UsersDBType): Promise<UsersDBType> {
+    /*async createNewUser(newUser: UsersType): Promise<UsersType> {
         await UserModelClass.insertMany({newUser})
-        const user: UsersType = {
-            id: newUser.id,
-            login: newUser.login
+        //const user: UsersType = {
+            //id: newUser.id,
+            //login: newUser.login
         }
         return user
 
-    },
+    },*/
     async findUserByEmailOrlogin(email: string, login: string) {
         const user = await UserModelClass.find({'accountData.login': login, 'accountData.email': email})
         console.log(9191)
-        if (!user) return false
+        if (!user) return null
         return user
 
     },

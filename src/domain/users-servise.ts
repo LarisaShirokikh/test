@@ -32,7 +32,7 @@ export const usersService = {
         }
         return user
     },
-    async createNewUser(login: string, password: string, email: string) {
+    /*async createNewUser(login: string, password: string, email: string) {
         const passwordSalt = await bcrypt.genSalt( 10);//получаем соль с помощью библиотеки бикрипт
         const passwordHash = await this._generateHash(password, passwordSalt)//гененрируем хэш
         const newUser = {
@@ -44,5 +44,5 @@ export const usersService = {
             isConfirmed: false
         }
         return usersRepository.createNewUser(newUser)
-    }
+    }*/
 }
