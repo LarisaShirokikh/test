@@ -11,9 +11,12 @@ export const usersRouter = Router({})
 
 usersRouter.post('/', authMiddleware, loginValidation,
     passwordValidation, inputValidationMiddleWare, async (req: Request, res: Response) => {
-        const newUser = await usersService.createNewUser(req.body.login, req.body.password, req.body.email)
+        const newUser = await authService.userRegistration(req.body.login, req.body.email, req.body.password)
         if (newUser) {
-            res.status(201).send(newUser)
+            res.status(201).send({
+                id: newUser.accountData.id,
+                login: newUser.accountData.login
+            })
             return
         }
         res.status(400)

@@ -41,7 +41,7 @@ export const usersService = {
             email,
             passwordHash,
             createdAt: new Date(),
-            isConfirmed: true
+            isConfirmed: false
         }
         return usersRepository.createNewUser(newUser)
     }

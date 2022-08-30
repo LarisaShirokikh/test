@@ -4,8 +4,6 @@ import {v4 as uuidv4} from 'uuid';
 import add from 'date-fns/add'
 import {refreshRepository} from "../repositories/refresh-repository";
 import bcrypt from "bcrypt";
-import {Schema, Types} from "mongoose";
-
 import {UsersDBType} from "../types";
 import {ObjectId} from "mongodb";
 
@@ -83,6 +81,7 @@ export const authService = {
     async checkTokenInBlackList(refreshToken: string) {
         return refreshRepository.checkTokenInBlackList(refreshToken)
     },
+
     async addRefreshTokenToBlackList(refreshToken: string) {
         const result =  await refreshRepository.addRefreshTokenToBlackList(refreshToken)
 

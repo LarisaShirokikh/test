@@ -18,8 +18,6 @@ let dbName = "mongoose-example"
 
 //export const client = new MongoClient(mongoUri)
 //let db = client.db("mongoose-example")
-
-
 //export const bloggersCollection = db.collection<BloggersType>("bloggers")
 //export const postsCollection = db.collection<PostsType>("posts")
 //export const usersCollection = db.collection<UsersDBType>("users")

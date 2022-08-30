@@ -28,13 +28,14 @@ export const jwtService = {
     async createJWTPair(user: UsersDBType) {
         const accessToken = jwt
             .sign({userId: user.accountData.id},
-                process.env.JWT_SECRET || '123', {expiresIn: 10})
+                process.env.JWT_SECRET || '123', {expiresIn: '10s'})
         const refreshToken = jwt
             .sign({userId: user.accountData.id},
-                process.env.JWT_SECRET || '123', {expiresIn: 20})
+                process.env.JWT_SECRET || '123', {expiresIn: '20s'})
         const jwtTokenPair = {accessToken, refreshToken}
         return jwtTokenPair
     },
+
     async getTokenTime(token: string) {
         try{
             const result: any = await jwt.verify(token, process.env.JWT_SECRET || '123')
