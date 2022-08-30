@@ -102,14 +102,30 @@ authRouter.post('/refresh-token',
         res.status(200).send({accessToken: jwtTokenPair.accessToken})
         return
 
-
-
     })
 
 authRouter.post('/logout',
     async (req: Request, res: Response) => {
+        const refreshToken = req.cookies.refreshToken
+        if (!refreshToken) return res.sendStatus(401)
 
+        const tokenTime = await jwtService.getTokenTime(refreshToken)
+        if (!tokenTime) return res.sendStatus(401)
+
+        const isRefreshTokenInBlackList = await authService.checkTokenInBlackList(refreshToken)
+        if (isRefreshTokenInBlackList) return res.sendStatus(401)
+
+        // достаём юзерАйди из токена
+        const userId = await jwtService.getUserIdByToken(refreshToken)
+        // проверяем что юзер в базе
+        const user = await usersService.findUsersById(userId)
+        if (!user) return res.sendStatus(401)
+
+        await authService.addRefreshTokenToBlackList(refreshToken)
+        res.sendStatus(204)
+        return
     })
+
 
 authRouter.get('/me', authBearer,
     async (req: Request, res: Response) => {
