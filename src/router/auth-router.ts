@@ -71,7 +71,7 @@ authRouter.post('/login', loginValidation, passwordValidation,
             return
         }
         const jwtTokenPair = await jwtService.createJWTPair(user)
-        res.cookie('refreshToken', jwtTokenPair.refreshToken, {})
+        res.cookie('refreshToken', jwtTokenPair.refreshToken, {httpOnly: true, secure: true})
         res.status(200).send({accessToken: jwtTokenPair.accessToken})
         return
     })

@@ -72,7 +72,7 @@ export const authService = {
     },
     async checkCredentials(login: string, password: string){
             const user = await usersRepository.findUserByLogin(login)
-        if (!user) return false
+        if (!user) return null
             const validPassword = await bcrypt.compare(password, user.accountData.passwordHash)
         if (validPassword) return user
                 return false
