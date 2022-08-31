@@ -35,7 +35,8 @@ postsRouter.post('/', authMiddleware, titleValidation,
     shortDescriptionValidation, contentValidation,
     inputValidationMiddleWare, createPostMiddleware,
     async (req: Request, res: Response) => {
-
+const blogger = await bloggersService.findBloggersById(req.params.id)
+        if (!blogger) res.sendStatus(404)
         res.status(201).send({
             addedAt: new Date,
             bloggerId: req.query.bloggerId,
@@ -54,7 +55,8 @@ postsRouter.post('/', authMiddleware, titleValidation,
     }
 )
 postsRouter.get('/:id', postMiddleware)
-postsRouter.put('/:id', authMiddleware, titleValidation, shortDescriptionValidation, contentValidation, inputValidationMiddleWare, async (req: Request, res: Response) => {
+postsRouter.put('/:id', authMiddleware,
+    titleValidation, shortDescriptionValidation, contentValidation, inputValidationMiddleWare, async (req: Request, res: Response) => {
 
     let blogger = await bloggersService.findBloggersById(req.body.bloggerId)
     if (!blogger) {
@@ -65,7 +67,9 @@ postsRouter.put('/:id', authMiddleware, titleValidation, shortDescriptionValidat
             req.body.shortDescription,
             req.body.content,
             req.body.bloggerId)
-        if (isUpdate) postMiddleware
+        if (isUpdate) res.status(204).send(isUpdate)
+        return
+        res.sendStatus(401)
     }
 
 })
@@ -86,7 +90,7 @@ postsRouter.post('/:postId/comments',
         const newComment = await commentService.createCommentByPostId(req.user, req.params.postId, req.body.content)
         res.status(201).send(newComment)
     })
-postsRouter.get('/:postId/comments', postMiddleware, async (req: Request, res: Response) => {
+postsRouter.get('/:postId/comments', async (req: Request, res: Response) => {
     const pageSize: number = Number(req.query.PageSize) || 10
     const pageNumber: number = Number(req.query.PageNumber) || 1
 
@@ -103,7 +107,10 @@ postsRouter.get('/:postId/comments', postMiddleware, async (req: Request, res: R
     return
 })
 
-postsRouter.put('/:postId/like-status', authBearer, postMiddleware, async (req: Request, res: Response) => {
+postsRouter.put('/:postId/like-status',
+    authBearer,  async (req: Request, res: Response) => {
+       // ищу пост по айди
+        //сделать абдейт поста
 
 
 })

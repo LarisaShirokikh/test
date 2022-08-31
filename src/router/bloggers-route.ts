@@ -67,7 +67,7 @@ bloggersRouter.delete('/:id', authMiddleware, async (req: Request, res: Response
 bloggersRouter.post('/:bloggerId/posts',
     authMiddleware, titleValidation,
     shortDescriptionValidation, contentValidation,
-    inputValidationMiddleWare, findBloggerByIdMiddleware,
+    inputValidationMiddleWare,
     async (req: Request, res: Response) => {
         const newPost = await bloggersService
             .createPostByBloggerId(
