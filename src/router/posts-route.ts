@@ -10,7 +10,7 @@ import {
     titleValidation
 } from "../middlewares/validations";
 import {inputValidationMiddleWare} from "../middlewares/input-validation";
-import {postMiddleware} from "../middlewares/post-middleware";
+import {createPostMiddleware, postMiddleware} from "../middlewares/post-middleware";
 
 
 export const postsRouter = Router({})
@@ -31,23 +31,29 @@ postsRouter.get('/', async (req: Request, res: Response) => {
         "items": findPost
     })
 })
-postsRouter.post('/', authMiddleware, titleValidation, shortDescriptionValidation, contentValidation,
-    inputValidationMiddleWare,
+postsRouter.post('/', authMiddleware, titleValidation,
+    shortDescriptionValidation, contentValidation,
+    inputValidationMiddleWare, createPostMiddleware,
     async (req: Request, res: Response) => {
-        const newPost = await postsService
-            .createPost(req.body.title, req.body.shortDescription, req.body.content, req.body.bloggerId)
-        if (!newPost) {
-            res.status(400).send(
-                {errorsMessages: [{message: "Problem with a bloggerId field", field: "bloggerId"}]})
-            return
-        }
 
         res.status(201).send({
-
+            addedAt: new Date,
+            bloggerId: req.query.bloggerId,
+            bloggerName: req.query.bloggerName,
+            content: req.query.content,
+            extendedLikesInfo: {
+                dislikesCount: req.query.dislikesCount,
+                likesCount: req.query.likesCount,
+                myStatus: req.query.myStatus,
+                newestLikes: req.query.newestLikes
+            },
+            id: new Object(),
+            shortDescription: req.query.shortDescription,
+            title: req.query.title
         })
     }
 )
-postsRouter.get('/:id', postMiddleware )
+postsRouter.get('/:id', postMiddleware)
 postsRouter.put('/:id', authMiddleware, titleValidation, shortDescriptionValidation, contentValidation, inputValidationMiddleWare, async (req: Request, res: Response) => {
 
     let blogger = await bloggersService.findBloggersById(req.body.bloggerId)
@@ -84,16 +90,16 @@ postsRouter.get('/:postId/comments', postMiddleware, async (req: Request, res: R
     const pageSize: number = Number(req.query.PageSize) || 10
     const pageNumber: number = Number(req.query.PageNumber) || 1
 
-        const findComment = await commentService.findCommentWithPag(req.params.postId, pageSize, pageNumber)
-        const getCount = await commentService.getCount(req.params.postId)
-        const result = {
-            "pagesCount": Math.ceil(getCount / pageSize),
-            "page": pageNumber,
-            "pageSize": pageSize,
-            "totalCount": getCount,
-            "items": findComment
-        }
-        res.send(result)
+    const findComment = await commentService.findCommentWithPag(req.params.postId, pageSize, pageNumber)
+    const getCount = await commentService.getCount(req.params.postId)
+    const result = {
+        "pagesCount": Math.ceil(getCount / pageSize),
+        "page": pageNumber,
+        "pageSize": pageSize,
+        "totalCount": getCount,
+        "items": findComment
+    }
+    res.send(result)
     return
 })
 

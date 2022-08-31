@@ -9,3 +9,13 @@ export const postMiddleware = async (req: Request, res: Response, next: NextFunc
     return
 
 }
+
+export const createPostMiddleware = async (req: Request, res: Response, next: NextFunction) => {
+    const newPost = await postsService
+        .createPost(req.body.title, req.body.shortDescription, req.body.content, req.body.bloggerId)
+    if (newPost) return newPost
+    next()
+    res.status(400).send(
+        {errorsMessages: [{message: "Problem with a bloggerId field", field: "bloggerId"}]})
+    return
+}

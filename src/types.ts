@@ -15,9 +15,9 @@ export type PostsType = {
     bloggerName: string,
     addedAt: Date,
     extendedLikesInfo: {
-        likesCount: 0,
-        dislikesCount: 0,
-        myStatus: 'None',
+        likesCount: number,
+        dislikesCount: number,
+        myStatus: string,
         newestLikes: [
             {
                 addedAt: Date,
