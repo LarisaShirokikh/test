@@ -12,7 +12,7 @@ import {
     urlValidation
 } from "../middlewares/validations";
 import {inputValidationMiddleWare} from "../middlewares/input-validation";
-import {bloggersRepository} from "../repositories/bloggers-repository";
+import {findBloggerByIdMiddleware} from "../middlewares/blogger-middleware";
 
 
 export const bloggersRouter = Router({})
@@ -43,25 +43,18 @@ bloggersRouter.post('/',
         const newBlogger = await bloggersService.createBlogger(req.body.name, req.body.youtubeUrl)
         res.status(201).send(newBlogger)
     })
-bloggersRouter.get('/:id', async (req: Request, res: Response) => {
-    const blogger = await bloggersService.findBloggersById(req.params.id)
-    if (blogger) {
-        res.send(blogger)
-    } else {
-        res.send(404)
-    }
-})
-bloggersRouter.put('/:id', authMiddleware, nameValidation, urlValidation, inputValidationMiddleWare, async (req: Request, res: Response) => {
+bloggersRouter.get('/:id', findBloggerByIdMiddleware, async (req: Request, res: Response) => {})
+bloggersRouter.put('/:id',
+    authMiddleware, nameValidation,
+    urlValidation, inputValidationMiddleWare,
+    findBloggerByIdMiddleware,
+    async (req: Request, res: Response) => {
     const name = req.body.name
     const youtubeUrl = req.body.youtubeUrl
-    const isUpdated = await bloggersService.updateBlogger(req.params.id, name, youtubeUrl)
-    if (isUpdated) {
-        const blogger = await bloggersService.findBloggersById(req.params.id)
-        res.status(204).send(blogger)
-    } else {
-        res.send(404)
+    const isUpdatedBlogger = await bloggersService.updateBlogger(req.params.id, name, youtubeUrl)
+    if (isUpdatedBlogger) {
+        res.status(201).send()
     }
-
 })
 bloggersRouter.delete('/:id', authMiddleware, async (req: Request, res: Response) => {
     const isDeleted = await bloggersService.deleteBloggers(req.params.id)
@@ -72,27 +65,22 @@ bloggersRouter.delete('/:id', authMiddleware, async (req: Request, res: Response
     }
 })
 bloggersRouter.post('/:bloggerId/posts',
-    authMiddleware, titleValidation, shortDescriptionValidation, contentValidation, inputValidationMiddleWare,
+    authMiddleware, titleValidation,
+    shortDescriptionValidation, contentValidation,
+    inputValidationMiddleWare, findBloggerByIdMiddleware,
     async (req: Request, res: Response) => {
-
-        const blogger = await bloggersRepository.isBlogger(req.params.bloggerId);
-        if (!blogger) {
-            res.status(404).send({errorsMessages: [{message: "Problem with a bloggerId field", field: "bloggerId"}]});
-        } else {
-            const newPost = await bloggersService.createPostByBloggerId(req.params.bloggerId, req.body.title, req.body.shortDescription, req.body.content)
-
-            if (newPost) {
-                res.status(201).send(newPost)
-            } else {
-                res.status(400).send({
-                    errorsMessages: [{
-                        message: "Problem with a bloggerId field",
-                        field: "bloggerId"
-                    }]
-                })
-            }
+        const newPost = await bloggersService
+            .createPostByBloggerId(
+                req.params.bloggerId,
+                req.body.title,
+                req.body.shortDescription,
+                req.body.content)
+        if (newPost) {
+            res.status(201).send(newPost)
+            return
         }
     })
+
 bloggersRouter.get('/:bloggerId/posts', async (req: Request, res: Response) => {
             const pageSize: number = Number(req.query.PageSize) || 10
             const pageNumber: number = Number(req.query.PageNumber) || 1

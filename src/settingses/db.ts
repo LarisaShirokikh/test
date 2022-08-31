@@ -72,13 +72,13 @@ const refreshTokensBlackListSchema = new mongoose.Schema<RefreshTokensCollection
     refreshToken: String
 })
 
-export const EndpointsAttemptsTrysModel = mongoose.model('endpointsAttemptsTrys', endpointsAttemptsTrysSchema);
-export const RefreshTokensBlackListModel = mongoose.model('refreshTokensBlackList', refreshTokensBlackListSchema);
+export const EndpointsAttemptsTrysModelClass = mongoose.model('endpointsAttemptsTrys', endpointsAttemptsTrysSchema);
+export const RefreshTokensBlackListModelClass = mongoose.model('refreshTokensBlackList', refreshTokensBlackListSchema);
 export const UserModelClass = mongoose.model('users', usersSchema);
-export const CommentsModel = mongoose.model('comments', commentSchema);
-export const PostsModel = mongoose.model('posts', postsSchema);
-export const BloggersModel = mongoose.model('bloggers', bloggersSchema);
-export const UsersEmailConfDataModel = mongoose.model('usersEmailConfData', usersEmailConfDataSchema);
+export const CommentsModelClass = mongoose.model('comments', commentSchema);
+export const PostsModelClass = mongoose.model('posts', postsSchema);
+export const BloggersModelClass = mongoose.model('bloggers', bloggersSchema);
+export const UsersEmailConfDataModelClass = mongoose.model('usersEmailConfData', usersEmailConfDataSchema);
 
 
 

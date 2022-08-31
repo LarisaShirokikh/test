@@ -1,6 +1,6 @@
 import {bloggersRepository} from "../repositories/bloggers-repository";
 import {ObjectId} from "mongodb";
-import {BloggersType} from "../types";
+import {BloggersType, PostsType} from "../types";
 import {postsRepository} from "../repositories/posts-repository";
 
 
@@ -14,13 +14,12 @@ export const bloggersService = {
 
     },
     async createBlogger(name: string, youtubeUrl: string): Promise<BloggersType> {
-        const newBlogger = {
-            id: (+(new Date())).toString(),
+        const newBlogger: BloggersType = {
+            id: (new ObjectId()).toString(),
             name,
             youtubeUrl
         }
-        const createdBloggerDb = await bloggersRepository.createBlogger(newBlogger)
-        return createdBloggerDb;
+        return bloggersRepository.createBlogger(newBlogger)
     },
     async updateBlogger(id: string, name: string, youtubeUrl: string) {
         return await bloggersRepository.updateBlogger(id, name, youtubeUrl)
@@ -34,13 +33,25 @@ export const bloggersService = {
     async createPostByBloggerId (bloggerId: string, title: string, shortDescription: string, content: string) {
         const blogger = await bloggersRepository.getBloggerById(bloggerId)
         if (blogger) {
-            const newPost = {
-                id: (+(new Date())).toString(),
+            const newPost: PostsType = {
+                id: (new ObjectId()).toString(),
                 title,
                 shortDescription,
                 content,
                 bloggerId,
-                bloggerName: blogger.name
+                bloggerName: blogger.name,
+                addedAt: new Date,
+                extendedLikesInfo: {
+                    likesCount: 0,
+                    dislikesCount: 0,
+                    myStatus: 'None',
+                    newestLikes: [
+                        {
+                            addedAt: new Date,
+                            userId: blogger.id,
+                            login: blogger.name
+                        }]
+                }
             }
             const createdPostDb = await postsRepository.createPost(newPost)
             return createdPostDb

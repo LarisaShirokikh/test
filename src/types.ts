@@ -7,16 +7,28 @@ export type BloggersType = {
     youtubeUrl: string
 }
 export type PostsType = {
-    id: string
-    title: string
-    shortDescription: string
-    content: string
-    bloggerId: string
-    bloggerName: string
+    id: string,
+    title: string,
+    shortDescription: string,
+    content: string,
+    bloggerId: string,
+    bloggerName: string,
+    addedAt: Date,
+    extendedLikesInfo: {
+        likesCount: 0,
+        dislikesCount: 0,
+        myStatus: 'None',
+        newestLikes: [
+            {
+                addedAt: Date,
+                userId: string,
+                login: string
+            }
+        ]
+    }
 }
 export type UsersType = {
     id: string
-
     login: string
 
 }
@@ -35,15 +47,6 @@ export type AttemptType = {
     userIP: string
     url: string
     time: Date
-}
-export type UsersWithPassType = {
-    id: string
-    login?: string
-    password?: string
-    isConfirmed?: boolean
-}
-export type CommentContentType = {
-    content: string
 }
 export type RefreshTokensCollectionType = {
     refreshToken: string

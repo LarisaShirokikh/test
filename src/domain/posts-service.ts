@@ -16,13 +16,26 @@ export const postsService = {
     async createPost (title: string, shortDescription: string, content: string, bloggerId: string): Promise<PostsType | undefined> {
         const blogger = await bloggersRepository.getBloggerById(bloggerId)
         if (blogger) {
-            const newPost = {
+            const newPost: PostsType = {
                 id: (+(new Date())).toString(),
                 title,
                 shortDescription,
                 content,
                 bloggerId,
-                bloggerName: blogger.name
+                bloggerName: blogger.name,
+                addedAt: new Date,
+                extendedLikesInfo: {
+                    likesCount: 0,
+                    dislikesCount: 0,
+                    myStatus: 'None',
+                    newestLikes: [
+                        {
+                            addedAt: new Date,
+                            userId: blogger.id,
+                            login: blogger.name
+                        }
+                    ]
+                }
             }
 
             const createdPost = await postsRepository.createPost(newPost)

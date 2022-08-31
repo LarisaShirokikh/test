@@ -1,6 +1,6 @@
-import {UsersDBType, UsersEmailConfDataType, UsersType} from "../types";
-import {UserModelClass, UsersEmailConfDataModel} from "../settingses/db";
-import {ObjectId} from "mongodb";
+import {UsersDBType, UsersEmailConfDataType} from "../types";
+import {UserModelClass,  UsersEmailConfDataModelClass} from "../settingses/db";
+
 
 
 
@@ -30,7 +30,7 @@ export const usersRepository = {
         return UserModelClass.findOne({id: userId},  {projection: {_id: 0}})
     },
     async findUserByConfirmCode(confirmationCode: string) {
-        const emailData = await UsersEmailConfDataModel.findOne({confirmationCode: confirmationCode}, {projection: {_id: 0}})
+        const emailData = await UsersEmailConfDataModelClass.findOne({confirmationCode: confirmationCode}, {projection: {_id: 0}})
 
         const accountData = await UserModelClass.findOne({email: emailData?.email}, {projection: {_id: 0}})
 
@@ -54,7 +54,7 @@ export const usersRepository = {
         if (!accountDataRes) {
             return null
         } else {
-            await UsersEmailConfDataModel.deleteOne({email})
+            await UsersEmailConfDataModelClass.deleteOne({email})
             const result = await UserModelClass.findOne({email}, {projection: {_id: 0, password: 0, email: 0, isConfirmed: 0}})
             return result
         }
@@ -71,11 +71,11 @@ export const usersRepository = {
         return user
     },
     async insertDbUnconfirmedEmail(newUserEmail: UsersEmailConfDataType) {
-        const result = await UsersEmailConfDataModel.insertMany([newUserEmail])
+        const result = await UsersEmailConfDataModelClass.insertMany([newUserEmail])
         return result
     },
     async updateUnconfirmedEmailData(updetedEmailConfirmationData: UsersEmailConfDataType): Promise<boolean> {
-        const result = await UsersEmailConfDataModel.updateOne(
+        const result = await UsersEmailConfDataModelClass.updateOne(
             {email: updetedEmailConfirmationData.email},
             {$set: {confirmationCode: updetedEmailConfirmationData.confirmationCode,
                 expirationDate: updetedEmailConfirmationData.expirationDate}})
@@ -86,25 +86,6 @@ export const usersRepository = {
         return true
 
     },
-    async findByLogin(login: string): Promise<UsersDBType | boolean> {
-        console.log(8181)
-        const user = await UserModelClass.findOne({login: login}, {projection: {_id: 0, email: 0, isConfirmed: 0}})
-        if(user === null) return false
-        console.log(8080)
-        return true
-    },
-    async findLogin(login:string){
-        return  UserModelClass.findOne({login: login})
-    },
-    /*async createNewUser(newUser: UsersType): Promise<UsersType> {
-        await UserModelClass.insertMany({newUser})
-        //const user: UsersType = {
-            //id: newUser.id,
-            //login: newUser.login
-        }
-        return user
-
-    },*/
     async findUserByEmailOrlogin(email: string, login: string) {
         const user = await UserModelClass
             .findOne( {$or: [{'accountData.login': login}, {'accountData.email': email}]} )

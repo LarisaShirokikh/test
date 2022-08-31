@@ -10,6 +10,7 @@ import {
     titleValidation
 } from "../middlewares/validations";
 import {inputValidationMiddleWare} from "../middlewares/input-validation";
+import {postMiddleware} from "../middlewares/post-middleware";
 
 
 export const postsRouter = Router({})
@@ -33,25 +34,20 @@ postsRouter.get('/', async (req: Request, res: Response) => {
 postsRouter.post('/', authMiddleware, titleValidation, shortDescriptionValidation, contentValidation,
     inputValidationMiddleWare,
     async (req: Request, res: Response) => {
-        const newPost = await postsService.createPost(req.body.title, req.body.shortDescription, req.body.content, req.body.bloggerId)
+        const newPost = await postsService
+            .createPost(req.body.title, req.body.shortDescription, req.body.content, req.body.bloggerId)
         if (!newPost) {
             res.status(400).send(
                 {errorsMessages: [{message: "Problem with a bloggerId field", field: "bloggerId"}]})
             return
         }
 
-        res.status(201).send(newPost)
+        res.status(201).send({
+
+        })
     }
 )
-postsRouter.get('/:id', async (req: Request, res: Response) => {
-    const post = await postsService.findPostById(req.params.id)
-
-    if (post) {
-        res.send(post)
-    } else {
-        res.sendStatus(404)
-    }
-})
+postsRouter.get('/:id', postMiddleware )
 postsRouter.put('/:id', authMiddleware, titleValidation, shortDescriptionValidation, contentValidation, inputValidationMiddleWare, async (req: Request, res: Response) => {
 
     let blogger = await bloggersService.findBloggersById(req.body.bloggerId)
@@ -63,12 +59,7 @@ postsRouter.put('/:id', authMiddleware, titleValidation, shortDescriptionValidat
             req.body.shortDescription,
             req.body.content,
             req.body.bloggerId)
-        if (isUpdate) {
-            const post = await postsService.findPostById(req.params.id)
-            res.status(204).send({post})
-        } else {
-            res.send(404)
-        }
+        if (isUpdate) postMiddleware
     }
 
 })
@@ -80,22 +71,19 @@ postsRouter.delete('/:id', authMiddleware, async (req: Request, res: Response) =
         res.send(404)
     }
 })
-postsRouter.post('/:postId/comments', authBearer, commentValidation, inputValidationMiddleWare,
+postsRouter.post('/:postId/comments',
+    authBearer,
+    commentValidation,
+    inputValidationMiddleWare,
+    postMiddleware,
     async (req: Request, res: Response) => {
-        const post = await postsService.getPostById(req.params.postId)
-        if (!post) {
-            res.status(404).send({errorsMessages: [{message: "Post with specified postId doesn't exists", field: "postId"}]});
-            return
-        }
         const newComment = await commentService.createCommentByPostId(req.user, req.params.postId, req.body.content)
         res.status(201).send(newComment)
     })
-postsRouter.get('/:postId/comments', async (req: Request, res: Response) => {
+postsRouter.get('/:postId/comments', postMiddleware, async (req: Request, res: Response) => {
     const pageSize: number = Number(req.query.PageSize) || 10
     const pageNumber: number = Number(req.query.PageNumber) || 1
 
-    const findPost = await postsService.findPostById(req.params.postId)
-    if (findPost) {
         const findComment = await commentService.findCommentWithPag(req.params.postId, pageSize, pageNumber)
         const getCount = await commentService.getCount(req.params.postId)
         const result = {
@@ -106,7 +94,10 @@ postsRouter.get('/:postId/comments', async (req: Request, res: Response) => {
             "items": findComment
         }
         res.send(result)
-    } else {
-        res.sendStatus(404)
-    }
+    return
+})
+
+postsRouter.put('/:postId/like-status', authBearer, postMiddleware, async (req: Request, res: Response) => {
+
+
 })
