@@ -8,4 +8,5 @@ export const testingRouter = Router({})
 
 
 testingRouter.delete('/all-data',
+
     testingController.deleteAll.bind(testingController))

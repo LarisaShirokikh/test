@@ -20,12 +20,14 @@ export class TestingController {
 
 
     async deleteAll(req: Request, res: Response) {
+
         await this.postsRepository.deleteAllPost()
+
         await this.bloggersRepository.deleteAllBloggers()
         await this.usersRepository.deleteAllUsers()
         await this.commentRepository.deleteAllComments()
         await this.attemptsRepository.deleteAllAttempts()
-        await UsersEmailConfDataModelClass.deleteMany([])
+        await UsersEmailConfDataModelClass.deleteMany()
 
         res.sendStatus(204)
     }
