@@ -1,30 +1,38 @@
-import {postsRepository} from "../repositories/posts-repository";
+
 import {ObjectId} from "mongodb";
 import {PostsType} from "../types";
-import {bloggersRepository} from "../repositories/bloggers-repository";
+import {PostsRepository} from "../repositories/posts-repository";
+import {BloggersRepository} from "../repositories/bloggers-repository";
+import {injectable} from "inversify";
 
 
-
-
-export const postsService = {
+@injectable()
+export class PostsService {
+     postsRepository: PostsRepository
+     bloggersRepository: BloggersRepository
+     constructor() {
+         this.postsRepository = new PostsRepository()
+         this.bloggersRepository = new BloggersRepository()
+     }
     async findPosts(pageSize:number, pageNumber:number) {
-        return await postsRepository.findPosts(pageSize, pageNumber )
-    },
+        return await this.postsRepository.findPosts(pageSize, pageNumber )
+    }
     async findPostById(id: string) {
-        return await postsRepository.findPostById(id)
-    },
+        return await this.postsRepository.findPostById(id)
+    }
     async createPost (title: string, shortDescription: string, content: string, bloggerId: string): Promise<PostsType | undefined> {
-        const blogger = await bloggersRepository.getBloggerById(bloggerId)
+        const blogger = await this.bloggersRepository.getBloggerById(bloggerId)
+
         if (blogger) {
-            const newPost: PostsType = {
-                id: (+(new Date())).toString(),
+            const newPost: PostsType = new PostsType(
+                (new ObjectId()).toString(),
                 title,
                 shortDescription,
                 content,
                 bloggerId,
-                bloggerName: blogger.name,
-                addedAt: new Date,
-                extendedLikesInfo: {
+                blogger.name,
+                new Date,
+                {
                     likesCount: 0,
                     dislikesCount: 0,
                     myStatus: 'None',
@@ -35,29 +43,31 @@ export const postsService = {
                             login: blogger.name
                         }
                     ]
-                }
-            }
+                })
 
-            const createdPost = await postsRepository.createPost(newPost)
+            const createdPost = await this.postsRepository.createPost(newPost)
             return createdPost
         }
-    },
+    }
     async updatePost(id: string, title: string, shortDescription: string, content: string, bloggerId: string) {
-        return await postsRepository.updatePost(id, title, shortDescription, content, bloggerId)
-    },
+        return await this.postsRepository.updatePost(id, title, shortDescription, content, bloggerId)
+    }
     async deletePosts(id: string) {
-        return await postsRepository.deletePosts(id)
-    },
+        return await this.postsRepository.deletePosts(id)
+    }
     async getCount() {
-        return await postsRepository.getCount()
-    },
+        return await this.postsRepository.getCount()
+    }
     async findBloggersPost(pageSize:number, pageNumber:number,bloggerId:string) {
-        return await postsRepository.findBloggersPost(pageSize, pageNumber, bloggerId)
-    },
+        return await this.postsRepository.findBloggersPost(pageSize, pageNumber, bloggerId)
+    }
     async getCountBloggerId(bloggerId: string) {
-        return await postsRepository.getCountBloggerId(bloggerId)
-    },
+        return await this.postsRepository.getCountBloggerId(bloggerId)
+    }
     async getPostById (postId: string): Promise<PostsType | null> {
-        return postsRepository.getPostById(postId)
-    },
+        return this.postsRepository.getPostById(postId)
+    }
+
 }
+
+

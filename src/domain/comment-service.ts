@@ -1,12 +1,20 @@
 
+import {CommentsRepository} from "../repositories/comment-repository";
+import {PostsRepository} from "../repositories/posts-repository";
+import {injectable} from "inversify";
 
-import {commentRepository} from "../repositories/comment-repository";
-import {postsRepository} from "../repositories/posts-repository";
 
+@injectable()
+export class CommentsService {
+    commentsRepository: CommentsRepository
+    postsRepository: PostsRepository
+    constructor() {
+        this.commentsRepository = new CommentsRepository()
+        this.postsRepository = new PostsRepository()
+    }
 
-export const commentService = {
     async createCommentByPostId (user:any, postId: string, content:string) {
-        const post = await postsRepository.getPostById(postId)
+        const post = await this.postsRepository.getPostById(postId)
         if (post) {
             const newComment = {
                 postId: postId,
@@ -16,27 +24,31 @@ export const commentService = {
                 userLogin: user.login,
                 addedAt: new Date
             }
-            const createdComment = await commentRepository.createComment(newComment)
+            const createdComment = await this.commentsRepository.createComment(newComment)
             return createdComment
         }
-    },
+    }
     async findComment (id: string){
-        return await commentRepository.findComment(id)
-    },
+        return await this.commentsRepository.findComment(id)
+    }
     async findCommentWithPag (postId: string, pageSize:number, pageNumber:number){
-        return await commentRepository.findCommentWithPag(postId, pageSize, pageNumber)
-    },
+        return await this.commentsRepository.findCommentWithPag(postId, pageSize, pageNumber)
+    }
     async getCount(postId:string){
-        return await commentRepository.getCount(postId)
-    },
+        return await this.commentsRepository.getCount(postId)
+    }
     async deleteComment(id:string){
-        return await commentRepository.deleteComment(id)
-    },
+        return await this.commentsRepository.deleteComment(id)
+    }
     async updateComment (commentId: string, content: string)  {
-        return commentRepository.updateComment(commentId, content)
-    },
+        return this.commentsRepository.updateComment(commentId, content)
+    }
     async findUser(userId:string, commentId:string){
-        return await commentRepository.findUser(userId, commentId)
-    },
+        return await this.commentsRepository.findUser(userId, commentId)
+    }
 
+    async updateLikeStatus(user: string, commentId: string, likeStatus: string) {
+        return await this.commentsRepository.updateCommentLikeStatus(user, commentId, likeStatus)
+    }
 }
+

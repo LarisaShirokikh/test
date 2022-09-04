@@ -1,16 +1,18 @@
 import {UsersDBType, UsersEmailConfDataType} from "../types";
-import {UserModelClass,  UsersEmailConfDataModelClass} from "../settingses/db";
+import {UserModelClass, UsersEmailConfDataModelClass} from "../settingses/db";
+import {injectable} from "inversify";
+import "reflect-metadata";
 
 
 
-
-export const usersRepository = {
+@injectable()
+export class UsersRepository  {
 
     async createUser(user: UsersDBType) {
         const newUser = await UserModelClass.insertMany([user])
         return newUser
 
-    },
+    }
     async findUsers(pageSize: number, pageNumber: number): Promise<UsersDBType[]> {
         return UserModelClass.find({}, {
             projection: {
@@ -18,17 +20,17 @@ export const usersRepository = {
                 passwordSalt: 0
             }
         }).skip((pageNumber - 1) * pageSize).limit(pageSize).lean();
-    },
+    }
     async getCount() {
         return UserModelClass.countDocuments()
-    },
+    }
     async deleteUsers(id: string) {
         const result = await UserModelClass.deleteOne({id: id})
         return result.deletedCount === 1
-    },
+    }
     async findUsersById(userId: string) {
         return UserModelClass.findOne({id: userId},  {projection: {_id: 0}})
-    },
+    }
     async findUserByConfirmCode(confirmationCode: string) {
         const emailData = await UsersEmailConfDataModelClass.findOne({confirmationCode: confirmationCode}, {projection: {_id: 0}})
 
@@ -47,7 +49,7 @@ export const usersRepository = {
             }
             return user
         }
-    },
+    }
     async updateEmailConfirmation(email: string) {
         const accountDataRes = UserModelClass
             .updateOne({email}, {isConfirmed: true})
@@ -59,33 +61,33 @@ export const usersRepository = {
             return result
         }
 
-    },
+    }
     async findUserByEmail(email: string) {
         const user = await UserModelClass.findOne({email}, {projection: {_id: 0}})
         return user
-    },
+    }
     async findUserByLogin(login: string) {
         const user = await UserModelClass.findOne({'accountData.login': login})
 
         if (user === null) return false
         return user
-    },
+    }
     async insertDbUnconfirmedEmail(newUserEmail: UsersEmailConfDataType) {
         const result = await UsersEmailConfDataModelClass.insertMany([newUserEmail])
         return result
-    },
+    }
     async updateUnconfirmedEmailData(updetedEmailConfirmationData: UsersEmailConfDataType): Promise<boolean> {
         const result = await UsersEmailConfDataModelClass.updateOne(
             {email: updetedEmailConfirmationData.email},
             {$set: {confirmationCode: updetedEmailConfirmationData.confirmationCode,
                 expirationDate: updetedEmailConfirmationData.expirationDate}})
         return result.acknowledged;
-    },
+    }
     async deleteAllUsers(): Promise<boolean> {
          await UserModelClass.deleteMany({})
         return true
 
-    },
+    }
     async findUserByEmailOrlogin(email: string, login: string) {
         const user = await UserModelClass
             .findOne( {$or: [{'accountData.login': login}, {'accountData.email': email}]} )
@@ -93,12 +95,13 @@ export const usersRepository = {
         if (!user) return null
         return user
 
-    },
+    }
     async findUserWithEmailById(userId: string) {
         const user = await UserModelClass.findOne({id: userId}, {_id: 0, password: 0, isConfirmed: 0, __v: 0})
 
         return user
     }
+
 }
 
 

@@ -1,37 +1,44 @@
-import {bloggersRepository} from "../repositories/bloggers-repository";
 import {ObjectId} from "mongodb";
 import {BloggersType, PostsType} from "../types";
-import {postsRepository} from "../repositories/posts-repository";
+import {BloggersRepository} from "../repositories/bloggers-repository";
+import {PostsRepository} from "../repositories/posts-repository";
+import {inject, injectable} from "inversify";
 
-
-export const bloggersService = {
+@injectable()
+export class BloggersService {
+    bloggersRepository: BloggersRepository
+    postsRepository: PostsRepository
+    constructor() {
+        this.bloggersRepository = new BloggersRepository()
+        this.postsRepository = new PostsRepository()
+    }
     async findBloggers(pageSize:number, pageNumber:number, searchNameTerm:string) {
 
-        return await bloggersRepository.findBloggers(pageSize, pageNumber, searchNameTerm)
-    },
+        return await this.bloggersRepository.findBloggers(pageSize, pageNumber, searchNameTerm)
+    }
     async findBloggersById(id: string) {
-        return await bloggersRepository.findBloggersById(id)
+        return await this.bloggersRepository.findBloggersById(id)
 
-    },
+    }
     async createBlogger(name: string, youtubeUrl: string): Promise<BloggersType> {
         const newBlogger: BloggersType = {
             id: (new ObjectId()).toString(),
             name,
             youtubeUrl
         }
-        return bloggersRepository.createBlogger(newBlogger)
-    },
+        return this.bloggersRepository.createBlogger(newBlogger)
+    }
     async updateBlogger(id: string, name: string, youtubeUrl: string) {
-        return await bloggersRepository.updateBlogger(id, name, youtubeUrl)
-    },
+        return await this.bloggersRepository.updateBlogger(id, name, youtubeUrl)
+    }
     async deleteBloggers(id: string) {
-        return await bloggersRepository.deleteBloggers(id)
-    },
+        return await this.bloggersRepository.deleteBloggers(id)
+    }
     async getCount(searchNameTerm:string) {
-        return await bloggersRepository.getCount(searchNameTerm)
-    },
+        return await this.bloggersRepository.getCount(searchNameTerm)
+    }
     async createPostByBloggerId (bloggerId: string, title: string, shortDescription: string, content: string) {
-        const blogger = await bloggersRepository.getBloggerById(bloggerId)
+        const blogger = await this.bloggersRepository.getBloggerById(bloggerId)
         if (blogger) {
             const newPost: PostsType = {
                 id: (new ObjectId()).toString(),
@@ -53,7 +60,7 @@ export const bloggersService = {
                         }]
                 }
             }
-            const createdPostDb = await postsRepository.createPost(newPost)
+            const createdPostDb = await this.postsRepository.createPost(newPost)
             return createdPostDb
         }
     }

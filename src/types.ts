@@ -1,69 +1,95 @@
-
-
-
-export type BloggersType = {
-    id: string
-    name: string
-    youtubeUrl: string
-}
-export type PostsType = {
-    id: string,
-    title: string,
-    shortDescription: string,
-    content: string,
-    bloggerId: string,
-    bloggerName: string,
-    addedAt: Date,
-    extendedLikesInfo: {
-        likesCount: number,
-        dislikesCount: number,
-        myStatus: string,
-        newestLikes: [
-            {
-                addedAt: Date,
-                userId: string,
-                login: string
-            }
-        ]
+export class BloggersType {
+    constructor(
+        public id: string,
+        public name: string,
+        public youtubeUrl: string
+    ) {
     }
 }
-export type UsersType = {
-    id: string
-    login: string
 
+export class PostsType {
+    constructor(
+        public id: string,
+        public title: string,
+        public shortDescription: string,
+        public content: string,
+        public bloggerId: string,
+        public bloggerName: string,
+        public addedAt: Date,
+        public extendedLikesInfo: {
+            likesCount: number,
+            dislikesCount: number,
+            myStatus: string,
+            newestLikes: [
+                {
+                    addedAt: Date,
+                    userId: string,
+                    login: string
+                }
+            ]
+        }) {
+    }
 }
-export type CommentsType = {
-    userId: string
-    id: string
-    content: string
+
+export class UsersType {
+    constructor(
+        public id: string,
+        public login: string
+    ) {
+    }
 }
-export type UsersEmailConfDataType = {
-email: string
-    confirmationCode: string
-    expirationDate: Date
-    isConfirmed: boolean
+
+export class CommentsType {
+    constructor(
+        public id: string,
+        public userId: string,
+        public content: string
+    ) {
+    }
 }
-export type AttemptType = {
-    userIP: string
-    url: string
-    time: Date
+
+export class UsersEmailConfDataType {
+    constructor(
+        public email: string,
+        public confirmationCode: string,
+        public expirationDate: Date,
+        public isConfirmed: boolean
+    ) {
+    }
 }
-export type RefreshTokensCollectionType = {
-    refreshToken: string
+
+export class AttemptType {
+    constructor(
+        public userIP: string,
+        public url: string,
+        public time: Date
+    ) {
+    }
 }
-export type UsersDBType = {
-    accountData: {
-        id: string,
-        login: string,
-        email: string,
-        passwordHash: string,
-        isConfirmed: boolean
-    },
-    emailConfirmation: {
-        email: string
-        confirmationCode: string,
-        expirationDate: Date,
-        isConfirmed: boolean
+
+export class RefreshTokensCollectionType {
+    constructor(
+        public refreshToken: string
+    ) {
+    }
+}
+
+export class UsersDBType {
+    constructor(
+        public accountData: {
+            id: string,
+            login: string,
+            email: string,
+            passwordHash: string,
+            isConfirmed: boolean
+        },
+        public emailConfirmation: {
+            email: string
+            confirmationCode: string,
+            expirationDate: Date,
+            isConfirmed: boolean
+        }
+    ) {
     }
 }
 
