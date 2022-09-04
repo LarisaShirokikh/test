@@ -50,7 +50,7 @@ export class BloggersRepository  {
         return BloggersModelClass.countDocuments({name: {$regex: searchNameTerm}})
     }
     async deleteAllBloggers(): Promise<boolean> {
-        const result = BloggersModelClass.deleteMany({})
+        await BloggersModelClass.deleteMany({})
         return true
     }
     async getBloggerById(bloggerId: string): Promise<BloggersType | null> {

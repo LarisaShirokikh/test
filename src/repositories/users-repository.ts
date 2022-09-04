@@ -13,13 +13,10 @@ export class UsersRepository  {
         return newUser
 
     }
-    async findUsers(pageSize: number, pageNumber: number): Promise<UsersDBType[]> {
-        return UserModelClass.find({}, {
-            projection: {
-                _id: 0, passwordHash: 0,
-                passwordSalt: 0
-            }
-        }).skip((pageNumber - 1) * pageSize).limit(pageSize).lean();
+    async findUsers(PageSize: number, PageNumber: number) {
+        return UserModelClass
+            .find({}, {projection: {_id: 0, passwordHash: 0, passwordSalt: 0}})
+            .skip((PageNumber - 1) * PageSize).limit(PageSize).lean([]);
     }
     async getCount() {
         return UserModelClass.countDocuments()
