@@ -20,9 +20,11 @@ export const postsRouter = Router({})
 
 
 postsRouter.get('/', postsController.getAllPosts.bind(postsController))
+
 postsRouter.post('/', authMiddleware, titleValidation,
     shortDescriptionValidation, contentValidation,
     inputValidationMiddleWare,  postsController.creatPostByBlogger.bind(postsController))
+
 postsRouter.get('/:id', postsController.creatPostByBlogger.bind(postsController))
 postsRouter.put('/:id', authMiddleware,
     titleValidation, shortDescriptionValidation, contentValidation, inputValidationMiddleWare,

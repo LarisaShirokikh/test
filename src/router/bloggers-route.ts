@@ -30,11 +30,13 @@ bloggersRouter.put('/:id',
     urlValidation, inputValidationMiddleWare,
     bloggersController.updateBlogger.bind(bloggersController))
 bloggersRouter.delete('/:id', authMiddleware, bloggersController.deleteBloggers.bind(bloggersController))
+
 bloggersRouter.post('/:bloggerId/posts',
     authMiddleware, titleValidation,
     shortDescriptionValidation, contentValidation,
     inputValidationMiddleWare,
     bloggersController.createPostByBloggerId.bind(bloggersController))
+
 bloggersRouter.get('/:bloggerId/posts', bloggersController.createPostByBloggerId.bind(bloggersController))
 
 

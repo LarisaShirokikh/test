@@ -50,11 +50,10 @@ export class BloggersController {
         }
     }
     async createPostByBloggerId(req: Request, res: Response) {
+        const blogger = await this.bloggersService.findBloggersById(req.params.bloggerId)
+        if (!blogger) res.sendStatus(400)
         const newPost = await this.bloggersService
-            .createPostByBloggerId(
-                req.params.bloggerId,
-                req.body.title,
-                req.body.shortDescription,
+            .createPostByBloggerId(req.params.bloggerId, req.body.title, req.body.shortDescription,
                 req.body.content)
         if (newPost) {
             res.status(201).send(newPost)

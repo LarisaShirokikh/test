@@ -29,7 +29,7 @@ export class PostsController {
         })
     }
     async creatPostByBlogger(req: Request, res: Response) {
-        const blogger = await this.bloggersService.findBloggersById(req.params.id)
+        const blogger = await this.bloggersService.findBloggersById(req.params.bloggerId)
         if (!blogger) res.sendStatus(404)
         res.status(201).send({
             addedAt: new Date,
