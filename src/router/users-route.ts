@@ -15,7 +15,7 @@ const usersController = container.resolve<UsersController>(UsersController)
 export const usersRouter = Router({})
 
 
-usersRouter.get('/', usersController.getAllUsers.bind(usersController))
+usersRouter.get('/', usersController.getUsers.bind(usersController))
 usersRouter.post('/', authMiddleware, loginValidation, emailValidation,
     passwordValidation, inputValidationMiddleWare, usersController.createUser.bind(usersController))
 usersRouter.delete('/:id', authMiddleware, usersController.deleteUser.bind(usersController))

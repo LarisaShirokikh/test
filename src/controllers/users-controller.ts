@@ -13,22 +13,7 @@ export class UsersController {
                 protected authService: AuthService
     ) { }
 
-    async getAllUsers(req: Request, res: Response) {
 
-        const PageSize: number = Number(req.query.PageSize) || 10
-        const PageNumber: number = Number(req.query.PageNumber) || 1
-        //@ts-ignore
-        const users = this.usersService.getAllUsers(req.query.PageNumber, req.query.PageSize)
-        const getCount = await this.usersService.getCount()
-        res.status(200).send({
-            "pagesCount": Math.ceil(getCount / PageSize),
-            "page": PageNumber,
-            "pageSize": PageSize,
-            "totalCount": getCount,
-            "items": users
-        })
-        console.log(users)
-    }
     async createUser(req: Request, res: Response) {
         const findEmailOrlogin = await this.usersRepository.findUserByEmailOrlogin(req.body.email, req.body.login)
 
