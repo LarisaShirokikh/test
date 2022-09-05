@@ -7,7 +7,7 @@ import {injectable} from "inversify";
 @injectable()
 export class CommentsRepository  {
     async createComment (newComment: CommentsType) {
-        const result = await CommentsModelClass.create(newComment)
+        const result = await CommentsModelClass.insertMany([newComment])
         const comment = await CommentsModelClass.findOne({id: newComment.id}, {projection: {_id: 0, postId: 0}})
         return comment
     }

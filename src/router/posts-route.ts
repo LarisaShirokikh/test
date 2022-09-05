@@ -31,11 +31,13 @@ postsRouter.put('/:id', authMiddleware,
     titleValidation, shortDescriptionValidation, contentValidation, inputValidationMiddleWare,
     postsController.updatePost.bind(postsController))
 postsRouter.delete('/:id', authMiddleware, postsController.deletePost.bind(postsController))
+
 postsRouter.post('/:postId/comments',
     authBearer,
     commentValidation,
     inputValidationMiddleWare,
     postsController.createCommentByPostId.bind(postsController))
+
 postsRouter.get('/:postId/comments', postsController.getCountCommentsPost.bind(postsController))
 
 //postsRouter.put('/:postId/like-status',

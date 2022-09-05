@@ -117,9 +117,11 @@ export class PostsController {
             res.send(404)
         }
     }
+
     async createCommentByPostId(req: Request, res: Response) {
         const newComment = await this.commentService.createCommentByPostId(req.user, req.params.postId, req.body.content)
         res.status(201).send(newComment)
+        return
     }
     async getCountCommentsPost(req: Request, res: Response) {
         const pageSize: number = Number(req.query.PageSize) || 10
@@ -137,6 +139,7 @@ export class PostsController {
         res.send(result)
         return
     }
+
     //async likeStatus(req: Request, res: Response){}
 
 }
