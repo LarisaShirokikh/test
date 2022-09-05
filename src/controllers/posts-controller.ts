@@ -79,10 +79,9 @@ export class PostsController {
         return
     }
 
-    async getPostById(req: Request, res: Response, next: NextFunction) {
+    async getPostById(req: Request, res: Response) {
         const post = await this.postsService.findPostById(req.params.id)
-        if (post) return post
-        next()
+        if (post) return res.send(post)
         res.status(404).send({
             errorsMessages: [{
                 message: "Post with specified postId doesn't exists",

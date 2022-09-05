@@ -47,7 +47,7 @@ import {injectable} from "inversify";
         return true
     }
         async getPostById (postId: string): Promise<PostsType | null> {
-        const post  = await PostsModelClass.findOne({id: postId}, {projection: {_id: 0}})
+        const post  = await PostsModelClass.findOne({id: postId},  {_id: false, __v: false})
         return post;
     }
 }
