@@ -41,26 +41,15 @@ export class PostsController {
         const blogger = await this.bloggersService.findBloggersById(req.params.bloggerId)
         console.log(blogger)
 
-        if (!blogger) res.sendStatus(404)
+        if (!blogger) {
+            res.sendStatus(404)
+            return
+        }
         const post = await this.postsService.createPost(req.body.title, req.body.shortDescription,
             req.body.content, req.body.bloggerId)
-        if (!post) res.sendStatus(404)
+        if (!post) return res.sendStatus(404)
 
-        res.status(201).send({
-            addedAt: new Date,
-            bloggerId: req.query.bloggerId,
-            bloggerName: req.query.bloggerName,
-            content: req.query.content,
-            extendedLikesInfo: {
-                dislikesCount: req.query.dislikesCount,
-                likesCount: req.query.likesCount,
-                myStatus: req.query.myStatus,
-                newestLikes: req.query.newestLikes
-            },
-            id: new Object(),
-            shortDescription: req.query.shortDescription,
-            title: req.query.title
-        })
+        res.status(201).send(post)
         return
     }
 

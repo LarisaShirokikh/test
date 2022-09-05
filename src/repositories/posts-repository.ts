@@ -12,11 +12,16 @@ import mongoose from "mongoose";
         return PostsModelClass.find({}, {projection: {_id: 0}}).skip((pageNumber-1)*pageSize).limit(pageSize).lean()
     }
     async findPostById(id: string) {
-        return PostsModelClass.findOne({id: id}, {projection: {_id: 0, __v: 0}}).lean()
+        const post = await PostsModelClass.findOne({id: id}, {projection: {_id: 0, __v: 0}}).lean()
+        console.log(post)
+        return post
     }
     async createPost(newPosts: PostsType) {
-        const postInstance = new PostsModelClass({...newPosts})
-        await postInstance.save()
+        //const postInstance = new PostsModelClass({...newPosts})
+        //console.log(postIn)
+        //await postInstance.save()
+        const post = await PostsModelClass.insertMany({...newPosts})
+        console.log(post)
         return newPosts;
 
     }

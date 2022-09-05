@@ -44,6 +44,7 @@ export class PostsService {
                         }
                     ]
                 })
+
             await this.postsRepository.createPost(newPost)
             return newPost
         }

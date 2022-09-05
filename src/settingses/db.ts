@@ -1,4 +1,3 @@
-
 import dotenv from "dotenv";
 import mongoose from "mongoose";
 import {
@@ -52,6 +51,19 @@ const postsSchema = new mongoose.Schema<PostsType>({
     content: String,
     bloggerId: String,
     bloggerName: String,
+    addedAt: Date,
+    extendedLikesInfo: {
+        likesCount: Number,
+        dislikesCount: Number,
+        myStatus: String,
+        newestLikes: [
+            {
+                addedAt: Date,
+                userId: String,
+                login: String
+            }
+        ]
+    }
 })
 const bloggersSchema = new mongoose.Schema<BloggersType>({
     id: String,
@@ -79,8 +91,6 @@ export const CommentsModelClass = mongoose.model('comments', commentSchema);
 export const PostsModelClass = mongoose.model('posts', postsSchema);
 export const BloggersModelClass = mongoose.model('bloggers', bloggersSchema);
 export const UsersEmailConfDataModelClass = mongoose.model('usersEmailConfData', usersEmailConfDataSchema);
-
-
 
 
 export async function runDb() {
