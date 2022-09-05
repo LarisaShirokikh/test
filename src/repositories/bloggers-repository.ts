@@ -13,7 +13,7 @@ export class BloggersRepository  {
             .skip((pageNumber-1)*pageSize).limit(pageSize).lean()
     }
     async findBloggersById(id: string) {
-        return BloggersModelClass.findOne({id: id}, {projection: {_id: 0}})
+        return BloggersModelClass.findOne({id: id}, {projection: {_id: 0, __v: 0}})
 
     }
     async createBlogger(newBlogger: BloggersType): Promise<BloggersType> {
@@ -29,7 +29,7 @@ export class BloggersRepository  {
         return newBlogger;
     }
     async updateBlogger(id: string, name: string, youtubeUrl: string) {
-        const bloggerInstance = await BloggersModelClass.findOne({id: id})
+        const bloggerInstance = await BloggersModelClass.findOne({id: id}, {projection: {_id: 0, __v: 0}})
         if (!bloggerInstance) return false
         bloggerInstance.name = name;
         bloggerInstance.youtubeUrl = youtubeUrl
@@ -51,11 +51,11 @@ export class BloggersRepository  {
     }
 
     async getBloggerById(bloggerId: string): Promise<BloggersType | null> {
-        const blogger: BloggersType | null = await BloggersModelClass.findOne({id: bloggerId}, {projection: {_id: 0}})
+        const blogger: BloggersType | null = await BloggersModelClass.findOne({id: bloggerId}, {projection: {_id: 0, __v: 0}})
         return blogger;
     }
     async isBlogger(bloggerId: string):Promise<boolean> {
-        const blogger: BloggersType | null = await BloggersModelClass.findOne({id: bloggerId}, {projection: {_id: 0}})
+        const blogger: BloggersType | null = await BloggersModelClass.findOne({id: bloggerId}, {projection: {_id: 0, __v: 0}})
         return !!blogger;
     }
 }
