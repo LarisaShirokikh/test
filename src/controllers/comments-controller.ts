@@ -31,6 +31,7 @@ async findComment(req: Request, res: Response) {
         res.status(204).send(updatedComment);
     } else {
         res.send(400)
+        return
     }
 }
 
@@ -61,6 +62,7 @@ async deleteComment(req: Request, res: Response) {
         res.send(204)
     } else {
         res.send(404)
+        return
     }
 }
 
@@ -77,6 +79,7 @@ async getComment(req: Request, res: Response) {
         res.status(200).send(comment);
     } else {
         res.send(404);
+        return
     }
 }
 
@@ -87,6 +90,7 @@ async commentLikeStatus(req: Request, res: Response) {
     res.status(204).send({
         "likeStatus": "None"
     })
+    return
 
 }
 }

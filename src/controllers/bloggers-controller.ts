@@ -40,6 +40,7 @@ export class BloggersController {
             res.send(blogger)
         } else {
             res.send(404)
+            return
         }
     }
     async updateBlogger(req: Request, res: Response) {
@@ -48,6 +49,7 @@ export class BloggersController {
         const isUpdatedBlogger = await this.bloggersService.updateBlogger(req.params.id, name, youtubeUrl)
         if (isUpdatedBlogger) {
             res.status(201).send()
+            return
         }
     }
     async createPostByBloggerId(req: Request, res: Response) {
@@ -86,6 +88,7 @@ export class BloggersController {
             res.send(204)
         } else {
             res.send(404)
+            return
         }
     }
 }
