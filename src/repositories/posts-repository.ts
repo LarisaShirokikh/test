@@ -9,7 +9,7 @@ import mongoose from "mongoose";
     //constructor(@inject(PostsModelClass.name) private postsModelClass: mongoose.Model<PostsType> ) {
    //}
     async findPosts(pageSize:number, pageNumber:number) {
-        return PostsModelClass.find({}, {projection: {_id: 0}}).skip((pageNumber-1)*pageSize).limit(pageSize).lean()
+        return PostsModelClass.find({}, {projection: {_id: 0, __v: 0}}).skip((pageNumber-1)*pageSize).limit(pageSize).lean()
     }
     async findPostById(id: string) {
         const post = await PostsModelClass.findOne({id: id}, {projection: {_id: 0, __v: 0}}).lean()
@@ -44,7 +44,7 @@ import mongoose from "mongoose";
         return PostsModelClass.count({})
     }
     async findBloggersPost(pageSize:number, pageNumber:number, bloggerId: string){
-        return PostsModelClass.find({bloggerId: bloggerId}, {projection: {_id: 0}}).skip((pageNumber-1)*pageSize).limit(pageSize).lean()
+        return PostsModelClass.find({bloggerId: bloggerId}, {projection: {_id: 0, __v: 0}}).skip((pageNumber-1)*pageSize).limit(pageSize).lean()
     }
     async getCountBloggerId(bloggerId: string) {
         return PostsModelClass.count({bloggerId: bloggerId})
@@ -54,7 +54,7 @@ import mongoose from "mongoose";
         return true
     }
         async getPostById (postId: string): Promise<PostsType | null> {
-        const post  = await PostsModelClass.findOne({id: postId},  {_id: false, __v: false})
+        const post  = await PostsModelClass.findOne({id: postId},  {projection: {_id: 0, __v: 0}})
         return post;
     }
 }
