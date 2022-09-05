@@ -40,7 +40,7 @@ postsRouter.post('/:postId/comments',
 
 postsRouter.get('/:postId/comments', postsController.getCountCommentsPost.bind(postsController))
 
-//postsRouter.put('/:postId/like-status',
- //   authBearer, postsController.likeStatusPost.bind(postsController))
+postsRouter.put('/:postId/like-status',
+   authBearer, postsController.likeStatusPost.bind(postsController))
 
 

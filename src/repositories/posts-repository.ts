@@ -57,4 +57,11 @@ import mongoose from "mongoose";
         const post  = await PostsModelClass.findOne({id: postId},  {projection: {_id: 0, __v: 0}})
         return post;
     }
+
+    async updateLikePost(postId: string, likeStatus: string) {
+        const post = await PostsModelClass.findOne({postId: postId})
+        if (!post) return false
+const newStatus = await PostsModelClass.updateOne({postId}, {$set: {likeStatus: 'None'}})
+        return true
+    }
 }
