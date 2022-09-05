@@ -44,9 +44,8 @@ export class PostsService {
                         }
                     ]
                 })
-
-            const createdPost = await this.postsRepository.createPost(newPost)
-            return createdPost
+            await this.postsRepository.createPost(newPost)
+            return newPost
         }
     }
     async updatePost(id: string, title: string, shortDescription: string, content: string, bloggerId: string) {

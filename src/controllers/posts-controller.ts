@@ -32,23 +32,8 @@ export class PostsController {
     async creatPost(req: Request, res: Response) {
         const post = await this.postsService.createPost(req.body.title, req.body.shortDescription,
             req.body.content, req.body.bloggerId)
-        if (!post) res.sendStatus(404)
-
-        res.status(201).send({
-            addedAt: new Date,
-            bloggerId: req.query.bloggerId,
-            bloggerName: req.query.bloggerName,
-            content: req.query.content,
-            extendedLikesInfo: {
-                dislikesCount: req.query.dislikesCount,
-                likesCount: req.query.likesCount,
-                myStatus: req.query.myStatus,
-                newestLikes: req.query.newestLikes
-            },
-            id: new Object(),
-            shortDescription: req.query.shortDescription,
-            title: req.query.title
-        })
+        if (!post) return res.sendStatus(404)
+        res.status(201).send(post)
         return
 
     }

@@ -16,6 +16,7 @@ import {RefreshRepository} from "./repositories/refresh-repository";
 import {CommentsController} from "./controllers/comments-controller";
 import {CommentsService} from "./domain/comment-service";
 import {CommentsRepository} from "./repositories/comment-repository";
+import {PostsModelClass} from "./settingses/db";
 
 /*const object: any[] = []
 
@@ -47,6 +48,7 @@ container.bind(BloggersService).to(BloggersService);
 container.bind(BloggersRepository).to(BloggersRepository);
 
 //posts
+container.bind(Symbol('PostsModelClass')).toConstantValue(PostsModelClass)
 container.bind(PostsController).to(PostsController);
 container.bind(PostsService).to(PostsService);
 container.bind(PostsRepository).to(PostsRepository);

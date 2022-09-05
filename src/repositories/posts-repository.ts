@@ -1,19 +1,21 @@
 
 import { PostsType } from "../types";
 import { PostsModelClass } from "../settingses/db";
-import {injectable} from "inversify";
+import {inject, injectable} from "inversify";
+import mongoose from "mongoose";
 
 @injectable()
  export class PostsRepository {
-
+    //constructor(@inject(PostsModelClass.name) private postsModelClass: mongoose.Model<PostsType> ) {
+   //}
     async findPosts(pageSize:number, pageNumber:number) {
         return PostsModelClass.find({}, {projection: {_id: 0}}).skip((pageNumber-1)*pageSize).limit(pageSize).lean()
     }
     async findPostById(id: string) {
-        return PostsModelClass.findOne({id: id}, {projection: {_id: 0}})
+        return PostsModelClass.findOne({id: id}, {projection: {_id: 0, __v: 0}}).lean()
     }
     async createPost(newPosts: PostsType) {
-        const postInstance = new PostsModelClass(newPosts)
+        const postInstance = new PostsModelClass({...newPosts})
         await postInstance.save()
         return newPosts;
 
