@@ -23,9 +23,10 @@ postsRouter.get('/', postsController.getAllPosts.bind(postsController))
 
 postsRouter.post('/', authMiddleware, titleValidation,
     shortDescriptionValidation, contentValidation,
-    inputValidationMiddleWare,  postsController.creatPostByBlogger.bind(postsController))
+    inputValidationMiddleWare,  postsController.creatPost.bind(postsController))
 
-postsRouter.get('/:id', postsController.creatPostByBlogger.bind(postsController))
+postsRouter.get('/:id', postsController.getPostById.bind(postsController))
+
 postsRouter.put('/:id', authMiddleware,
     titleValidation, shortDescriptionValidation, contentValidation, inputValidationMiddleWare,
     postsController.updatePost.bind(postsController))

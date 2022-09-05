@@ -6,6 +6,7 @@ import {CommentsService} from "../domain/comment-service";
 
 @injectable()
 export class PostsController {
+
     constructor(@inject(PostsService)
                 protected postsService: PostsService,
                 protected bloggersService: BloggersService,
@@ -28,9 +29,11 @@ export class PostsController {
             "items": findPost
         })
     }
-    async creatPostByBlogger(req: Request, res: Response) {
-        const blogger = await this.bloggersService.findBloggersById(req.params.bloggerId)
-        if (!blogger) res.sendStatus(404)
+    async creatPost(req: Request, res: Response) {
+        const post = await this.postsService.createPost(req.body.title, req.body.shortDescription,
+            req.body.content, req.body.bloggerId)
+        if (!post) res.sendStatus(404)
+
         res.status(201).send({
             addedAt: new Date,
             bloggerId: req.query.bloggerId,
@@ -46,7 +49,36 @@ export class PostsController {
             shortDescription: req.query.shortDescription,
             title: req.query.title
         })
+        return
+
     }
+    async creatPostByBlogger(req: Request, res: Response) {
+        const blogger = await this.bloggersService.findBloggersById(req.params.bloggerId)
+        console.log(blogger)
+
+        if (!blogger) res.sendStatus(404)
+        const post = await this.postsService.createPost(req.body.title, req.body.shortDescription,
+            req.body.content, req.body.bloggerId)
+        if (!post) res.sendStatus(404)
+
+        res.status(201).send({
+            addedAt: new Date,
+            bloggerId: req.query.bloggerId,
+            bloggerName: req.query.bloggerName,
+            content: req.query.content,
+            extendedLikesInfo: {
+                dislikesCount: req.query.dislikesCount,
+                likesCount: req.query.likesCount,
+                myStatus: req.query.myStatus,
+                newestLikes: req.query.newestLikes
+            },
+            id: new Object(),
+            shortDescription: req.query.shortDescription,
+            title: req.query.title
+        })
+        return
+    }
+
     async getPostById(req: Request, res: Response, next: NextFunction) {
         const post = await this.postsService.findPostById(req.params.id)
         if (post) return post

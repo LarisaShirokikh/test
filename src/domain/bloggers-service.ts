@@ -16,8 +16,9 @@ export class BloggersService {
 
         return await this.bloggersRepository.findBloggers(pageSize, pageNumber, searchNameTerm)
     }
-    async findBloggersById(id: string) {
-        return await this.bloggersRepository.findBloggersById(id)
+    async findBloggersById(bloggerId: string): Promise<BloggersType | null> {
+
+        return await this.bloggersRepository.getBloggerById(bloggerId)
 
     }
     async createBlogger(name: string, youtubeUrl: string): Promise<BloggersType> {

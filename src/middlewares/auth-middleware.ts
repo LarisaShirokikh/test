@@ -13,7 +13,7 @@ import {UserModelClass} from "../settingses/db";
             next()
             return
         }
-        res.send(401)
+        res.sendStatus(401)
     }
 
     export const authBearer = async (req: Request, res: Response, next: NextFunction) => {

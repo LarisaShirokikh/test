@@ -24,6 +24,7 @@ bloggersRouter.get('/', bloggersController.getAllBloggers.bind(bloggersControlle
 bloggersRouter.post('/', authMiddleware,
     nameValidation, urlValidation, inputValidationMiddleWare,
     bloggersController.createBlogger.bind(bloggersController))
+
 bloggersRouter.get('/:id', bloggersController.findBloggersById.bind(bloggersController))
 bloggersRouter.put('/:id',
     authMiddleware, nameValidation,

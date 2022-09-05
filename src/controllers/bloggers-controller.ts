@@ -32,6 +32,7 @@ export class BloggersController {
     async createBlogger(req: Request, res: Response) {
         const newBlogger = await this.bloggersService.createBlogger(req.body.name, req.body.youtubeUrl)
         res.status(201).send(newBlogger)
+        return
     }
     async findBloggersById(req: Request, res: Response) {
         const blogger = await this.bloggersService.findBloggersById(req.params.id)

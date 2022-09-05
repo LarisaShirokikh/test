@@ -49,10 +49,7 @@ export class BloggersRepository  {
     async getCount(searchNameTerm: string) {
         return BloggersModelClass.countDocuments({name: {$regex: searchNameTerm}})
     }
-    async deleteAllBloggers(): Promise<boolean> {
-        await BloggersModelClass.deleteMany({})
-        return true
-    }
+
     async getBloggerById(bloggerId: string): Promise<BloggersType | null> {
         const blogger: BloggersType | null = await BloggersModelClass.findOne({id: bloggerId}, {projection: {_id: 0}})
         return blogger;
