@@ -24,4 +24,5 @@ commentsRouter.delete('/:commentId', authBearer,
 commentsRouter.get('/:commentId',
     commentsController.getComment.bind(commentsController))
 
-commentsRouter.put('/:commentId/like-status', commentsController.commentLikeStatus.bind(commentsController))
+commentsRouter.put('/:commentId/like-status', authBearer, inputValidationMiddleWare,
+    commentsController.commentLikeStatus.bind(commentsController))
