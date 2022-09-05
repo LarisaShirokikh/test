@@ -26,7 +26,7 @@ import mongoose from "mongoose";
 
     }
     async updatePost(id: string, title: string, shortDescription: string, content: string, bloggerId: string) {
-        const postInstance = await PostsModelClass.findOne({id: id})
+        const postInstance = await PostsModelClass.findOne({id: id}, {projection: {_id: 0, __v: 0}})
         if (!postInstance) return false
         postInstance.title = title;
         postInstance.shortDescription = shortDescription;
@@ -44,7 +44,7 @@ import mongoose from "mongoose";
         return PostsModelClass.count({})
     }
     async findBloggersPost(pageSize:number, pageNumber:number, bloggerId: string){
-        return PostsModelClass.find({bloggerId: bloggerId}, {projection: {_id: 0, __v: 0}}).skip((pageNumber-1)*pageSize).limit(pageSize).lean()
+        return PostsModelClass.find({bloggerId: bloggerId}, {_id: 0, __v: 0}).skip((pageNumber-1)*pageSize).limit(pageSize).lean()
     }
     async getCountBloggerId(bloggerId: string) {
         return PostsModelClass.count({bloggerId: bloggerId})
@@ -54,7 +54,7 @@ import mongoose from "mongoose";
         return true
     }
         async getPostById (postId: string): Promise<PostsType | null> {
-        const post  = await PostsModelClass.findOne({id: postId},  {projection: {_id: 0, __v: 0}})
+        const post  = await PostsModelClass.findOne({id: postId}, {_id: 0, __v: 0})
         return post;
     }
 
