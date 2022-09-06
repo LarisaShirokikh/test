@@ -23,20 +23,10 @@ export class CommentsService {
                     "userId": user.id,
                     "userLogin": user.userLogin,
                     "addedAt": new Date,
-                    "likesInfo": {
-                        "likesCount": 0,
-                        "dislikesCount": 0,
-                        "myStatus": "None"
-                    }
+                    "likesInfo": {}
+
                 }
-               /* {
-                    postId: postId,
-                    id: (+(new Date())).toString(),
-                    content: content,
-                    userId: user.id,
-                    userLogin: user.login,
-                    addedAt: new Date
-                }*/
+
             const createdComment = await this.commentsRepository.createComment(newComment)
             return createdComment
         }

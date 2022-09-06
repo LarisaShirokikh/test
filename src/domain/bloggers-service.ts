@@ -53,12 +53,7 @@ export class BloggersService {
                     likesCount: 0,
                     dislikesCount: 0,
                     myStatus: 'None',
-                    newestLikes: [
-                        {
-                            addedAt: new Date,
-                            userId: blogger.id,
-                            login: blogger.name
-                        }]
+                    newestLikes: []
                 }
             }
             const createdPostDb = await this.postsRepository.createPost(newPost)

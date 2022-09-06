@@ -19,7 +19,6 @@ export class PostsRepository {
     async findPostById(id: string) {
         const post = await PostsModelClass.findOne({id: id}, {_id: 0, __v: 0}).lean()
         if (post)
-        console.log('post2', post)
         return post
     }
 
