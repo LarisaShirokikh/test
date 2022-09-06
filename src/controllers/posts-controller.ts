@@ -92,6 +92,8 @@ export class PostsController {
     }
 
     async createCommentByPostId(req: Request, res: Response) {
+        const post = await this.postsService.getPostById(req.params.postId)
+        if (!post) return res.status(404)
         const newComment = await this.commentService.createCommentByPostId(req.user, req.params.postId, req.body.content)
         res.status(201).send(newComment)
         return
@@ -116,7 +118,7 @@ export class PostsController {
     async likeStatusPost(req: Request, res: Response){
         const post = await this.postsService.getPostById(req.params.postId)
         if (!post) return res.status(401)
-        const likeStatus = this.postsService.updateLike(req.params.postId, req.body.likeStatus)
+        const likeStatus = this.postsService.updateLike(req.user, req.params.postId, req.body.likeStatus, req.body.addedLikeStatusAt)
         if (!likeStatus) return res.status(401)
         return res.status(204)
     }

@@ -68,8 +68,8 @@ export class PostsService {
         return this.postsRepository.getPostById(postId)
     }
 
-    async updateLike(postId: string, likeStatus: string) {
-         return await this.postsRepository.updateLikePost(postId,likeStatus)
+    async updateLike(user: any, postId: string, likeStatus: "None" | "Like" | "Dislike", addedLikeStatusAt: object) {
+         return await this.postsRepository.updateLikeStatus(user, postId, likeStatus, addedLikeStatusAt)
 
     }
 }

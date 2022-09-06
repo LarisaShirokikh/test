@@ -93,5 +93,16 @@ export class UsersDBType {
     }
 }
 
+export class LikesStatusType {
+    constructor(
+        public id: string,
+        public userId: string,
+        public likeStatus: "None" | "Like" | "Dislike"
+    ) {
+    }
+
+}
+
+
 
 
