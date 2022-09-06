@@ -58,7 +58,7 @@ export class PostsService {
     async getCountBloggerId(bloggerId: string) {
         return await this.postsRepository.getCountBloggerId(bloggerId)
     }
-    async getPostById (postId: string): Promise<PostsType | null> {
+    async getPostById (postId: string): Promise<Promise<PostsType> | null> {
         return this.postsRepository.getPostById(postId)
     }
 
