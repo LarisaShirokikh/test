@@ -69,7 +69,7 @@ async deleteComment(req: Request, res: Response) {
 async getComment(req: Request, res: Response) {
 
     if (typeof req.params.commentId !== "string") {
-        res.send(400);
+        res.status(400);
         return;
     }
 
