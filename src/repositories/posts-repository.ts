@@ -9,10 +9,10 @@ export class PostsRepository {
     //}
     async findPosts(pageSize: number, pageNumber: number) {
         return PostsModelClass.find({}, {
-            projection: {
+
                 _id: 0,
                 __v: 0
-            }
+
         }).skip((pageNumber - 1) * pageSize).limit(pageSize).lean()
     }
 
@@ -26,14 +26,14 @@ export class PostsRepository {
         //const postInstance = new PostsModelClass({...newPosts})
         //console.log(postIn)
         //await postInstance.save()
-        const post = await PostsModelClass.insertMany({...newPosts})
+        const post = await PostsModelClass.create({...newPosts})
         console.log(post)
         return newPosts;
 
     }
 
     async updatePost(id: string, title: string, shortDescription: string, content: string, bloggerId: string) {
-        const postInstance = await PostsModelClass.findOne({id: id}, {projection: {_id: 0, __v: 0}})
+        const postInstance = await PostsModelClass.findOne({id: id},  {_id: 0, __v: 0})
         if (!postInstance) return false
         postInstance.title = title;
         postInstance.shortDescription = shortDescription;
@@ -70,8 +70,7 @@ export class PostsRepository {
     }
 
     async getPostById(postId: string): Promise<PostsType | null> {
-        const post = await PostsModelClass.findOne({id: postId}, {_id: false, __v: false})
-        console.log('post1', post)
+        const post = await PostsModelClass.findOne({id: postId}, {_id: 0, __v: 0})
         return post;
     }
 
