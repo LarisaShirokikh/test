@@ -18,6 +18,7 @@ export class PostsRepository {
 
     async findPostById(id: string) {
         const post = await PostsModelClass.findOne({id: id}, {_id: 0, __v: 0}).lean()
+        if (post)
         console.log('post2', post)
         return post
     }
@@ -77,7 +78,7 @@ export class PostsRepository {
     async updateLikeStatus(user: any, postId: string, likeStatus: "None" | "Like" | "Dislike", addedLikeStatusAt: Date) {
 
 
-        const isLikeStatus = await likesStatusCollection.findOne({id: postId, userId: user.id})
+        const isLikeStatus = await likesStatusCollection.findOne({id: postId, userId: user.id}, {_id: 0})
 
         if (!isLikeStatus) {
             await likesStatusCollection.create({id: postId, userId: user.id, likeStatus})
