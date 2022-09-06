@@ -32,8 +32,9 @@ export class CommentsService {
         }
     }
 
-    async findComment(id: string) {
-        return await this.commentsRepository.findComment(id)
+    async findComment(commentId: string) {
+        const comment = await this.commentsRepository.findComment(commentId)
+        return comment
     }
 
     async findCommentWithPag(postId: string, pageSize: number, pageNumber: number) {
