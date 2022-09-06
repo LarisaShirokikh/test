@@ -25,7 +25,6 @@ postsRouter.post('/', authMiddleware, titleValidation,
     shortDescriptionValidation, contentValidation,
     inputValidationMiddleWare,  postsController.creatPost.bind(postsController))
 
-postsRouter.get('/:id', postsController.getPostById.bind(postsController))
 
 postsRouter.put('/:id', authMiddleware,
     titleValidation, shortDescriptionValidation, contentValidation, inputValidationMiddleWare,
@@ -39,6 +38,8 @@ postsRouter.post('/:postId/comments',
     postsController.createCommentByPostId.bind(postsController))
 
 postsRouter.get('/:postId/comments', postsController.getCountCommentsPost.bind(postsController))
+
+postsRouter.get('/:id', postsController.getPostById.bind(postsController))
 
 postsRouter.put('/:postId/like-status',
    authBearer, likeStatusValidation, inputValidationMiddleWare,
