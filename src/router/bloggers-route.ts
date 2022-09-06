@@ -1,4 +1,6 @@
 import {Router} from "express";
+import {container} from "../composition-root";
+import {BloggersController} from "../controllers/bloggers-controller";
 import {authMiddleware} from "../middlewares/auth-middleware";
 import {
     contentValidation,
@@ -8,8 +10,7 @@ import {
     urlValidation
 } from "../middlewares/validations";
 import {inputValidationMiddleWare} from "../middlewares/input-validation";
-import {container} from "../composition-root";
-import {BloggersController} from "../controllers/bloggers-controller";
+
 
 
 
@@ -39,6 +40,3 @@ bloggersRouter.post('/:bloggerId/posts',
     bloggersController.createPostByBloggerId.bind(bloggersController))
 
 bloggersRouter.get('/:bloggerId/posts', bloggersController.createPostByBloggerId.bind(bloggersController))
-
-
-

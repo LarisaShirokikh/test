@@ -70,7 +70,7 @@ export class PostsRepository {
     }
 
     async getPostById(postId: string): Promise<PostsType | null> {
-        const post = await PostsModelClass.findOne({id: postId}, {_id: 0, __v: 0, 'extendedLikesInfo.newestLikes._id': 0})
+        const post = await PostsModelClass.findOne({id: postId}, {_id: 0, __v: 0})
         return post;
     }
 

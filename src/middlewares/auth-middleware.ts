@@ -1,7 +1,6 @@
 import {NextFunction, Request, Response} from "express";
 import {jwtService} from "../application/jwt-service";
-import {UsersService} from "../domain/users-servise";
-import {UsersRepository} from "../repositories/users-repository";
+
 import {UserModelClass} from "../settingses/db";
 
 
