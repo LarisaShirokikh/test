@@ -16,16 +16,21 @@ export class CommentsService {
     async createCommentByPostId(user: any, postId: string, content: string) {
         const post = await this.postsRepository.getPostById(postId)
         if (post) {
-            const newComment =
-                {
-                    "id": postId,
-                    "content": content,
-                    "userId": user.id,
-                    "userLogin": user.userLogin,
-                    "addedAt": new Date,
-                    "likesInfo": {}
 
+            const newComment = {
+                postId: postId,
+                id: new Object().toString(),
+                content: content,
+                userId: user.id,
+                userLogin: user.login,
+                addedAt: new Date,
+                likesInfo: {
+                    likesCount: 0,
+                    dislikesCount: 0,
+                    myStatus: "None"
                 }
+            }
+
 
             const createdComment = await this.commentsRepository.createComment(newComment)
             return createdComment
