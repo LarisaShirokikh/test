@@ -25,7 +25,6 @@ export class PostsService {
     }
     async createPost (title: string, shortDescription: string, content: string, bloggerId: string): Promise<PostsType | undefined> {
         const blogger = await this.bloggersRepository.getBloggerById(bloggerId)
-
         if (blogger) {
             const newPost = {
                 id: (+(new Date())).toString(),
@@ -44,13 +43,14 @@ export class PostsService {
                     ]
                 }
             }
-                //@ts-ignore
+            // @ts-ignore
             const createdPost = await this.postsRepository.createPost(newPost)
             return createdPost
         }
     }
-    async updatePost(id: string, title: string, shortDescription: string, content: string, bloggerId: string) {
-        return await this.postsRepository.updatePost(id, title, shortDescription, content, bloggerId)
+
+    async updatePost (postId: string, title: string, shortDescription: string, content: string, bloggerId: string): Promise<boolean>  {
+        return this.postsRepository.updatePost(postId, title, shortDescription, content, bloggerId)
     }
     async deletePosts(id: string) {
         return await this.postsRepository.deletePosts(id)
@@ -69,9 +69,10 @@ export class PostsService {
 
     }
 
-    async updateLikeStatus (user: any, commentId: string, likeStatus: "None" | "Like" | "Dislike"): Promise<boolean|undefined>  {
+    async updateLikeStatus (user: any, postId: string, likeStatus: "None" | "Like" | "Dislike"): Promise<boolean|undefined>  {
 
-        return this.commentsRepository.updateLikeStatus(user, commentId, likeStatus)
+        const addedLikeStatusAt = new Date()
+        return this.postsRepository.updateLikeStatus(user,postId, likeStatus, addedLikeStatusAt)
     }
 }
 
