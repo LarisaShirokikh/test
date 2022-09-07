@@ -53,11 +53,6 @@ export class CommentsRepository {
         return CommentsModelClass.findOne({userId: userId, id: commentId}, {_id: 0, __v: 0})
     }
 
-    async deleteAllComments() {
-        const result = await CommentsModelClass.deleteMany({})
-        return result
-    }
-
     async updateLikeStatus(user: any, commentId: string, likeStatus: "None" | "Like" | "Dislike"): Promise<boolean|undefined> {
 
         const isLikeStatus:LikesStatusType|null = await likesStatusCollection.findOne({id: commentId, userId: user.id})

@@ -95,24 +95,19 @@ export class AuthController {
     }
 
     async userLogout(req: Request, res: Response) {
-        const refreshToken = req.cookies.refreshToken
+
+        const refreshToken = await req.cookies?.refreshToken
         if (!refreshToken) return res.sendStatus(401)
 
-        const tokenTime = await jwtService.getTokenTime(refreshToken)
-        if (!tokenTime) return res.sendStatus(401)
+        let tokenExpTime = await jwtService.getTokenTime(refreshToken)
+        if (!tokenExpTime) return res.sendStatus(401)
 
         const isRefreshTokenInBlackList = await this.authService.checkTokenInBlackList(refreshToken)
         if (isRefreshTokenInBlackList) return res.sendStatus(401)
 
-        // достаём юзерАйди из токена
-        const userId = await jwtService.getUserIdByToken(refreshToken)
-        // проверяем что юзер в базе
-        const user = await this.usersService.findUsersById(userId)
-        if (!user) return res.sendStatus(401)
-
         await this.authService.addRefreshTokenToBlackList(refreshToken)
         res.sendStatus(204)
-        return
+
     }
 
     async aboutMe(req: Request, res: Response) {

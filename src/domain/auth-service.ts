@@ -89,7 +89,8 @@ export class AuthService  {
                 return false
     }
     async checkTokenInBlackList(refreshToken: string) {
-        return this.refreshRepository.checkTokenInBlackList(refreshToken)
+        const result = await this.refreshRepository.checkTokenInBlackList(refreshToken)
+        return result
     }
     async addRefreshTokenToBlackList(refreshToken: string) {
         const result =  await this.refreshRepository.addRefreshTokenToBlackList(refreshToken)
