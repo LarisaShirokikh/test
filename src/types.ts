@@ -1,10 +1,9 @@
-export class BloggersType {
-    constructor(
-        public id: string,
-        public name: string,
-        public youtubeUrl: string
-    ) {
-    }
+export type BloggersType = {
+
+         id: string,
+         name: string,
+         youtubeUrl: string
+
 }
 
 export type PostsType = {
@@ -23,12 +22,11 @@ export type PostsType = {
     }
 }
 
-export class UsersType {
-    constructor(
-        public id: string,
-        public login: string
-    ) {
-    }
+export type UsersType = {
+
+         id: string,
+         login: string
+
 }
 
 export type CommentsType = {
@@ -45,50 +43,44 @@ export type CommentsType = {
     }
 }
 
+export type UsersEmailConfDataType = {
 
-export class UsersEmailConfDataType {
-    constructor(
-        public email: string,
-        public confirmationCode: string,
-        public expirationDate: Date,
-        public isConfirmed: boolean
-    ) {
-    }
+         email: string,
+         confirmationCode: string,
+         expirationDate: Date,
+         isConfirmed: boolean
+
 }
 
-export class AttemptType {
-    constructor(
-        public userIP: string,
-        public url: string,
-        public time: Date
-    ) {
-    }
+export type AttemptType = {
+
+         userIP: string,
+         url: string,
+         time: Date
+
 }
 
-export class RefreshTokensCollectionType {
-    constructor(
-        public refreshToken: string
-    ) {
-    }
+export type RefreshTokensCollectionType = {
+
+        refreshToken: string
+
 }
 
-export class UsersDBType {
-    constructor(
-        public accountData: {
+export type UsersDBType = {
+    accountData: {
             id: string,
             login: string,
             email: string,
             passwordHash: string,
             isConfirmed: boolean
         },
-        public emailConfirmation: {
+         emailConfirmation: {
             email: string
             confirmationCode: string,
             expirationDate: Date,
             isConfirmed: boolean
         }
-    ) {
-    }
+
 }
 
 export type LikesStatusType = {
