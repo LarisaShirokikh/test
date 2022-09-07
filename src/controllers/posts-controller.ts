@@ -57,7 +57,11 @@ export class PostsController {
     }
 
     async getPostById(req: Request, res: Response) {
+        //проверка на токен
+        //если токен, то расшифровка и передать юзер айди/логин, передать в файнд логин
+        //если найдено все то отдаем myStatus
         const post = await this.postsService.findPostById(req.params.id)
+
         if (post) return res.send(post)
         res.status(404).send({
             errorsMessages: [{
@@ -124,7 +128,7 @@ export class PostsController {
 
     async likeStatusPost(req: Request, res: Response) {
         const post = await this.postsService.getPostById(req.params.postId)
-        console.log(12345, post)
+
         if (post === null) return res.send(404)
         const likeStatus = await this.postsService.updateLike(req.user, req.params.postId, req.body.likeStatus)
         if (likeStatus) {
