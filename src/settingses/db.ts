@@ -72,6 +72,7 @@ const postsSchema = new mongoose.Schema<PostsType>({
                     login: String
                 }
             ]
+
         }
     }, //{_id: false}
 )
