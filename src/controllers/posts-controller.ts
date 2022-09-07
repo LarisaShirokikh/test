@@ -4,6 +4,7 @@ import {NextFunction, Request, Response} from "express";
 import {BloggersService} from "../domain/bloggers-service";
 import {CommentsService} from "../domain/comment-service";
 import {ObjectId} from "mongodb";
+import {PostsRepository} from "../repositories/posts-repository";
 
 @injectable()
 export class PostsController {
@@ -11,7 +12,8 @@ export class PostsController {
     constructor(@inject(PostsService)
                 protected postsService: PostsService,
                 protected bloggersService: BloggersService,
-                protected commentService: CommentsService
+                protected commentService: CommentsService,
+                protected postsRepository: PostsRepository
     ) {
     }
 
@@ -105,9 +107,9 @@ export class PostsController {
 
     async createCommentByPostId(req: Request, res: Response) {
         const post = await this.postsService.getPostById(req.params.postId)
-        if (!post) res.status(404)
-        return
+        //if (!post) res.status(404) return
         const newComment = await this.commentService.createCommentByPostId(req.user, req.params.postId, req.body.content)
+        console.log(1234)
         res.status(201).send(newComment)
         return
     }
