@@ -132,8 +132,6 @@ export class PostsController {
     }
 
     async likeStatusPost(req: Request, res: Response) {
-
-
         const post = await this.postsService.getPostById(req.params.postId)
 
         if (!post) {
@@ -141,10 +139,9 @@ export class PostsController {
             return
         }
 
-
+        // @ts-ignore
         const likeStatus = await this.postsService.updateLikeStatus(req.user, req.params.postId, req.body.likeStatus)
 
         res.status(201).send(likeStatus)
-        }
-
+    }
 }

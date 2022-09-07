@@ -21,25 +21,14 @@ export class PostsRepository {
         return post
     }
 
-    async createPost(newPosts: PostsType) {
-        //const postInstance = new PostsModelClass({...newPosts})
-        //console.log(postIn)
-        //await postInstance.save()
-        const post = await PostsModelClass.create({...newPosts})
-        console.log(post)
-        return newPosts;
-
+    async createPost(newPost: PostsType): Promise<PostsType | undefined> {
+        await PostsModelClass.insertMany([newPost])
+        return newPost
     }
 
-    async updatePost(id: string, title: string, shortDescription: string, content: string, bloggerId: string) {
-        const postInstance = await PostsModelClass.findOne({id: id},  {_id: 0, __v: 0})
-        if (!postInstance) return false
-        postInstance.title = title;
-        postInstance.shortDescription = shortDescription;
-        postInstance.content = content;
-        postInstance.bloggerId = bloggerId
-        await postInstance.save()
-        return true
+    async updatePost(postId: string, title: string, shortDescription: string, content: string, bloggerId: string): Promise<boolean> {
+        const result = await PostsModelClass.updateOne({id: postId}, {$set: {title, shortDescription, content, bloggerId}})
+        return result.matchedCount === 1
     }
 
     async deletePosts(id: string) {
@@ -76,12 +65,15 @@ export class PostsRepository {
 
     async updateLikeStatus(user: any, postId: string, likeStatus: "None" | "Like" | "Dislike", addedLikeStatusAt: object): Promise<boolean|undefined> {
 
-        const isLikeStatus: LikesStatusType|null = await likesStatusCollection.findOne({id: postId, userId: user.id})
+        debugger
+        const isLikeStatus:LikesStatusType|null = await likesStatusCollection.findOne({id: postId, userId: user.id})
 
         if (!isLikeStatus) {
             await likesStatusCollection.insertMany({id: postId, userId: user.id, likeStatus})
             if(likeStatus === "Like") {
-                 const a = await PostsModelClass.findOneAndUpdate({id: postId}, {$inc: {"likesInfo.likesCount": 1}, "likesInfo.myStatus": likeStatus})
+                // await PostsModel.findOneAndUpdate({id: postId}, {$inc: {"likesInfo.likesCount": 1}, })
+                // await PostsModel.findOneAndUpdate({id: postId}, {"likesInfo.myStatus": likeStatus})
+                const a = await PostsModelClass.findOneAndUpdate({id: postId}, {$inc: {"likesInfo.likesCount": 1}, "likesInfo.myStatus": likeStatus})
 
                 const newestLike = {
                     addedAt:addedLikeStatusAt,
@@ -169,5 +161,4 @@ export class PostsRepository {
             return true
         }
     }
-
 }
