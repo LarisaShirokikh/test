@@ -16,9 +16,8 @@ export class PostsRepository {
         }).skip((pageNumber - 1) * pageSize).limit(pageSize).lean()
     }
 
-    async findPostById(id: string) {
-        const post = await PostsModelClass.findOne({id: id}, {_id: 0, __v: 0}).lean()
-        if (post)
+    async findPostById(postId: string): Promise<PostsType | null> {
+        const post = await PostsModelClass.findOne({id: postId}, {_id: 0, __v: 0})
         return post
     }
 
