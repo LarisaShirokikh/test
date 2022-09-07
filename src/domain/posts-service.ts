@@ -44,7 +44,7 @@ export class PostsService {
                     ]
                 }
             }
-
+                //@ts-ignore
             const createdPost = await this.postsRepository.createPost(newPost)
             return createdPost
         }

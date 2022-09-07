@@ -5,7 +5,7 @@ import {
     BloggersType,
     CommentsType,
     PostsType, RefreshTokensCollectionType, UsersDBType,
-    UsersEmailConfDataType, LikesStatusType
+    UsersEmailConfDataType, LikesStatusType, NewestLikesType
 } from "../types";
 import Array = module
 import * as module from "module";
@@ -41,32 +41,42 @@ const usersSchema = new mongoose.Schema<UsersDBType>({
         isConfirmed: Boolean
     }
 });
-const commentSchema = new mongoose.Schema<CommentsType>({
-    userId: String,
-    id: String,
-    content: String
-})
+const commentsSchema = new mongoose.Schema<CommentsType>({
+        postId: String,
+        id: String,
+        content: String,
+        userId: String,
+        userLogin: String,
+        addedAt: Object,
+        likesInfo: {
+            likesCount: Number,
+            dislikesCount: Number,
+            myStatus: String
+        }
+    }, {_id: false}
+)
 const postsSchema = new mongoose.Schema<PostsType>({
-    id: String,
-    title: String,
-    shortDescription: String,
-    content: String,
-    bloggerId: String,
-    bloggerName: String,
-    addedAt: Date,
-    LikesInfo: {
-        likesCount: Number,
-        dislikesCount: Number,
-        myStatus: String,
-        newestLikes: [
-            {
-                addedAt: Date,
-                userId: String,
-                login: String
-            }
-        ]
-    }
-})
+        id: String,
+        title: String,
+        shortDescription: String,
+        content: String,
+        bloggerId: String,
+        bloggerName: String,
+        addedAt: Object, // new
+        likesInfo: {
+            likesCount: Number,
+            dislikesCount: Number,
+            myStatus: String,
+            newestLikes: [
+                {
+                    addedAt: Object,
+                    userId: String,
+                    login: String
+                }
+            ]
+        }
+    }, {_id: false}
+)
 const bloggersSchema = new mongoose.Schema<BloggersType>({
     id: String,
     name: String,
@@ -95,7 +105,7 @@ const likesStatusSchema = new mongoose.Schema<LikesStatusType>({
 export const EndpointsAttemptsTrysModelClass = mongoose.model('endpointsAttemptsTrys', endpointsAttemptsTrysSchema);
 export const RefreshTokensBlackListModelClass = mongoose.model('refreshTokensBlackList', refreshTokensBlackListSchema);
 export const UserModelClass = mongoose.model('users', usersSchema);
-export const CommentsModelClass = mongoose.model('comments', commentSchema);
+export const CommentsModelClass = mongoose.model('comments', commentsSchema);
 export const PostsModelClass = mongoose.model('posts', postsSchema);
 export const BloggersModelClass = mongoose.model('bloggers', bloggersSchema);
 export const UsersEmailConfDataModelClass = mongoose.model('usersEmailConfData', usersEmailConfDataSchema);

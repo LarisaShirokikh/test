@@ -7,25 +7,19 @@ export class BloggersType {
     }
 }
 
-export class PostsType {
-    constructor(
-        public id: string,
-        public title: string,
-        public shortDescription: string,
-        public content: string,
-        public bloggerId: string,
-        public bloggerName: string,
-        public addedAt: Date,
-        public LikesInfo: {
-            likesCount: number,
-            dislikesCount: number,
-            myStatus: string,
-            newestLikes:   NewestLikes[]
-
-
-
-
-        }) {
+export type PostsType = {
+    id: string
+    title: string
+    shortDescription: string
+    content: string
+    bloggerId: string
+    bloggerName: string
+    addedAt: object // new
+    likesInfo: {
+        likesCount: number
+        dislikesCount: number
+        myStatus: string
+        newestLikes: [NewestLikesType | NewestLikesType[]]
     }
 }
 
@@ -37,14 +31,20 @@ export class UsersType {
     }
 }
 
-export class CommentsType {
-    constructor(
-        public id: string,
-        public userId: string,
-        public content: string
-    ) {
+export type CommentsType = {
+    postId: string,
+    id: string,
+    content: string,
+    userId: string,
+    userLogin: string,
+    addedAt: object,
+    likesInfo: {
+        likesCount: number
+        dislikesCount: number
+        myStatus: string
     }
 }
+
 
 export class UsersEmailConfDataType {
     constructor(
@@ -91,22 +91,16 @@ export class UsersDBType {
     }
 }
 
-export class LikesStatusType {
-    constructor(
-        public id: string,
-        public userId: string,
-        public likeStatus: "None" | "Like" | "Dislike"
-    ) {
-    }
-
+export type LikesStatusType = {
+    id: string
+    userId: string
+    likeStatus: "None" | "Like" | "Dislike"
 }
-export class NewestLikes {
-constructor(
 
-       public addedAt: Date,
-       public userId: string,
-       public login: string
-) {}
+export type NewestLikesType = {
+    addedAt: Object
+    userId: String
+    login: String
 }
 
 
