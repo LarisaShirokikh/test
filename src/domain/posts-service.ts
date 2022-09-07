@@ -36,7 +36,11 @@ export class PostsService {
                   likesCount: 0,
                     dislikesCount: 0,
                     myStatus: 'None',
-                    newestLikes: []
+                    newestLikes: [{
+                      addedAt: new Date(),
+                        login: blogger.name,
+                        userId: blogger.id
+                    }]
                 })
 
             await this.postsRepository.createPost(newPost)
