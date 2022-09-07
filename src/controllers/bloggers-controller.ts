@@ -3,12 +3,14 @@ import {BloggersService} from "../domain/bloggers-service";
 import {Request, Response} from "express";
 import {toString} from "express-validator/src/utils";
 import {PostsService} from "../domain/posts-service";
+import {BloggersRepository} from "../repositories/bloggers-repository";
 
 @injectable()
 export class BloggersController {
     constructor(@inject(BloggersService)
                 protected bloggersService: BloggersService,
-                protected postsService: PostsService
+                protected postsService: PostsService,
+                protected bloggersRepository: BloggersRepository
     ) {}
 
     async getAllBloggers(req: Request, res: Response) {
@@ -53,14 +55,17 @@ export class BloggersController {
         }
     }
     async createPostByBloggerId(req: Request, res: Response) {
-        const blogger = await this.bloggersService.findBloggersById(req.params.bloggerId)
-        if (!blogger) res.sendStatus(400)
-        const newPost = await this.bloggersService
-            .createPostByBloggerId(req.params.bloggerId, req.body.title, req.body.shortDescription,
-                req.body.content)
-        if (newPost) {
-            res.status(201).send(newPost)
-            return
+        const blogger = await this.bloggersRepository.isBlogger(req.params.bloggerId);
+        if (!blogger) {
+            res.status(404).send({errorsMessages: [{message: "Problem with a bloggerId field", field: "bloggerId"}]});
+        } else {
+            const newPost = await this.bloggersService.createPostByBloggerId(req.params.bloggerId, req.body.title, req.body.shortDescription, req.body.content)
+
+            if (newPost) {
+                res.status(201).send(newPost)
+            } else {
+                res.status(400).send({errorsMessages: [{message: "Problem with a bloggerId field", field: "bloggerId"}]})
+            }
         }
     }
     async findBloggersPost(req: Request, res: Response) {

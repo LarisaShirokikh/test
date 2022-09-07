@@ -28,14 +28,14 @@ export class PostsService {
 
         if (blogger) {
             const newPost = {
-                id: (new ObjectId()).toString(),
+                id: (+(new Date())).toString(),
                 title,
                 shortDescription,
                 content,
                 bloggerId,
                 bloggerName: blogger.name,
                 addedAt: new Date,
-                LikesInfo: {
+                likesInfo: {
                     likesCount: 0,
                     dislikesCount: 0,
                     myStatus: "None",
