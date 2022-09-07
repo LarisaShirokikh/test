@@ -90,9 +90,9 @@ export type LikesStatusType = {
 }
 
 export type NewestLikesType = {
-    addedAt: Object
-    userId: String
-    login: String
+    addedAt: object
+    userId: string
+    login: string
 }
 
 
