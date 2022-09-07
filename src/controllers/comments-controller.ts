@@ -84,11 +84,13 @@ async getComment(req: Request, res: Response) {
 }
 
 async commentLikeStatus(req: Request, res: Response) {
-        const comment = await this.commentsService.findComment(req.params.commentId)
-    if (!comment) res.status(404).send({errorsMessages: [{message: "Comment not found", field: "commentId"}]})
-    await this.commentsService.updateLikeStatus(req.params.user, req.params.commentId, req.body.likeStatus)
-    res.status(204)
-    return
-
+    const comment = await this.commentsService.findComment(req.params.commentId)
+    if (!comment) {
+        res.status(404).send({errorsMessages: [{message: "Comment not found", field: "commentId"}]});
+        return
+    }
+    // @ts-ignore
+    await this.commentsService.updateLikeStatus(req.user, req.params.commentId, req.body.likeStatus)
+    res.sendStatus(204)
 }
 }

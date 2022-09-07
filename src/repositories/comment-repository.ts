@@ -13,12 +13,7 @@ export class CommentsRepository {
     }
 
     async findComment(commentId: string): Promise<CommentsType | undefined | null> {
-        const comment = await CommentsModelClass.findOne({id: commentId},
-            {
-                _id: 0,
-                __v: 0,
-
-            })
+        const comment = await CommentsModelClass.findOne({id: commentId}, {_id: 0, __v: 0})
         return comment
     }
 
