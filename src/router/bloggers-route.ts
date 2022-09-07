@@ -22,6 +22,7 @@ export const bloggersRouter = Router({})
 
 
 bloggersRouter.get('/', bloggersController.getAllBloggers.bind(bloggersController))
+
 bloggersRouter.post('/', authMiddleware,
     nameValidation, urlValidation, inputValidationMiddleWare,
     bloggersController.createBlogger.bind(bloggersController))
