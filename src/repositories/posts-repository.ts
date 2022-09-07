@@ -94,7 +94,7 @@ export class PostsRepository {
                     user.login
                 )
                 if (like !== null) {
-                    like.extendedLikesInfo.newestLikes = [newestLike, ...like.extendedLikesInfo.newestLikes]
+                    like.LikesInfo.newestLikes = [newestLike, ...like.LikesInfo.newestLikes]
                     await like.save()
                     return true
                 }
@@ -124,7 +124,7 @@ export class PostsRepository {
                     user.login
                 )
                 if (a !== null) {
-                    a.extendedLikesInfo.newestLikes = [newestLike, ...a.extendedLikesInfo.newestLikes]
+                    a.LikesInfo.newestLikes = [newestLike, ...a.LikesInfo.newestLikes]
 
                     await a.save()
                     return true
@@ -143,7 +143,7 @@ export class PostsRepository {
                     user.login
                 )
                 if (a !== null) {
-                    a.extendedLikesInfo.newestLikes = [newestLike, ...a.extendedLikesInfo.newestLikes]
+                    a.LikesInfo.newestLikes = [newestLike, ...a.LikesInfo.newestLikes]
 
                     await a.save()
                     return true

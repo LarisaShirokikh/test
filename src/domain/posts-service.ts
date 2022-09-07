@@ -35,7 +35,7 @@ export class PostsService {
                 bloggerId,
                 bloggerName: blogger.name,
                 addedAt: new Date,
-                extendedLikesInfo: {
+                LikesInfo: {
                     likesCount: 0,
                     dislikesCount: 0,
                     myStatus: "None",
