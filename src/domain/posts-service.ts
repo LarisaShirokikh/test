@@ -4,15 +4,18 @@ import {PostsType} from "../types";
 import {PostsRepository} from "../repositories/posts-repository";
 import {BloggersRepository} from "../repositories/bloggers-repository";
 import {injectable} from "inversify";
+import {CommentsRepository} from "../repositories/comment-repository";
 
 
 @injectable()
 export class PostsService {
      postsRepository: PostsRepository
      bloggersRepository: BloggersRepository
+    commentsRepository: CommentsRepository
      constructor() {
          this.postsRepository = new PostsRepository()
          this.bloggersRepository = new BloggersRepository()
+         this.commentsRepository = new CommentsRepository()
      }
     async findPosts(pageSize:number, pageNumber:number) {
         return await this.postsRepository.findPosts(pageSize, pageNumber )
@@ -65,10 +68,9 @@ export class PostsService {
         return this.postsRepository.getPostById(postId)
     }
 
-    async updateLike(user: any, postId: string, likeStatus: "None" | "Like" | "Dislike") {
-        const addedLikeStatusAt = new Date()
-         return this.postsRepository.updateLikeStatus(user, postId, likeStatus, addedLikeStatusAt)
+    async updateLikeStatus (user: any, commentId: string, likeStatus: "None" | "Like" | "Dislike"): Promise<boolean|undefined>  {
 
+        return this.commentsRepository.updateLikeStatus(user, commentId, likeStatus)
     }
 }
 
