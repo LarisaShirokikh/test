@@ -1,14 +1,12 @@
 import dotenv from "dotenv";
-import mongoose, {Types} from "mongoose";
+import mongoose from "mongoose";
 import {
     AttemptType,
     BloggersType,
     CommentsType,
     PostsType, RefreshTokensCollectionType, UsersDBType,
-    UsersEmailConfDataType, LikesStatusType, NewestLikesType
+    UsersEmailConfDataType, LikesStatusType
 } from "../types";
-import Array = module
-import * as module from "module";
 
 
 dotenv.config();
@@ -110,6 +108,7 @@ export const PostsModelClass = mongoose.model('posts', postsSchema);
 export const BloggersModelClass = mongoose.model('bloggers', bloggersSchema);
 export const UsersEmailConfDataModelClass = mongoose.model('usersEmailConfData', usersEmailConfDataSchema);
 export const likesStatusCollection = mongoose.model("likesStatus", likesStatusSchema)
+
 
 export async function runDb() {
     try {
