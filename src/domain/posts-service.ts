@@ -36,7 +36,13 @@ export class PostsService {
                     likesCount: 0,
                     dislikesCount: 0,
                     myStatus: 'None',
-                    newestLikes: []
+                    newestLikes: [
+                        {
+                            addedAt: new Date,
+                            userId: blogger.id,
+                            login: blogger.name
+                        }
+                    ]
                 })
 
             await this.postsRepository.createPost(newPost)
@@ -62,9 +68,8 @@ export class PostsService {
         return this.postsRepository.getPostById(postId)
     }
 
-    async updateLike(user: any, postId: string, likeStatus: "None" | "Like" | "Dislike") {
-        const addedLikeStatusAt = new Date()
-         return this.postsRepository.updateLikeStatus(user, postId, likeStatus, addedLikeStatusAt)
+    async updateLike(user: any, postId: string, likeStatus: "None" | "Like" | "Dislike", addedLikeStatusAt: object) {
+         return await this.postsRepository.updateLikeStatus(user, postId, likeStatus, addedLikeStatusAt)
 
     }
 }

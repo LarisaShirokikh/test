@@ -1,39 +1,32 @@
-import {NewestLikes, PostsType} from "../types";
+
+import { PostsType } from "../types";
 import {likesStatusCollection, PostsModelClass} from "../settingses/db";
-import {injectable} from "inversify";
+import {inject, injectable} from "inversify";
 import mongoose from "mongoose";
 
 @injectable()
-export class PostsRepository {
+ export class PostsRepository {
     //constructor(@inject(PostsModelClass.name) private postsModelClass: mongoose.Model<PostsType> ) {
-    //}
-    async findPosts(pageSize: number, pageNumber: number) {
-        return PostsModelClass.find({}, {
-
-                _id: 0,
-                __v: 0
-
-        }).skip((pageNumber - 1) * pageSize).limit(pageSize).lean()
+   //}
+    async findPosts(pageSize:number, pageNumber:number) {
+        return PostsModelClass.find({}, {projection: {_id: 0, __v: 0}}).skip((pageNumber-1)*pageSize).limit(pageSize).lean()
     }
-
     async findPostById(id: string) {
-        const post = await PostsModelClass.findOne({id: id}, {_id: 0, __v: 0}).lean()
-        if (post)
+        const post = await PostsModelClass.findOne({id: id}, {projection: {_id: 0, __v: 0}}).lean()
+        console.log(post)
         return post
     }
-
     async createPost(newPosts: PostsType) {
         //const postInstance = new PostsModelClass({...newPosts})
         //console.log(postIn)
         //await postInstance.save()
-        const post = await PostsModelClass.create({...newPosts})
+        const post = await PostsModelClass.insertMany({...newPosts})
         console.log(post)
         return newPosts;
 
     }
-
     async updatePost(id: string, title: string, shortDescription: string, content: string, bloggerId: string) {
-        const postInstance = await PostsModelClass.findOne({id: id},  {_id: 0, __v: 0})
+        const postInstance = await PostsModelClass.findOne({id: id}, {projection: {_id: 0, __v: 0}})
         if (!postInstance) return false
         postInstance.title = title;
         postInstance.shortDescription = shortDescription;
@@ -42,68 +35,54 @@ export class PostsRepository {
         await postInstance.save()
         return true
     }
-
     async deletePosts(id: string) {
 
         const result = await PostsModelClass.deleteOne({id: id})
         return result.deletedCount === 1
     }
-
     async getCount() {
         return PostsModelClass.count({})
     }
-
-    async findBloggersPost(pageSize: number, pageNumber: number, bloggerId: string) {
-        return PostsModelClass.find({bloggerId: bloggerId}, {
-            _id: 0,
-            __v: 0
-        }).skip((pageNumber - 1) * pageSize).limit(pageSize).lean()
+    async findBloggersPost(pageSize:number, pageNumber:number, bloggerId: string){
+        return PostsModelClass.find({bloggerId: bloggerId}, {_id: 0, __v: 0}).skip((pageNumber-1)*pageSize).limit(pageSize).lean()
     }
-
     async getCountBloggerId(bloggerId: string) {
         return PostsModelClass.count({bloggerId: bloggerId})
     }
-
     async deleteAllPost(): Promise<boolean> {
         const result = PostsModelClass.deleteMany({})
         return true
     }
-
-    async getPostById(postId: string): Promise<PostsType | null> {
-        const post = await PostsModelClass.findOne({id: postId}, {_id: 0, __v: 0})
+        async getPostById (postId: string): Promise<PostsType | null> {
+        const post  = await PostsModelClass.findOne({id: postId}, {_id: 0, __v: 0})
         return post;
     }
 
-    async updateLikeStatus(user: any, postId: string, likeStatus: "None" | "Like" | "Dislike", addedLikeStatusAt: Date) {
+    async updateLikeStatus(user: any, postId: string, likeStatus: "None" | "Like" | "Dislike", addedLikeStatusAt: object): Promise<boolean|undefined> {
 
 
-        const isLikeStatus = await likesStatusCollection.findOne({id: postId, userId: user.id}, {_id: 0})
+        const isLikeStatus = await likesStatusCollection.findOne({id: postId, userId: user.id})
 
         if (!isLikeStatus) {
-            await likesStatusCollection.create({id: postId, userId: user.id, likeStatus})
-            if (likeStatus === "Like") {
+            await likesStatusCollection.insertMany({id: postId, userId: user.id, likeStatus})
+            if(likeStatus === "Like") {
 
-                const like = await PostsModelClass.findOneAndUpdate({id: postId}, {
-                    $inc: {"extendedLikesInfo.likesCount": 1},
-                    "extendedLikesInfo.myStatus": likeStatus
-                })
+                const a = await PostsModelClass.findOneAndUpdate({id: postId}, {$inc: {"likesInfo.likesCount": 1}, "likesInfo.myStatus": likeStatus})
 
-                const newestLike = new NewestLikes(
-                    addedLikeStatusAt,
-                    user.id,
-                    user.login
-                )
-                if (like !== null) {
-                    like.extendedLikesInfo.newestLikes = [newestLike, ...like.extendedLikesInfo.newestLikes]
-                    await like.save()
-                    return true
+                const newestLike = {
+                    addedAt:addedLikeStatusAt,
+                    userId: user.id,
+                    login: user.login
                 }
+
+                // @ts-ignore
+                a.likesInfo.newestLikes = [newestLike, ...a.likesInfo.newestLikes]
+                // @ts-ignore
+                await a.save()
+                return true
             }
-            if (likeStatus === "Dislike") {
-                await PostsModelClass.findOneAndUpdate({id: postId}, {
-                    $inc: {"extendedLikesInfo.dislikesCount": 1},
-                    "extendedLikesInfo.myStatus": likeStatus
-                })
+            if(likeStatus === "Dislike") {
+                await PostsModelClass.findOneAndUpdate({id: postId}, {$inc: {"likesInfo.dislikesCount": 1}, "likesInfo.myStatus": likeStatus})
                 return true
             }
 
@@ -111,89 +90,65 @@ export class PostsRepository {
 
             await likesStatusCollection.updateOne({id: postId, userId: user.id}, {$set: {likeStatus}})
 
-            if (likeStatus === "Like" && isLikeStatus.likeStatus === "Dislike") {
-                const a = await PostsModelClass.findOneAndUpdate({id: postId}, {
-                    $inc: {
-                        "extendedLikesInfo.likesCount": 1,
-                        "extendedLikesInfo.dislikesCount": -1
-                    }, "extendedLikesInfo.myStatus": likeStatus
-                })
-                const newestLike = new NewestLikes(
-                    addedLikeStatusAt,
-                    user.id,
-                    user.login
-                )
-                if (a !== null) {
-                    a.extendedLikesInfo.newestLikes = [newestLike, ...a.extendedLikesInfo.newestLikes]
-
-                    await a.save()
-                    return true
+            if(likeStatus === "Like" && isLikeStatus.likeStatus === "Dislike") {
+                const a = await PostsModelClass.findOneAndUpdate({id: postId}, {$inc: {"likesInfo.likesCount": 1, "likesInfo.dislikesCount": -1}, "likesInfo.myStatus": likeStatus})
+                const newestLike = {
+                    addedAt:addedLikeStatusAt,
+                    userId: user.id,
+                    login: user.login
                 }
+                // @ts-ignore
+                a.likesInfo.newestLikes = [newestLike, ...a.likesInfo.newestLikes]
+                // @ts-ignore
+                await a.save()
+                return true
             }
 
-            if (likeStatus === "Like" && isLikeStatus.likeStatus === "None") {
-                const a = await PostsModelClass.findOneAndUpdate({id: postId}, {
-                    $inc: {"extendedLikesInfo.likesCount": 1},
-                    "extendedLikesInfo.myStatus": likeStatus
-                })
+            if(likeStatus === "Like" && isLikeStatus.likeStatus === "None") {
+                const a = await PostsModelClass.findOneAndUpdate({id: postId}, {$inc: {"likesInfo.likesCount": 1}, "likesInfo.myStatus": likeStatus})
 
-                const newestLike = new NewestLikes(
-                    addedLikeStatusAt,
-                    user.id,
-                    user.login
-                )
-                if (a !== null) {
-                    a.extendedLikesInfo.newestLikes = [newestLike, ...a.extendedLikesInfo.newestLikes]
-
-                    await a.save()
-                    return true
+                const newestLike = {
+                    addedAt:addedLikeStatusAt,
+                    userId: user.id,
+                    login: user.login
                 }
-            }
-
-            if (likeStatus === "Like" && isLikeStatus.likeStatus === "Like") {
+                // @ts-ignore
+                a.likesInfo.newestLikes = [newestLike, ...a.likesInfo.newestLikes]
+                // @ts-ignore
+                await a.save()
                 return true
             }
 
-            if (likeStatus === "Dislike" && isLikeStatus.likeStatus === "Like") {
-
-                await PostsModelClass.findOneAndUpdate({id: postId}, {
-                    $inc: {
-                        "extendedLikesInfo.likesCount": -1,
-                        "extendedLikesInfo.dislikesCount": 1
-                    }, "extendedLikesInfo.myStatus": likeStatus
-                })
+            if(likeStatus === "Like" && isLikeStatus.likeStatus === "Like") {
                 return true
             }
 
-            if (likeStatus === "Dislike" && isLikeStatus.likeStatus === "Dislike") {
+            if(likeStatus === "Dislike" && isLikeStatus.likeStatus === "Like") {
+
+                await PostsModelClass.findOneAndUpdate({id: postId}, {$inc: {"likesInfo.likesCount": -1, "likesInfo.dislikesCount": 1}, "likesInfo.myStatus": likeStatus})
                 return true
             }
 
-            if (likeStatus === "Dislike" && isLikeStatus.likeStatus !== "Like") {
-                await PostsModelClass.findOneAndUpdate({id: postId}, {
-                    $inc: {"extendedLikesInfo.likesCount": -1},
-                    "extendedLikesInfo.myStatus": likeStatus
-                })
+            if(likeStatus === "Dislike" && isLikeStatus.likeStatus === "Dislike") {
                 return true
             }
 
-            if (likeStatus === "None" && isLikeStatus.likeStatus === "Like") {
-                await PostsModelClass.findOneAndUpdate({id: postId}, {
-                    $inc: {"extendedLikesInfo.likesCount": -1},
-                    "extendedLikesInfo.myStatus": likeStatus
-                })
+            if(likeStatus === "Dislike" && isLikeStatus.likeStatus !== "Like") {
+                await PostsModelClass.findOneAndUpdate({id: postId}, {$inc: {"likesInfo.likesCount": -1}, "likesInfo.myStatus": likeStatus})
                 return true
             }
 
-            if (likeStatus === "None" && isLikeStatus.likeStatus === "Dislike") {
-                await PostsModelClass.findOneAndUpdate({id: postId}, {
-                    $inc: {"extendedLikesInfo.dislikesCount": -1},
-                    "extendedLikesInfo.myStatus": likeStatus
-                })
+            if(likeStatus === "None" && isLikeStatus.likeStatus === "Like") {
+                await PostsModelClass.findOneAndUpdate({id: postId}, {$inc: {"likesInfo.likesCount": -1}, "likesInfo.myStatus": likeStatus})
                 return true
             }
 
-            if (likeStatus === "None" && isLikeStatus.likeStatus === "None") {
+            if(likeStatus === "None" && isLikeStatus.likeStatus === "Dislike") {
+                await PostsModelClass.findOneAndUpdate({id: postId}, {$inc: {"likesInfo.dislikesCount": -1}, "likesInfo.myStatus": likeStatus})
+                return true
+            }
+
+            if(likeStatus === "None" && isLikeStatus.likeStatus === "None") {
                 return true
             }
             return true

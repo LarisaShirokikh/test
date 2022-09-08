@@ -15,7 +15,6 @@ export const authRouter = Router({})
 
 authRouter.post('/registration-confirmation',
     checkLimitsIPAttemptsMiddleware, authController.userRegConfirmation.bind(authController))
-
 authRouter.post('/registration',
     loginValidation, emailValidation, passwordValidation, inputValidationMiddleWare,
     checkLimitsIPAttemptsMiddleware, authController.userRegistration.bind(authController))

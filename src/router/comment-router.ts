@@ -1,7 +1,7 @@
 import { Router} from "express";
 
 import {authBearer} from "../middlewares/auth-middleware";
-import {commentValidation, likeStatusValidation} from "../middlewares/validations";
+import {commentValidation} from "../middlewares/validations";
 import {inputValidationMiddleWare} from "../middlewares/input-validation";
 import {container} from "../composition-root";
 import {CommentsController} from "../controllers/comments-controller";
@@ -15,7 +15,6 @@ const commentsController = container.resolve<CommentsController>(CommentsControl
 
 commentsRouter.put('/:commentId',
     authBearer, commentValidation, inputValidationMiddleWare,
-
     commentsController.findComment.bind(commentsController))
 
 
@@ -25,5 +24,5 @@ commentsRouter.delete('/:commentId', authBearer,
 commentsRouter.get('/:commentId',
     commentsController.getComment.bind(commentsController))
 
-commentsRouter.put('/:commentId/like-status', authBearer, likeStatusValidation, inputValidationMiddleWare,
+commentsRouter.put('/:commentId/like-status', authBearer, inputValidationMiddleWare,
     commentsController.commentLikeStatus.bind(commentsController))

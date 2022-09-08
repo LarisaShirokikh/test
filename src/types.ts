@@ -20,11 +20,13 @@ export class PostsType {
             likesCount: number,
             dislikesCount: number,
             myStatus: string,
-            newestLikes:   NewestLikes[]
-
-
-
-
+            newestLikes: [
+                {
+                    addedAt: Date,
+                    userId: string,
+                    login: string
+                }
+            ]
         }) {
     }
 }
@@ -99,14 +101,6 @@ export class LikesStatusType {
     ) {
     }
 
-}
-export class NewestLikes {
-constructor(
-
-       public addedAt: Date,
-       public userId: string,
-       public login: string
-) {}
 }
 
 
