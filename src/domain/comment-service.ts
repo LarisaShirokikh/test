@@ -23,18 +23,27 @@ export class CommentsService {
                     "userId": user.id,
                     "userLogin": user.userLogin,
                     "addedAt": new Date,
-                    "likesInfo": {}
-
+                    "likesInfo": {
+                        "likesCount": 0,
+                        "dislikesCount": 0,
+                        "myStatus": "None"
+                    }
                 }
-
+               /* {
+                    postId: postId,
+                    id: (+(new Date())).toString(),
+                    content: content,
+                    userId: user.id,
+                    userLogin: user.login,
+                    addedAt: new Date
+                }*/
             const createdComment = await this.commentsRepository.createComment(newComment)
             return createdComment
         }
     }
 
-    async findComment(commentId: string) {
-        const comment = await this.commentsRepository.findComment(commentId)
-        return comment
+    async findComment(id: string) {
+        return await this.commentsRepository.findComment(id)
     }
 
     async findCommentWithPag(postId: string, pageSize: number, pageNumber: number) {
@@ -57,8 +66,8 @@ export class CommentsService {
         return await this.commentsRepository.findUser(userId, commentId)
     }
 
-    async updateLikeStatus(user: string, commentId: string, likeStatus: "None" | "Like" | "Dislike") {
-        return await this.commentsRepository.updateLikeStatus(user, commentId, likeStatus)
+    async updateLikeStatus(user: string, commentId: string, likeStatus: string) {
+        return await this.commentsRepository.updateCommentLikeStatus(user, commentId, likeStatus)
     }
 }
 
