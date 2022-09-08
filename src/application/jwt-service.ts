@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken'
-import {UsersWithPassType} from "../types";
+import {UsersWithPassType} from "../settingses/db";
+
 
 
 export const jwtService = {

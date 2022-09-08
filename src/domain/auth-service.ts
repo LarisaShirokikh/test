@@ -2,17 +2,11 @@
 import {emailManager} from "../managers/email-manager";
 import {v4 as uuidv4} from 'uuid';
 import add from 'date-fns/add'
-
-import { UsersWithEmailType} from "../types";
-
-import { injectable} from "inversify";
 import {UsersRepository} from "../repositories/users-repository";
 import {refreshTokensBLRepository} from "../repositories/refresh-repository";
+import {UsersWithEmailType} from "../settingses/db";
 
 
-
-
-@injectable()
 class AuthService {
     private usersRepository: UsersRepository;
     constructor() {

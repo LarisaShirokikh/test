@@ -1,28 +1,32 @@
 
-import {ObjectId} from "mongodb";
-import {PostType} from "../types";
 import {PostsRepository} from "../repositories/posts-repository";
 import {BloggersRepository} from "../repositories/bloggers-repository";
-import {injectable} from "inversify";
-import {CommentsRepository} from "../repositories/comment-repository";
+import {PostType} from "../settingses/db";
 
 
-@injectable()
-export class PostsService {
-     postsRepository: PostsRepository
-     bloggersRepository: BloggersRepository
-    commentsRepository: CommentsRepository
-     constructor() {
-         this.postsRepository = new PostsRepository()
-         this.bloggersRepository = new BloggersRepository()
-         this.commentsRepository = new CommentsRepository()
-     }
-    async findPosts(pageSize:number, pageNumber:number) {
-        return await this.postsRepository.findPosts(pageSize, pageNumber )
+
+class PostsService {
+    private postsRepository: PostsRepository;
+    private bloggersRepository: BloggersRepository;
+    constructor() {
+        this.postsRepository = new PostsRepository()
+        this.bloggersRepository = new BloggersRepository()
     }
-    async findPostById(id: string) {
-        return await this.postsRepository.findPostById(id)
+
+    async getAllPosts (pageNumber: string = "1" || undefined || null, pageSize: string = "10" || undefined || null): Promise<{}> {
+
+        const postsDb = await this.postsRepository.getAllPosts(+pageNumber, +pageSize)
+        // @ts-ignore
+        const posts = {...postsDb}
+
+        // @ts-ignore
+        for (let i = 0; i < posts.items.length; i++) {
+            // @ts-ignore
+            delete posts.items[i]._id
+        }
+        return posts
     }
+
     async createPost (title: string, shortDescription: string, content: string, bloggerId: string): Promise<PostType | undefined> {
         const blogger = await this.bloggersRepository.getBloggerById(bloggerId)
         if (blogger) {
@@ -34,7 +38,7 @@ export class PostsService {
                 bloggerId,
                 bloggerName: blogger.name,
                 addedAt: new Date,
-                extendedLikesInfo: {
+                likesInfo: {
                     likesCount: 0,
                     dislikesCount: 0,
                     myStatus: "None",
@@ -49,24 +53,16 @@ export class PostsService {
         }
     }
 
+    async getPostById (postId: string): Promise<PostType | null> {
+        return this.postsRepository.getPostById(postId)
+    }
+
     async updatePost (postId: string, title: string, shortDescription: string, content: string, bloggerId: string): Promise<boolean>  {
         return this.postsRepository.updatePost(postId, title, shortDescription, content, bloggerId)
     }
-    async deletePosts(id: string) {
-        return await this.postsRepository.deletePosts(id)
-    }
-    async getCount() {
-        return await this.postsRepository.getCount()
-    }
-    async findBloggersPost(pageSize:number, pageNumber:number,bloggerId:string) {
-        return await this.postsRepository.findBloggersPost(pageSize, pageNumber, bloggerId)
-    }
-    async getCountBloggerId(bloggerId: string) {
-        return await this.postsRepository.getCountBloggerId(bloggerId)
-    }
-    async getPostById (postId: string): Promise<PostType | null> {
-        return this.postsRepository.getPostById(postId)
 
+    async deletePost (postId: string): Promise<boolean>  {
+        return this.postsRepository.deletePost(postId)
     }
 
     async updateLikeStatus (user: any, postId: string, likeStatus: "None" | "Like" | "Dislike"): Promise<boolean|undefined>  {
@@ -75,5 +71,7 @@ export class PostsService {
         return this.postsRepository.updateLikeStatus(user,postId, likeStatus, addedLikeStatusAt)
     }
 }
+
+export const postsService = new PostsService()
 
 

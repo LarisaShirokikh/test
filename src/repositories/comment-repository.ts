@@ -1,56 +1,64 @@
-import {CommentType, LikesStatusType} from "../types";
-import {CommentsModel, likesStatusCollection} from "../settingses/db";
-import {injectable} from "inversify";
+
+import {
+    CommentContentType,
+    CommentsExtendedType,
+    CommentsModel,
+    CommentType,
+    likesStatusCollection, LikesStatusType
+} from "../settingses/db";
 
 
-@injectable()
 export class CommentsRepository {
-    async createComment(newComment: CommentType): Promise<CommentType | undefined> {
+    async getAllCommentsToPost (postId: string, pageNumber: number, pageSize:number): Promise<CommentsExtendedType | undefined | null> {
+
+        const commentsCount = await CommentsModel.count({postId})
+        const pagesCount = Math.ceil(commentsCount / pageSize)
+        const comments: CommentType[] | CommentType = await CommentsModel.find({postId}, {_id: 0, postId: 0, __v: 0}).skip((pageNumber-1)*pageSize).limit(pageSize).lean()
+
+        const result = {
+            pagesCount: pagesCount,
+            page: pageNumber,
+            pageSize,
+            totalCount: commentsCount,
+            items: comments
+        }
+
+        // @ts-ignore
+        return result
+    }
+
+    async findComment (commentId: string): Promise<CommentType | undefined | null> {
+        const comment = await CommentsModel.findOne({id: commentId}, {_id: 0, postId: 0, __v: 0})
+        // @ts-ignore
+        return comment
+    }
+
+    async createComment (newComment: CommentType): Promise<CommentType | undefined> {
         await CommentsModel.insertMany([newComment])
         const comment = await CommentsModel.findOne({id: newComment.id}, {_id: 0, postId: 0, __v: 0})
         // @ts-ignore
         return comment
     }
 
-    async findComment(commentId: string): Promise<CommentType | undefined | null> {
-        const comment = await CommentsModel.findOne({id: commentId}, {_id: 0, __v: 0})
-        return comment
+
+    async updateComment (commentId: string, content: string): Promise<CommentContentType>  {
+        await CommentsModel.updateOne({id: commentId}, {$set: {content}})
+
+        const updatedComment = await CommentsModel.findOne({id: commentId}, {_id: 0, postId: 0, id: 0, userId: 0, userLogin: 0, addedAt: 0, __v: 0})
+
+        // @ts-ignore
+        return updatedComment
+
     }
 
-    async findCommentWithPag(postId: string, pageSize: number, pageNumber: number) {
-        return CommentsModel.find({postId: postId}, {
-            _id: 0,
-            __v: 0
-        }).skip((pageNumber - 1) * pageSize).limit(pageSize).lean()
-    }
-
-    async getCount(postId: string) {
-        return CommentsModel.count({postId: postId})
-    }
-
-    async deleteComment(id: string) {
-        const result = await CommentsModel.deleteOne({id: id})
+    async deleteComment (commentId: string): Promise<boolean>  {
+        const result = await CommentsModel.deleteOne({id: commentId})
         return result.deletedCount === 1
     }
 
-    async updateComment(commentId: string, content: string) {
-        await CommentsModel.updateOne({id: commentId}, {$set: {content}})
-        const updatedComment = await CommentsModel.findOne({id: commentId},
-            {
-                _id: 0,
-                postId: 0,
-                id: 0,
-                userId: 0,
-                userLogin: 0,
-                addedAt: 0,
-                __v: 0
-            }
-        )
-        return updatedComment
-    }
-
-    async findUser(userId: string, commentId: string) {
-        return CommentsModel.findOne({userId: userId, id: commentId}, {_id: 0, __v: 0})
+    async deleteAllComments(): Promise<boolean> {
+        await CommentsModel.deleteMany({})
+        return true
     }
 
     async updateLikeStatus(user: any, commentId: string, likeStatus: "None" | "Like" | "Dislike"): Promise<boolean|undefined> {
@@ -58,7 +66,7 @@ export class CommentsRepository {
         const isLikeStatus:LikesStatusType|null = await likesStatusCollection.findOne({id: commentId, userId: user.id})
 
         if (!isLikeStatus) {
-            await likesStatusCollection.insertMany({id: commentId, userId: user.id, likeStatus})
+            await likesStatusCollection.insertOne({id: commentId, userId: user.id, likeStatus})
             if(likeStatus === "Like") {
                 const a = await CommentsModel.findOneAndUpdate({id: commentId}, {$inc: {"likesInfo.likesCount": 1}, "likesInfo.myStatus": likeStatus})
                 return true
@@ -117,3 +125,5 @@ export class CommentsRepository {
         }
     }
 }
+
+export const commentsRepository = new CommentsRepository()

@@ -1,23 +1,28 @@
-import {LikesStatusType, PostType} from "../types";
-import {likesStatusCollection, PostsModel} from "../settingses/db";
-import {injectable} from "inversify";
+
+import {likesStatusCollection, LikesStatusType, PostsModel, PostsOfBloggerType, PostType} from "../settingses/db";
 
 
-@injectable()
+
 export class PostsRepository {
 
-    async findPosts(pageSize: number, pageNumber: number) {
-        return PostsModel.find({}, {
+    async getAllPosts(pageNumber: number, pageSize: number): Promise<PostsOfBloggerType | undefined | null> {
 
-                _id: 0,
-                __v: 0
-
+        const postsCount = await PostsModel.count({})
+        const pagesCount = Math.ceil(postsCount / pageSize)
+        const posts: PostType[] | PostType = await PostsModel.find({}, {
+            _id: 0,
+            __v: 0
         }).skip((pageNumber - 1) * pageSize).limit(pageSize).lean()
-    }
 
-    async findPostById(postId: string): Promise<PostType | null> {
-        const post = await PostsModel.findOne({id: postId}, {_id: 0, __v: 0})
-        return post
+        const result = {
+            pagesCount: pagesCount,
+            page: pageNumber,
+            pageSize,
+            totalCount: postsCount,
+            items: posts
+        }
+        // @ts-ignore
+        return result
     }
 
     async createPost(newPost: PostType): Promise<PostType | undefined> {
@@ -25,37 +30,24 @@ export class PostsRepository {
         return newPost
     }
 
+    async getPostById(postId: string): Promise<PostType | null> {
+        const post = await PostsModel.findOne({id: postId}, {_id: 0, __v: 0})
+        return post;
+    }
+
     async updatePost(postId: string, title: string, shortDescription: string, content: string, bloggerId: string): Promise<boolean> {
         const result = await PostsModel.updateOne({id: postId}, {$set: {title, shortDescription, content, bloggerId}})
         return result.matchedCount === 1
     }
 
-    async deletePosts(id: string) {
-
-        const result = await PostsModel.deleteOne({id: id})
+    async deletePost(postId: string): Promise<boolean> {
+        const result = await PostsModel.deleteOne({id: postId})
         return result.deletedCount === 1
     }
 
-    async getCount() {
-        return PostsModel.count({})
-    }
-
-    async findBloggersPost(pageSize: number, pageNumber: number, bloggerId: string) {
-        return PostsModel.find({bloggerId: bloggerId}, {
-            _id: 0,
-            __v: 0
-        }).skip((pageNumber - 1) * pageSize).limit(pageSize).lean()
-    }
-
-    async getCountBloggerId(bloggerId: string) {
-        return PostsModel.count({bloggerId: bloggerId})
-    }
-
-
-    async getPostById(postId: string): Promise<PostType | null> {
-        const post = await PostsModel.findOne({id: postId}, {_id: 0, __v: 0})
-
-        return post;
+    async deleteAllPost(): Promise<boolean> {
+        await PostsModel.deleteMany({})
+        return true
     }
 
     async updateLikeStatus(user: any, postId: string, likeStatus: "None" | "Like" | "Dislike", addedLikeStatusAt: object): Promise<boolean|undefined> {
@@ -64,7 +56,7 @@ export class PostsRepository {
         const isLikeStatus:LikesStatusType|null = await likesStatusCollection.findOne({id: postId, userId: user.id})
 
         if (!isLikeStatus) {
-            await likesStatusCollection.insertMany({id: postId, userId: user.id, likeStatus})
+            await likesStatusCollection.insertOne({id: postId, userId: user.id, likeStatus})
             if(likeStatus === "Like") {
                 // await PostsModel.findOneAndUpdate({id: postId}, {$inc: {"likesInfo.likesCount": 1}, })
                 // await PostsModel.findOneAndUpdate({id: postId}, {"likesInfo.myStatus": likeStatus})
@@ -157,3 +149,5 @@ export class PostsRepository {
         }
     }
 }
+
+export const postsRepository = new PostsRepository()
