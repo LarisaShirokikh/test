@@ -15,6 +15,7 @@ const commentsController = container.resolve<CommentsController>(CommentsControl
 
 commentsRouter.put('/:commentId',
     authBearer, commentValidation, inputValidationMiddleWare,
+
     commentsController.findComment.bind(commentsController))
 
 
