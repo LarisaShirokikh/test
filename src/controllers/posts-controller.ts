@@ -3,7 +3,6 @@ import {PostsService} from "../domain/posts-service";
 import {NextFunction, Request, Response} from "express";
 import {BloggersService} from "../domain/bloggers-service";
 import {CommentsService} from "../domain/comment-service";
-import {ObjectId} from "mongodb";
 
 @injectable()
 export class PostsController {
@@ -63,7 +62,7 @@ export class PostsController {
         //если найдено все то отдаем myStatus
         const post = await this.postsService.findPostById(req.params.id)
 
-        if (post) return res.send()
+        if (post) return res.send(post)
         res.status(404).send({
             errorsMessages: [{
                 message: "Post with specified postId doesn't exists",
