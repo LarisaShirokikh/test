@@ -1,8 +1,9 @@
 import {Request, Response, Router} from "express";
 import {UsersService} from "../domain/users-servise";
-import {loginValidation, passwordValidation} from "../middlewares/validations";
-import {inputValidationMiddleWare} from "../middlewares/input-validation";
 import {authMiddleware} from "../middlewares/auth-middleware";
+import {inputValidationMiddleWare} from "../middlewares/input-validation";
+import {loginValidation, passwordValidation} from "../middlewares/validations";
+
 
 export const usersRouter = Router({})
 
@@ -46,7 +47,6 @@ usersRouter.post('/',
     usersControllerInstance.createUser.bind(usersControllerInstance)
 )
 
-usersRouter.delete('/:id',
-    authMiddleware,
+usersRouter.delete('/:id', authMiddleware,
     usersControllerInstance.deleteUser.bind(usersControllerInstance)
 )
