@@ -1,78 +1,77 @@
-
-import {
-    CommentContentType,
-    CommentsExtendedType,
-    CommentsModel,
-    CommentType,
-    likesStatusCollection, LikesStatusType
-} from "../settingses/db";
+import {CommentsType, LikesStatusType} from "../types";
+import {CommentsModelClass, likesStatusCollection} from "../settingses/db";
+import {injectable} from "inversify";
 
 
+@injectable()
 export class CommentsRepository {
-    async getAllCommentsToPost (postId: string, pageNumber: number, pageSize:number): Promise<CommentsExtendedType | undefined | null> {
+    async createComment(newComment: CommentsType) {
+        return CommentsModelClass.create(newComment)
 
-        const commentsCount = await CommentsModel.count({postId})
-        const pagesCount = Math.ceil(commentsCount / pageSize)
-        const comments: CommentType[] | CommentType = await CommentsModel.find({postId}, {_id: 0, postId: 0, __v: 0}).skip((pageNumber-1)*pageSize).limit(pageSize).lean()
-
-        const result = {
-            pagesCount: pagesCount,
-            page: pageNumber,
-            pageSize,
-            totalCount: commentsCount,
-            items: comments
-        }
-
-        // @ts-ignore
-        return result
     }
 
-    async findComment (commentId: string): Promise<CommentType | undefined | null> {
-        const comment = await CommentsModel.findOne({id: commentId}, {_id: 0, postId: 0, __v: 0})
-        // @ts-ignore
+    async findComment(commentId: string): Promise<CommentsType | undefined | null> {
+        const comment = await CommentsModelClass.findOne({id: commentId},
+            {
+                _id: 0,
+                __v: 0,
+                likesInfo: 0
+            })
         return comment
     }
 
-    async createComment (newComment: CommentType): Promise<CommentType | undefined> {
-        await CommentsModel.insertMany([newComment])
-        const comment = await CommentsModel.findOne({id: newComment.id}, {_id: 0, postId: 0, __v: 0})
-        // @ts-ignore
-        return comment
+    async findCommentWithPag(postId: string, pageSize: number, pageNumber: number) {
+        return CommentsModelClass.find({postId: postId}, {
+            _id: 0,
+            __v: 0
+        }).skip((pageNumber - 1) * pageSize).limit(pageSize).lean()
     }
 
-
-    async updateComment (commentId: string, content: string): Promise<CommentContentType>  {
-        await CommentsModel.updateOne({id: commentId}, {$set: {content}})
-
-        const updatedComment = await CommentsModel.findOne({id: commentId}, {_id: 0, postId: 0, id: 0, userId: 0, userLogin: 0, addedAt: 0, __v: 0})
-
-        // @ts-ignore
-        return updatedComment
-
+    async getCount(postId: string) {
+        return CommentsModelClass.count({postId: postId})
     }
 
-    async deleteComment (commentId: string): Promise<boolean>  {
-        const result = await CommentsModel.deleteOne({id: commentId})
+    async deleteComment(id: string) {
+        const result = await CommentsModelClass.deleteOne({id: id})
         return result.deletedCount === 1
     }
 
-    async deleteAllComments(): Promise<boolean> {
-        await CommentsModel.deleteMany({})
-        return true
+    async updateComment(commentId: string, content: string) {
+        const update = await CommentsModelClass.updateOne({id: commentId}, {$set: {content}})
+        const updatedComment = await CommentsModelClass.findOne({id: commentId},
+            {
+                _id: 0,
+                postId: 0,
+                id: 0,
+                userId: 0,
+                userLogin: 0,
+                addedAt: 0
+            }
+        )
+        return updatedComment
+    }
+
+    async findUser(userId: string, commentId: string) {
+        return CommentsModelClass.findOne({userId: userId, id: commentId}, {_id: 0, __v: 0})
+    }
+
+    async deleteAllComments() {
+        const result = await CommentsModelClass.deleteMany({})
+        return result
     }
 
     async updateLikeStatus(user: any, commentId: string, likeStatus: "None" | "Like" | "Dislike"): Promise<boolean|undefined> {
 
-        const isLikeStatus:LikesStatusType|null = await likesStatusCollection.findOne({id: commentId, userId: user.id})
+        const isLikeStatus: LikesStatusType|null = await likesStatusCollection.findOne({id: commentId, userId: user.id})
 
         if (!isLikeStatus) {
-            await likesStatusCollection.insertOne({id: commentId, userId: user.id, likeStatus})
+            await likesStatusCollection.create({id: commentId, userId: user.id, likeStatus})
             if(likeStatus === "Like") {
-                const a = await CommentsModel.findOneAndUpdate({id: commentId}, {$inc: {"likesInfo.likesCount": 1}, "likesInfo.myStatus": likeStatus})
+                const a = await CommentsModelClass.findOneAndUpdate({id: commentId}, {$inc: {"likesInfo.likesCount": 1}, "likesInfo.myStatus": likeStatus})
                 return true
             }
             if(likeStatus === "Dislike") {
-                await CommentsModel.findOneAndUpdate({id: commentId}, {$inc: {"likesInfo.dislikesCount": 1}, "likesInfo.myStatus": likeStatus})
+                await CommentsModelClass.findOneAndUpdate({id: commentId}, {$inc: {"likesInfo.dislikesCount": 1}, "likesInfo.myStatus": likeStatus})
                 return true
             }
 
@@ -81,12 +80,12 @@ export class CommentsRepository {
             await likesStatusCollection.updateOne({id: commentId, userId: user.id}, {$set: {likeStatus}})
 
             if(likeStatus === "Like" && isLikeStatus.likeStatus === "Dislike") {
-                const a = await CommentsModel.findOneAndUpdate({id: commentId}, {$inc: {"likesInfo.likesCount": 1, "likesInfo.dislikesCount": -1}, "likesInfo.myStatus": likeStatus})
+                const a = await CommentsModelClass.findOneAndUpdate({id: commentId}, {$inc: {"likesInfo.likesCount": 1, "likesInfo.dislikesCount": -1}, "likesInfo.myStatus": likeStatus})
                 return true
             }
 
             if(likeStatus === "Like" && isLikeStatus.likeStatus === "None") {
-                const a = await CommentsModel.findOneAndUpdate({id: commentId}, {$inc: {"likesInfo.likesCount": 1}, "likesInfo.myStatus": likeStatus})
+                const a = await CommentsModelClass.findOneAndUpdate({id: commentId}, {$inc: {"likesInfo.likesCount": 1}, "likesInfo.myStatus": likeStatus})
                 return true
             }
 
@@ -95,7 +94,7 @@ export class CommentsRepository {
             }
 
             if(likeStatus === "Dislike" && isLikeStatus.likeStatus === "Like") {
-                await CommentsModel.findOneAndUpdate({id: commentId}, {$inc: {"likesInfo.likesCount": -1, "likesInfo.dislikesCount": 1}, "likesInfo.myStatus": likeStatus})
+                await CommentsModelClass.findOneAndUpdate({id: commentId}, {$inc: {"likesInfo.likesCount": -1, "likesInfo.dislikesCount": 1}, "likesInfo.myStatus": likeStatus})
                 return true
             }
 
@@ -104,17 +103,17 @@ export class CommentsRepository {
             }
 
             if(likeStatus === "Dislike" && isLikeStatus.likeStatus !== "Like") {
-                await CommentsModel.findOneAndUpdate({id: commentId}, {$inc: {"likesInfo.likesCount": -1}, "likesInfo.myStatus": likeStatus})
+                await CommentsModelClass.findOneAndUpdate({id: commentId}, {$inc: {"likesInfo.likesCount": -1}, "likesInfo.myStatus": likeStatus})
                 return true
             }
 
             if(likeStatus === "None" && isLikeStatus.likeStatus === "Like") {
-                await CommentsModel.findOneAndUpdate({id: commentId}, {$inc: {"likesInfo.likesCount": -1}, "likesInfo.myStatus": likeStatus})
+                await CommentsModelClass.findOneAndUpdate({id: commentId}, {$inc: {"likesInfo.likesCount": -1}, "likesInfo.myStatus": likeStatus})
                 return true
             }
 
             if(likeStatus === "None" && isLikeStatus.likeStatus === "Dislike") {
-                await CommentsModel.findOneAndUpdate({id: commentId}, {$inc: {"likesInfo.dislikesCount": -1}, "likesInfo.myStatus": likeStatus})
+                await CommentsModelClass.findOneAndUpdate({id: commentId}, {$inc: {"likesInfo.dislikesCount": -1}, "likesInfo.myStatus": likeStatus})
                 return true
             }
 
@@ -125,5 +124,3 @@ export class CommentsRepository {
         }
     }
 }
-
-export const commentsRepository = new CommentsRepository()

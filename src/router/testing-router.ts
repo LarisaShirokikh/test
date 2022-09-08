@@ -1,23 +1,12 @@
-import { Router, Request, Response } from "express";
-import {postsRepository} from "../repositories/posts-repository";
-import {usersRepository} from "../repositories/users-repository";
-import {bloggersRepository} from "../repositories/bloggers-repository";
-import {commentsRepository} from "../repositories/comment-repository";
-import {attemptsRepository} from "../repositories/attempts-repository";
-import {refreshTokensBLRepository} from "../repositories/refresh-repository";
+import { Router} from "express";
+import {container} from "../composition-root";
+import {TestingController} from "../controllers/testing-controller";
 
-
+const testingController = container.resolve<TestingController>(TestingController)
 export const testingRouter = Router({})
 
-testingRouter.delete('/all-data',
-    async (req: Request, res: Response) => {
-        await postsRepository.deleteAllPost()
-        await usersRepository.deleteAllUsers()
-        await bloggersRepository.deleteAllBloggers()
-        await commentsRepository.deleteAllComments()
-        await attemptsRepository.deleteAllAttempts()
-        await refreshTokensBLRepository.deleteAllTokensInBlackList()
 
-        res.sendStatus(204)
-    }
-)
+
+testingRouter.delete('/all-data',
+
+    testingController.deleteAll.bind(testingController))

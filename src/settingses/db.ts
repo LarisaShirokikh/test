@@ -1,225 +1,110 @@
-import {MongoClient, WithId} from 'mongodb'
 import dotenv from "dotenv";
-import mongoose from "mongoose";
+import mongoose, {Types} from "mongoose";
+import {
+    AttemptType,
+    BloggersType,
+    CommentsType,
+    PostsType, RefreshTokensCollectionType, UsersDBType,
+    UsersEmailConfDataType, LikesStatusType
+} from "../types";
+import Array = module
+import * as module from "module";
+
 
 dotenv.config();
 
 
-export type BloggersType = {
-    id: string
-    name: string
-    youtubeUrl: string
-}
+const mongoUri = process.env.mongoURI || "mongodb+srv://LoraDB:p-fkFTpRiB5r6h6@cluster0.zszv3.mongodb.net/test"
+let dbName = "mongoose-example"
 
-export type BloggersExtendedType = {
-    pagesCount: number
-    page: number
-    pageSize: number
-    totalCount: number
-    items: [BloggersType | BloggersType[]]
-}
+//export const client = new MongoClient(mongoUri)
+//let db = client.db("mongoose-example")
+//export const bloggersCollection = db.collection<BloggersType>("bloggers")
+//export const postsCollection = db.collection<PostsType>("posts")
+//export const usersCollection = db.collection<UsersDBType>("users")
+//export const commentsCollection = db.collection<CommentsType>("comments")
+//export const usersEmailConfDataCollection = db.collection<UsersEmailConfDataType>("usersEmailConfData")
+//export const endpointsAttemptsTrysCollection = db.collection<AttemptType>("attempts")
+//export const refreshTokensBlackListCollection = db.collection<RefreshTokensCollectionType>('refreshBlackList')
 
-export type NewestLikesType = {
-    addedAt: Object
-    userId: String
-    login: String
-}
-
-export type PostType = {
-    id: string
-    title: string
-    shortDescription: string
-    content: string
-    bloggerId: string
-    bloggerName: string
-    addedAt: object // new
-    likesInfo: {
-        likesCount: number
-        dislikesCount: number
-        myStatus: string
-        newestLikes: [NewestLikesType | NewestLikesType[]]
+const usersSchema = new mongoose.Schema<UsersDBType>({
+    accountData: {
+        id: String,
+        login: String,
+        email: String,
+        passwordHash: String,
+        isConfirmed: Boolean
+    },
+    emailConfirmation: {
+        confirmationCode: String,
+        expirationDate: String,
+        isConfirmed: Boolean
     }
-}
-
-export type PostsOfBloggerType = {
-    pagesCount: number
-    page: number
-    pageSize: number
-    totalCount: number
-    items: [PostType | PostType[]]
-}
-
-export type UsersType = {
-    id: string
-    login?: string
-    isConfirmed?: boolean
-    email?: string
-    password?: string
-}
-
-export type UsersWithPassType = {
-    id: string
-    login?: string
-    password?: string
-    isConfirmed?: boolean
-}
-
-export type UsersWithEmailType = {
-    email: string
-    login: string
-    userId?: string
-    id?: string
-}
-
-export type UsersExtendedType = {
-    pagesCount: number
-    page: number
-    pageSize: number
-    totalCount: number
-    items: [UsersType | UsersType[]]
-}
-
-export type UsersEmailConfDataType = {
-    email: string
-    confirmationCode: string
-    expirationDate: Date
-    isConfirmed: boolean
-}
-
-export type CommentType = {
-    postId: string,
-    id: string,
-    content: string,
-    userId: string,
-    userLogin: string,
-    addedAt: object,
-    likesInfo: {
-        likesCount: number
-        dislikesCount: number
-        myStatus: string
+});
+const commentSchema = new mongoose.Schema<CommentsType>({
+    userId: String,
+    id: String,
+    content: String
+})
+const postsSchema = new mongoose.Schema<PostsType>({
+    id: String,
+    title: String,
+    shortDescription: String,
+    content: String,
+    bloggerId: String,
+    bloggerName: String,
+    addedAt: Date,
+    extendedLikesInfo: {
+        likesCount: Number,
+        dislikesCount: Number,
+        myStatus: String,
+        newestLikes: [
+            {
+                addedAt: Date,
+                userId: String,
+                login: String
+            }
+        ]
     }
-}
-
-export type CommentContentType = {
-    content: string
-}
-
-export type CommentsExtendedType = {
-    pagesCount: number
-    page: number
-    pageSize: number
-    totalCount: number
-    items: [CommentType | CommentType[]]
-}
-
-export type AttemptType = {
-    userIP: string
-    url: string
-    time: Date
-}
-
-export type RefreshTokensCollectionType = {
-    refreshToken: string
-}
-
-export type LikesStatusType = {
-    id: string
-    userId: string
-    likeStatus: "None" | "Like" | "Dislike"
-}
-
-
-const mongoUri = "mongodb+srv://LoraDB:p-fkFTpRiB5r6h6@cluster0.zszv3.mongodb.net"
-
-const dbName = "socialNetwork"
-
-export const client = new MongoClient(mongoUri)
-const db = client.db("socialNetwork")
-
+})
 const bloggersSchema = new mongoose.Schema<BloggersType>({
     id: String,
     name: String,
     youtubeUrl: String
 })
-
-const postsSchema = new mongoose.Schema<PostType>({
-        id: String,
-        title: String,
-        shortDescription: String,
-        content: String,
-        bloggerId: String,
-        bloggerName: String,
-        addedAt: Object, // new
-        likesInfo: {
-            likesCount: Number,
-            dislikesCount: Number,
-            myStatus: String,
-            newestLikes: [
-                {
-                    addedAt: Object,
-                    userId: String,
-                    login: String
-                }
-            ]
-        }
-    }, {_id: false})
-
-const usersSchema = new mongoose.Schema<UsersType>({
-    id: String,
-    login: String,
-    password: String,
-    isConfirmed: Boolean,
-    email: String
-})
-
 const usersEmailConfDataSchema = new mongoose.Schema<UsersEmailConfDataType>({
-    email: String,
     confirmationCode: String,
     expirationDate: Date,
     isConfirmed: Boolean
 })
-
-const commentsSchema = new mongoose.Schema<CommentType>({
-        postId: String,
-        id: String,
-        content: String,
-        userId: String,
-        userLogin: String,
-        addedAt: Object,
-        likesInfo: {
-            likesCount: Number,
-            dislikesCount: Number,
-            myStatus: String
-        }
-    }, {_id: false})
+const endpointsAttemptsTrysSchema = new mongoose.Schema<AttemptType>({
+    userIP: String,
+    url: String,
+    time: Date,
+})
+const refreshTokensBlackListSchema = new mongoose.Schema<RefreshTokensCollectionType>({
+    refreshToken: String
+})
+const likesStatusSchema = new mongoose.Schema<LikesStatusType>({
+    id: String,
+    userId: String,
 
 
-// export const bloggersCollection = db.collection<BloggersType>("bloggers")
-export const BloggersModel = mongoose.model("bloggers", bloggersSchema)
+})
 
-// export const postCollection = db.collection<PostType>("posts")
-export const PostsModel = mongoose.model("posts", postsSchema)
-
-export const usersCollection = db.collection<UsersType>("users")
-export const UsersModel = mongoose.model("users", usersSchema)
-
-// export const usersEmailConfDataCollection = db.collection<UsersEmailConfDataType>("usersEmailConfData")
-export const usersEmailConfDataModel = mongoose.model("usersEmailConfData", usersEmailConfDataSchema)
-
-// export const commentsCollection = db.collection<CommentType>("comments")
-export const CommentsModel = mongoose.model("comments", commentsSchema)
-
-export const endpointsAttemptsTrysCollection = db.collection<AttemptType>("attempts")
-
-export const refreshTokensBlackListCollection = db.collection<RefreshTokensCollectionType>("refreshTokensBL")
-
-export const likesStatusCollection = db.collection<LikesStatusType>("likesStatus")
-
+export const EndpointsAttemptsTrysModelClass = mongoose.model('endpointsAttemptsTrys', endpointsAttemptsTrysSchema);
+export const RefreshTokensBlackListModelClass = mongoose.model('refreshTokensBlackList', refreshTokensBlackListSchema);
+export const UserModelClass = mongoose.model('users', usersSchema);
+export const CommentsModelClass = mongoose.model('comments', commentSchema);
+export const PostsModelClass = mongoose.model('posts', postsSchema);
+export const BloggersModelClass = mongoose.model('bloggers', bloggersSchema);
+export const UsersEmailConfDataModelClass = mongoose.model('usersEmailConfData', usersEmailConfDataSchema);
+export const likesStatusCollection = mongoose.model("likesStatus", likesStatusSchema)
 
 export async function runDb() {
     try {
         //await client.connect();
-        await mongoose.connect("mongodb+srv://LoraDB:p-fkFTpRiB5r6h6@cluster0.zszv3.mongodb.net");
+        await mongoose.connect("mongodb+srv://LoraDB:p-fkFTpRiB5r6h6@cluster0.zszv3.mongodb.net/test");
         console.log("Connected to mongo server");
     } catch {
         console.log("Can't connect to db")
@@ -227,8 +112,3 @@ export async function runDb() {
         await mongoose.disconnect();
     }
 }
-
-
-
-
-//mongodb+srv://LoraDB:p-fkFTpRiB5r6h6@cluster0.zszv3.mongodb.net/test

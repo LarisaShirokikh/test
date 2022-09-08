@@ -2,33 +2,35 @@
 import {emailManager} from "../managers/email-manager";
 import {v4 as uuidv4} from 'uuid';
 import add from 'date-fns/add'
+import bcrypt from "bcrypt";
+import {UsersDBType} from "../types";
+import {ObjectId} from "mongodb";
+import {inject, injectable} from "inversify";
 import {UsersRepository} from "../repositories/users-repository";
-import {refreshTokensBLRepository} from "../repositories/refresh-repository";
-import {UsersWithEmailType} from "../settingses/db";
+import {RefreshRepository} from "../repositories/refresh-repository";
 
-class AuthService {
-    private usersRepository: UsersRepository;
-    constructor() {
-        this.usersRepository = new UsersRepository()
-    }
-    async checkCredentials(login: string, password: string) {
-        const user = await this.usersRepository.findUserByLogin(login)
-        if (!user) return false
-        // @ts-ignore
-        if (user.password !== password) {
-            return false
-        }
-        return user
-    }
 
+
+@injectable()
+export class AuthService  {
+
+    constructor(@inject(UsersRepository)
+                protected usersRepository: UsersRepository,
+                protected refreshRepository: RefreshRepository
+    ) {
+        this.usersRepository = new UsersRepository,
+        this.refreshRepository = new RefreshRepository
+    }
     async userRegistration(login: string, email: string, password: string) {
-        // Registration in DataBase
-        const newUser = {
+            const salt = await bcrypt.genSalt(10);
+            const passwordHash = await bcrypt.hash(password, salt);
+
+            const newUser: UsersDBType = {
             accountData: {
-                id: (+(new Date())).toString(),
+                id: (new ObjectId()).toString(),
                 login,
-                password,
-                email: email,
+                email,
+                passwordHash,
                 isConfirmed: false
             },
             emailConfirmation: {
@@ -42,43 +44,28 @@ class AuthService {
             }
         }
 
-        await this.usersRepository.createUser(newUser.accountData)
-        await this.usersRepository.insertToDbUnconfirmedEmail(newUser.emailConfirmation)
+        await this.usersRepository.createUser(newUser)
+        await this.usersRepository.insertDbUnconfirmedEmail(newUser.emailConfirmation)
+        await emailManager.sendEmailConfirmationCode(newUser.emailConfirmation.confirmationCode, email)
+        return newUser
 
-        try {
-            await emailManager.sendEmailConfirmationCode(email, newUser.emailConfirmation.confirmationCode)
-        } catch (err) {
-            console.error(err)
-            this.usersRepository.deleteUser(newUser.accountData.id)
-            this.usersRepository.deleteUserUnconfirmedEmail(newUser.emailConfirmation.email)
-            return null
-        }
-        return true
     }
-
     async userRegConfirmation(confirmationCode: string): Promise<boolean> {
         const user = await this.usersRepository.findUserByConfirmCode(confirmationCode)
-
         if (!!user.emailConfirmation && user.emailConfirmation.isConfirmed === false) {
-
             const result = await this.usersRepository.updateEmailConfirmation(user.emailConfirmation.email)
-
             if(result) {
-                emailManager.sendEmailConfirmation(user.emailConfirmation.email)
+               await emailManager.sendEmailConfirmation(user.emailConfirmation.email)
             }
             return true
         } else {
             return false
         }
     }
-
     async resendingEmailConfirm(email: string) {
         const user = await this.usersRepository.findUserByEmail(email)
         if (!user) return false
-        if (user?.isConfirmed === true) return false
-
-
-
+        if (user?.emailConfirmation.isConfirmed === true) return false
         const newEmailConfirmation = {
             email,
             confirmationCode: uuidv4(),
@@ -91,34 +78,26 @@ class AuthService {
 
         await this.usersRepository.updateUnconfirmedEmailData(newEmailConfirmation)
 
-        await emailManager.sendEmailConfirmationCode(email, newEmailConfirmation.confirmationCode)
+        await emailManager.sendEmailConfirmationCode( newEmailConfirmation.confirmationCode, email)
         return true
     }
-
-    async addRefreshTokenToBlackList(refreshToken: string) {
-        const result =  await refreshTokensBLRepository.addRefreshTokenToBlackList(refreshToken)
-
-        return result
+    async checkCredentials(login: string, password: string){
+            const user = await this.usersRepository.findUserByLogin(login)
+        if (!user) return null
+            const validPassword = await bcrypt.compare(password, user.accountData.passwordHash)
+        if (validPassword) return user
+                return false
     }
-
     async checkTokenInBlackList(refreshToken: string) {
-        const result = await refreshTokensBLRepository.checkTokenInBlackList(refreshToken)
+        return this.refreshRepository.checkTokenInBlackList(refreshToken)
+    }
+    async addRefreshTokenToBlackList(refreshToken: string) {
+        const result =  await this.refreshRepository.addRefreshTokenToBlackList(refreshToken)
+
         return result
     }
-
-    async findUserById(userId: string): Promise<UsersWithEmailType | undefined | null> {
+    async findUserById(userId: string): Promise<UsersDBType | undefined | null>{
         const user = await this.usersRepository.findUserWithEmailById(userId)
-
-        user['userId'] = user['id'];
-        delete user['id'];
-
-        const nUser = {
-            email: user.email,
-            login: user.login,
-            userId: user.userId
-        }
-        return nUser
+        return user
     }
 }
-
-export const authService = new AuthService()

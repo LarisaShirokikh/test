@@ -1,0 +1,142 @@
+import {inject, injectable} from "inversify";
+import {PostsService} from "../domain/posts-service";
+import {NextFunction, Request, Response} from "express";
+import {BloggersService} from "../domain/bloggers-service";
+import {CommentsService} from "../domain/comment-service";
+
+@injectable()
+export class PostsController {
+
+    constructor(@inject(PostsService)
+                protected postsService: PostsService,
+                protected bloggersService: BloggersService,
+                protected commentService: CommentsService
+    ) {
+    }
+
+    async getAllPosts(req: Request, res: Response) {
+
+        const pageSize: number = Number(req.query.PageSize) || 10
+        const pageNumber: number = Number(req.query.PageNumber) || 1
+
+
+        const findPost = await this.postsService.findPosts(pageSize, pageNumber)
+        const getCount = await this.postsService.getCount()
+        res.send({
+            "pagesCount": Math.ceil(getCount / pageSize),
+            "page": pageNumber,
+            "pageSize": pageSize,
+            "totalCount": getCount,
+            "items": findPost
+        })
+    }
+
+    async creatPost(req: Request, res: Response) {
+        const post = await this.postsService.createPost(req.body.title, req.body.shortDescription,
+            req.body.content, req.body.bloggerId)
+        if (!post) return res.sendStatus(404)
+        res.status(201).send(post)
+        return
+
+    }
+
+    async creatPostByBlogger(req: Request, res: Response) {
+        const blogger = await this.bloggersService.findBloggersById(req.params.bloggerId)
+        console.log(blogger)
+
+        if (!blogger) {
+            res.sendStatus(404)
+            return
+        }
+        const post = await this.postsService.createPost(req.body.title, req.body.shortDescription,
+            req.body.content, req.body.bloggerId)
+        if (!post) return res.sendStatus(404)
+
+        res.status(201).send(post)
+        return
+    }
+
+    async getPostById(req: Request, res: Response) {
+        //проверка на токен
+        //если токен, то расшифровка и передать юзер айди/логин, передать в файнд логин
+        //если найдено все то отдаем myStatus
+        const post = await this.postsService.findPostById(req.params.id)
+
+        if (post) return res.send(post)
+        res.status(404).send({
+            errorsMessages: [{
+                message: "Post with specified postId doesn't exists",
+                field: "postId"
+            }]
+        });
+        return
+
+    }
+
+    async updatePost(req: Request, res: Response) {
+
+        let blogger = await this.bloggersService.findBloggersById(req.body.bloggerId)
+        if (!blogger) {
+            return res.status(400).send({errorsMessages: [{message: 'Invalid bloggerId', field: "bloggerId"}]})
+        } else {
+            const isUpdate = await this.postsService.updatePost(req.params.id,
+                req.body.title,
+                req.body.shortDescription,
+                req.body.content,
+                req.body.bloggerId)
+            if (isUpdate) res.status(204).send(isUpdate)
+            return
+            res.sendStatus(401)
+        }
+
+    }
+
+    async deletePost(req: Request, res: Response) {
+        const isDeleted = await this.postsService.deletePosts(req.params.id)
+        if (isDeleted) {
+            res.send(204)
+        } else {
+            res.send(404)
+        }
+    }
+
+    async createCommentByPostId(req: Request, res: Response) {
+        const post = await this.postsService.getPostById(req.params.postId)
+        if (!post) res.status(404)
+        return
+        const newComment = await this.commentService.createCommentByPostId(req.user, req.params.postId, req.body.content)
+        res.status(201).send(newComment)
+        return
+    }
+
+    async getCountCommentsPost(req: Request, res: Response) {
+        const pageSize: number = Number(req.query.PageSize) || 10
+        const pageNumber: number = Number(req.query.PageNumber) || 1
+
+        const findComment = await this.commentService.findCommentWithPag(req.params.postId, pageSize, pageNumber)
+        const getCount = await this.commentService.getCount(req.params.postId)
+        const result = {
+            "pagesCount": Math.ceil(getCount / pageSize),
+            "page": pageNumber,
+            "pageSize": pageSize,
+            "totalCount": getCount,
+            "items": findComment
+        }
+        res.send(result)
+        return
+    }
+
+    async likeStatusPost(req: Request, res: Response) {
+        const post = await this.postsService.getPostById(req.params.postId)
+
+        if (post === null) return res.send(404)
+        const likeStatus = await this.postsService.updateLike(req.user, req.params.postId, req.body.likeStatus)
+        if (likeStatus) {
+            res.send(204)
+            return
+        }
+        res.status(404).send()
+        return
+    }
+
+}

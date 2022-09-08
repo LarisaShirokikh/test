@@ -8,28 +8,32 @@ import {usersRouter} from "./router/users-route";
 import {authRouter} from "./router/auth-router";
 import {commentsRouter} from "./router/comment-router";
 import {testingRouter} from "./router/testing-router";
-var cookieParser = require('cookie-parser')
-
+const cookieParser = require('cookie-parser')
 
 
 
 const app = express()
-app.use(cors())
-app.use(bodyParser())
-app.use(cookieParser());
-
-
 const port = process.env.PORT || 3000
 
-app.set("trust proxy", true)
+app.set("trust proxy", true) // fix ip
+// X-Forwardet-For
+
+const parserMiddleware = bodyParser.json()
+app.use(cors())
+app.use(parserMiddleware)
+app.use(cookieParser());
 
 app.use('/bloggers', bloggersRouter)
 app.use('/posts', postsRouter)
-app.use('/auth', authRouter)
-app.use('/comments', commentsRouter)
 app.use('/users', usersRouter)
 app.use('/comments', commentsRouter)
+app.use('/auth', authRouter)
 app.use('/testing', testingRouter)
+
+
+app.get('/', (req, res) => {
+    res.send('Hello World!')
+})
 
 const startApp = async () => {
     await runDb()
@@ -39,4 +43,5 @@ const startApp = async () => {
 }
 
 startApp();
+
 

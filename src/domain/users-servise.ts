@@ -1,38 +1,32 @@
 import {UsersRepository} from "../repositories/users-repository";
-import {UsersExtendedType, UsersType} from "../settingses/db";
+import {inject, injectable} from "inversify";
 
 
-export class UsersService {
-    private usersRepository: UsersRepository;
-    constructor() {
-        this.usersRepository = new UsersRepository()
+
+@injectable()
+export class UsersService  {
+
+    constructor(@inject(UsersRepository) protected usersRepository: UsersRepository) {
+        this.usersRepository =  new UsersRepository
+    }
+    async findUsers(pageSize: number, pageNumber: number) {
+
+        return await this.usersRepository.findUsers(pageSize, pageNumber)
+    }
+    async getCount() {
+
+        return await this.usersRepository.getCount()
+    }
+    async deleteUsers(id: string) {
+
+        return await this.usersRepository.deleteUsers(id)
+    }
+    async findUsersById(userId: string) {
+        return await this.usersRepository.findUsersById(userId)
+    }
+    async getAllUsers(PageNumber: number, PageSize: number ) {
+        return await this.usersRepository.findUsers(PageNumber, PageSize )
     }
 
-    async getAllUsers(pageNumber: string = '1' || undefined, pageSize:string = '10' || undefined): Promise<UsersExtendedType | undefined | null> {
-        return this.usersRepository.getAllUsers(+pageNumber, +pageSize)
-    }
-
-    async createUser(login: string, password: string, email: string): Promise<UsersType> {
-        const newUser = {
-            id: (+(new Date())).toString(),
-            login,
-            email,
-            password,
-            isConfirmed: false
-        }
-        return this.usersRepository.createUser(newUser);
-    }
-
-    async deleteUser(id: string): Promise<boolean> {
-        return this.usersRepository.deleteUser(id)
-    }
-
-    async findUserById(userId: string): Promise<UsersType | undefined | null> {
-        return this.usersRepository.findUserById(userId)
-    }
 }
-
-export const usersService = new UsersService()
-
-
 

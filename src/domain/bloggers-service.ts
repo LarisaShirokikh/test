@@ -1,86 +1,66 @@
-
+import {ObjectId} from "mongodb";
+import {BloggersType, PostsType} from "../types";
 import {BloggersRepository} from "../repositories/bloggers-repository";
 import {PostsRepository} from "../repositories/posts-repository";
 import {inject, injectable} from "inversify";
-import {BloggersExtendedType, BloggersType, PostsOfBloggerType} from "../settingses/db";
 
-class BloggersService {
-    private bloggersRepository: BloggersRepository;
-    private postsRepository: PostsRepository;
-
+@injectable()
+export class BloggersService {
+    bloggersRepository: BloggersRepository
+    postsRepository: PostsRepository
     constructor() {
         this.bloggersRepository = new BloggersRepository()
         this.postsRepository = new PostsRepository()
     }
+    async findBloggers(pageSize:number, pageNumber:number, searchNameTerm:string) {
 
-    async getAllBloggers(
-        pageNumber: string = '1',
-        pageSize :string = '10',
-        searchNameTerm: string | null = null
-    ): Promise<BloggersExtendedType | undefined | null> {
-
-        return this.bloggersRepository.getAllBloggers(+pageNumber, +pageSize, searchNameTerm)
+        return await this.bloggersRepository.findBloggers(pageSize, pageNumber, searchNameTerm)
     }
+    async findBloggersById(bloggerId: string): Promise<BloggersType | null> {
 
+        return await this.bloggersRepository.getBloggerById(bloggerId)
+
+    }
     async createBlogger(name: string, youtubeUrl: string): Promise<BloggersType> {
-        const newBlogger = {
-            id: (+(new Date())).toString(),
+        const newBlogger: BloggersType = {
+            id: (new ObjectId()).toString(),
             name,
             youtubeUrl
         }
-        const createdBloggerDb = await this.bloggersRepository.createBlogger(newBlogger)
-        // const createdBlogger = omit_Id(createdBloggerDb)
-        return createdBloggerDb;
+        return this.bloggersRepository.createBlogger(newBlogger)
     }
-
-    async getBloggerById(bloggerId: string): Promise<BloggersType | null> {
-        const bloggerDb = await this.bloggersRepository.getBloggerById(bloggerId);
-        // const blogger = omit_Id(bloggerDb)
-        return bloggerDb
+    async updateBlogger(id: string, name: string, youtubeUrl: string) {
+        return await this.bloggersRepository.updateBlogger(id, name, youtubeUrl)
     }
-
-    async updateBlogger(bloggerId: string, name: string, youtubeUrl: string): Promise<boolean> {
-        return await this.bloggersRepository.updateBlogger(bloggerId, name, youtubeUrl)
+    async deleteBloggers(id: string) {
+        return await this.bloggersRepository.deleteBloggers(id)
     }
-
-    async deleteBlogger(bloggerId: string): Promise<boolean> {
-        return this.bloggersRepository.deleteBlogger(bloggerId)
+    async getCount(searchNameTerm:string) {
+        return await this.bloggersRepository.getCount(searchNameTerm)
     }
-
-    async getPostsByBloggerId(bloggerId: string, pageNumber: string = '1' || undefined || null, pageSize: string = '10' || undefined || null): Promise<PostsOfBloggerType | null> {
-        const postsDb = await this.bloggersRepository.getPostsByBloggerId(bloggerId, +pageNumber, +pageSize);
-        // const posts = omit_Id(postsDb)
-        return postsDb
-    }
-
     async createPostByBloggerId (bloggerId: string, title: string, shortDescription: string, content: string) {
         const blogger = await this.bloggersRepository.getBloggerById(bloggerId)
         if (blogger) {
-            const newPost = {
-                id: (+(new Date())).toString(),
+            const newPost: PostsType = {
+                id: (new ObjectId()).toString(),
                 title,
                 shortDescription,
                 content,
                 bloggerId,
                 bloggerName: blogger.name,
                 addedAt: new Date,
-                likesInfo: {
+                extendedLikesInfo: {
                     likesCount: 0,
                     dislikesCount: 0,
-                    myStatus: "None",
-                    newestLikes: [
-
-                    ]
+                    myStatus: 'None',
+                    newestLikes: []
                 }
             }
-            // @ts-ignore
             const createdPostDb = await this.postsRepository.createPost(newPost)
-
             return createdPostDb
         }
     }
-}
 
-export const bloggersService = new BloggersService()
+}
 
 

@@ -1,18 +1,28 @@
 import {emailAdapter} from "../application/email-adapter";
 
 export const emailManager = {
-    async sendEmailRecoveryMessage(user:any) {
-        await emailAdapter.sendEmail("user.email", "password.recovery", "<div>${user.recoveryCode} message </div>")
+    async sendPasswordRecoveryMessage() {
+        await emailAdapter
+            .sendEmail(
+                "user.email",
+                "password recovery",
+                "<div>${user.recoveryCode}message</div>"
+            )
     },
 
-    async sendEmailConfirmationCode(email: string, confirmationCode: string) {
 
-        await emailAdapter.sendEmail(email, "Confirm your Email", ` <div> Confirm your Email: <a href='http://localhost:3000/auth/registration-confirmation?code=${confirmationCode}'>Click here</a> </div>`)
+    async sendEmailConfirmationCode(conformationCode: string, email: string) {
+        await emailAdapter.resendEmail(email,
+            "Confirm your email",
+            conformationCode
+        )
+
     },
 
     async sendEmailConfirmation(email: string) {
+        await emailAdapter.resendEmail(email, "Your Email was confirmed",
+            ` <h3> Your Email was confirmed</h3>`)
 
-        await emailAdapter.sendEmail(email, "Your Email was confirmed", ` <h3> Your Email was confirmed</h3>`)
     }
 }
 
