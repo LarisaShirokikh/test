@@ -61,7 +61,7 @@ const postsSchema = new mongoose.Schema<PostsType>({
         bloggerId: String,
         bloggerName: String,
         addedAt: Object, // new
-    likesInfo: {
+    extendedLikesInfo: {
             likesCount: Number,
             dislikesCount: Number,
             myStatus: String,
