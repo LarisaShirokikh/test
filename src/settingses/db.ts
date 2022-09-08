@@ -1,12 +1,14 @@
 import dotenv from "dotenv";
-import mongoose from "mongoose";
+import mongoose, {Types} from "mongoose";
 import {
     AttemptType,
     BloggersType,
     CommentsType,
     PostsType, RefreshTokensCollectionType, UsersDBType,
-    UsersEmailConfDataType,
+    UsersEmailConfDataType, LikesStatusType
 } from "../types";
+import Array = module
+import * as module from "module";
 
 
 dotenv.config();
@@ -83,6 +85,12 @@ const endpointsAttemptsTrysSchema = new mongoose.Schema<AttemptType>({
 const refreshTokensBlackListSchema = new mongoose.Schema<RefreshTokensCollectionType>({
     refreshToken: String
 })
+const likesStatusSchema = new mongoose.Schema<LikesStatusType>({
+    id: String,
+    userId: String,
+
+
+})
 
 export const EndpointsAttemptsTrysModelClass = mongoose.model('endpointsAttemptsTrys', endpointsAttemptsTrysSchema);
 export const RefreshTokensBlackListModelClass = mongoose.model('refreshTokensBlackList', refreshTokensBlackListSchema);
@@ -91,7 +99,7 @@ export const CommentsModelClass = mongoose.model('comments', commentSchema);
 export const PostsModelClass = mongoose.model('posts', postsSchema);
 export const BloggersModelClass = mongoose.model('bloggers', bloggersSchema);
 export const UsersEmailConfDataModelClass = mongoose.model('usersEmailConfData', usersEmailConfDataSchema);
-
+export const likesStatusCollection = mongoose.model("likesStatus", likesStatusSchema)
 
 export async function runDb() {
     try {
