@@ -3,7 +3,7 @@ import {Request, Response} from "express";
 import {
     BloggersModel,
     CommentsModel,
-    EndpointsAttemptsTrysModel, PostsModel,
+    endpointsAttemptsTrysCollection, PostsModel,
     UsersEmailConfDataModel, UsersModel
 } from "../settingses/db";
 import {BloggersRepository} from "../repositories/bloggers-repository";
@@ -28,7 +28,7 @@ export class TestingController {
         await BloggersModel.deleteMany()
         await UsersModel.deleteMany()
         await CommentsModel.deleteMany()
-        await EndpointsAttemptsTrysModel.deleteMany()
+        await endpointsAttemptsTrysCollection.deleteMany()
         await UsersEmailConfDataModel.deleteMany()
 
         res.sendStatus(204)

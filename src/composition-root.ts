@@ -10,9 +10,6 @@ import {PostsRepository} from "./repositories/posts-repository";
 import {BloggersController} from "./controllers/bloggers-controller";
 import {PostsController} from "./controllers/posts-controller";
 
-import {AuthService} from "./domain/auth-service";
-import {AttemptsRepository} from "./repositories/attempts-repository";
-
 import {CommentsController} from "./controllers/comments-controller";
 import {CommentsService} from "./domain/comment-service";
 import {CommentsRepository} from "./repositories/comment-repository";

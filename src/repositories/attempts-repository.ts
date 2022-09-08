@@ -1,30 +1,33 @@
 
-import {
-    EndpointsAttemptsTrysModel,
-    UsersEmailConfDataModel
-} from "../settingses/db";
-import {injectable} from "inversify";
+import {AttemptType} from "../types";
+import {endpointsAttemptsTrysCollection} from "../settingses/db";
 
-@injectable()
-export class AttemptsRepository  {
 
-    async getLastAttempts(ip: string, url: string, limitTime: Date): Promise<number | undefined | null> {
 
-        const countAttempts = await UsersEmailConfDataModel.countDocuments({
-            userIP: ip,
-            url,
-            time: {$gt: limitTime}
-        })
-        return countAttempts
-    }
+    export const attemptsRepository = {
 
-    async addAttempt(userIP: string, url: string, time: Date){
-        const result = EndpointsAttemptsTrysModel.insertMany({ userIP, url, time})
-        return result
-    }
+        async getLastAttempts(ip: string, url: string, limitTime: Date): Promise<number | undefined | null> {
 
-    async deleteAllAttempts(): Promise<boolean> {
-        const result = await EndpointsAttemptsTrysModel.deleteMany({})
-        return true
-    }
+            const countAttempts = await endpointsAttemptsTrysCollection.countDocuments({
+                userIP: ip,
+                url,
+                time: {$gt: limitTime}
+            })
+            return countAttempts
+        },
+
+        async addAttempt(userIP: string, url: string, time: Date):  Promise<AttemptType> {
+
+            const result = endpointsAttemptsTrysCollection.insertMany({ userIP, url, time})
+
+            // @ts-ignore
+            return result
+        },
+
+        async deleteAllAttempts(): Promise<boolean> {
+            const result = await endpointsAttemptsTrysCollection.deleteMany({})
+            return true
+        }
+
+
 }

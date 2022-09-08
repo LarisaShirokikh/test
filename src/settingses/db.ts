@@ -94,7 +94,7 @@ const likesStatusSchema = new mongoose.Schema<LikesStatusType>({
 
 })
 
-export const EndpointsAttemptsTrysModel = mongoose.model('endpointsAttemptsTrys', endpointsAttemptsTrysSchema);
+export const endpointsAttemptsTrysCollection = mongoose.model('endpointsAttemptsTrys', endpointsAttemptsTrysSchema);
 export const RefreshTokensBlackListModel = mongoose.model('refreshTokensBlackList', refreshTokensBlackListSchema);
 export const UsersModel = mongoose.model('users', usersSchema);
 export const CommentsModel = mongoose.model('comments', commentsSchema);

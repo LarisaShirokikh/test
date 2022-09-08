@@ -13,7 +13,7 @@ import {refreshTokensBLRepository} from "../repositories/refresh-repository";
 
 
 @injectable()
-export class AuthService {
+class AuthService {
     private usersRepository: UsersRepository;
     constructor() {
         this.usersRepository = new UsersRepository()
