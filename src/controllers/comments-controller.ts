@@ -1,7 +1,7 @@
 import {inject, injectable} from "inversify";
 import {CommentsService} from "../domain/comment-service";
 import {Request, Response} from "express";
-import {CommentsType} from "../types";
+import {CommentType} from "../types";
 import {jwtService} from "../application/jwt-service";
 
 @injectable()
@@ -10,13 +10,13 @@ export class CommentsController {
         protected commentsService: CommentsService
     ) { }
 async findComment(req: Request, res: Response) {
-    const comment: CommentsType | null | undefined = await this.commentsService.findComment(req.params.commentId)
+    const comment: CommentType | null | undefined = await this.commentsService.findComment(req.params.commentId)
     if (!comment) {
         res.status(404).send({errorsMessages: [{message: "Comment not found", field: "commentId"}]});
         return
     }
     const token = req.headers.authorization!.split(' ')[1]
-    const userId = await jwtService.userIdByToken(token)
+    const userId = await jwtService.getUserIdByToken(token)
     if (!userId) {
         res.send(401)
     } else {
@@ -37,7 +37,7 @@ async findComment(req: Request, res: Response) {
 
 async deleteComment(req: Request, res: Response) {
 
-    const comment: CommentsType | null | undefined = await this.commentsService.findComment(req.params.commentId)
+    const comment: CommentType | null | undefined = await this.commentsService.findComment(req.params.commentId)
 
     if (!comment) {
         res.status(404).send({errorsMessages: [{message: "Comment not found", field: "commentId"}]});

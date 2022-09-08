@@ -9,33 +9,18 @@ import {PostsService} from "./domain/posts-service";
 import {PostsRepository} from "./repositories/posts-repository";
 import {BloggersController} from "./controllers/bloggers-controller";
 import {PostsController} from "./controllers/posts-controller";
-import {AuthController} from "./controllers/auth-controller";
+
 import {AuthService} from "./domain/auth-service";
 import {AttemptsRepository} from "./repositories/attempts-repository";
-import {RefreshRepository} from "./repositories/refresh-repository";
+
 import {CommentsController} from "./controllers/comments-controller";
 import {CommentsService} from "./domain/comment-service";
 import {CommentsRepository} from "./repositories/comment-repository";
-import {PostsModelClass} from "./settingses/db";
+import {PostsModel} from "./settingses/db";
 
-/*const object: any[] = []
-
-const usersRepository = new UsersRepository()
-object.push(usersRepository)
-
-const usersService = new UsersService(usersRepository)
-object.push(usersService)
-
-const usersController = new UsersController(usersService)
-object.push(usersController)*/
 
 export const container = new Container();
 
-//auth
-container.bind(AuthController).to(AuthController);
-container.bind(AuthService).to(AuthService);
-container.bind(AttemptsRepository).to(AttemptsRepository);
-container.bind(RefreshRepository).to(RefreshRepository)
 
 //users
 container.bind(UsersController).to(UsersController);
@@ -48,7 +33,7 @@ container.bind(BloggersService).to(BloggersService);
 container.bind(BloggersRepository).to(BloggersRepository);
 
 //posts
-container.bind(Symbol('PostsModelClass')).toConstantValue(PostsModelClass)
+container.bind(Symbol('PostsModelClass')).toConstantValue(PostsModel)
 container.bind(PostsController).to(PostsController);
 container.bind(PostsService).to(PostsService);
 container.bind(PostsRepository).to(PostsRepository);

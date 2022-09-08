@@ -3,9 +3,9 @@ import mongoose from "mongoose";
 import {
     AttemptType,
     BloggersType,
-    CommentsType,
-    PostsType, RefreshTokensCollectionType, UsersDBType,
-    UsersEmailConfDataType, LikesStatusType
+
+    RefreshTokensCollectionType,
+    UsersEmailConfDataType, LikesStatusType, UsersType, CommentType, PostType
 } from "../types";
 
 
@@ -25,21 +25,14 @@ let dbName = "mongoose-example"
 //export const endpointsAttemptsTrysCollection = db.collection<AttemptType>("attempts")
 //export const refreshTokensBlackListCollection = db.collection<RefreshTokensCollectionType>('refreshBlackList')
 
-const usersSchema = new mongoose.Schema<UsersDBType>({
-    accountData: {
-        id: String,
-        login: String,
-        email: String,
-        passwordHash: String,
-        isConfirmed: Boolean
-    },
-    emailConfirmation: {
-        confirmationCode: String,
-        expirationDate: String,
-        isConfirmed: Boolean
-    }
-});
-const commentsSchema = new mongoose.Schema<CommentsType>({
+const usersSchema = new mongoose.Schema<UsersType>({
+    id: String,
+    login: String,
+    password: String,
+    isConfirmed: Boolean,
+    email: String
+})
+const commentsSchema = new mongoose.Schema<CommentType>({
         postId: String,
         id: String,
         content: String,
@@ -51,9 +44,9 @@ const commentsSchema = new mongoose.Schema<CommentsType>({
             dislikesCount: Number,
             myStatus: String
         }
-    }, //{_id: false}
+    }, {_id: false}
 )
-const postsSchema = new mongoose.Schema<PostsType>({
+const postsSchema = new mongoose.Schema<PostType>({
         id: String,
         title: String,
         shortDescription: String,
@@ -61,7 +54,7 @@ const postsSchema = new mongoose.Schema<PostsType>({
         bloggerId: String,
         bloggerName: String,
         addedAt: Object, // new
-    extendedLikesInfo: {
+        likesInfo: {
             likesCount: Number,
             dislikesCount: Number,
             myStatus: String,
@@ -72,9 +65,8 @@ const postsSchema = new mongoose.Schema<PostsType>({
                     login: String
                 }
             ]
-
         }
-    }, //{_id: false}
+    }, {_id: false}
 )
 const bloggersSchema = new mongoose.Schema<BloggersType>({
     id: String,
@@ -82,6 +74,7 @@ const bloggersSchema = new mongoose.Schema<BloggersType>({
     youtubeUrl: String
 })
 const usersEmailConfDataSchema = new mongoose.Schema<UsersEmailConfDataType>({
+    email: String,
     confirmationCode: String,
     expirationDate: Date,
     isConfirmed: Boolean
@@ -101,13 +94,13 @@ const likesStatusSchema = new mongoose.Schema<LikesStatusType>({
 
 })
 
-export const EndpointsAttemptsTrysModelClass = mongoose.model('endpointsAttemptsTrys', endpointsAttemptsTrysSchema);
-export const RefreshTokensBlackListModelClass = mongoose.model('refreshTokensBlackList', refreshTokensBlackListSchema);
-export const UserModelClass = mongoose.model('users', usersSchema);
-export const CommentsModelClass = mongoose.model('comments', commentsSchema);
-export const PostsModelClass = mongoose.model('posts', postsSchema);
-export const BloggersModelClass = mongoose.model('bloggers', bloggersSchema);
-export const UsersEmailConfDataModelClass = mongoose.model('usersEmailConfData', usersEmailConfDataSchema);
+export const EndpointsAttemptsTrysModel = mongoose.model('endpointsAttemptsTrys', endpointsAttemptsTrysSchema);
+export const RefreshTokensBlackListModel = mongoose.model('refreshTokensBlackList', refreshTokensBlackListSchema);
+export const UsersModel = mongoose.model('users', usersSchema);
+export const CommentsModel = mongoose.model('comments', commentsSchema);
+export const PostsModel = mongoose.model('posts', postsSchema);
+export const BloggersModel = mongoose.model('bloggers', bloggersSchema);
+export const UsersEmailConfDataModel = mongoose.model('usersEmailConfData', usersEmailConfDataSchema);
 export const likesStatusCollection = mongoose.model("likesStatus", likesStatusSchema)
 
 

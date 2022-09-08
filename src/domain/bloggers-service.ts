@@ -1,5 +1,5 @@
 import {ObjectId} from "mongodb";
-import {BloggersType, PostsType} from "../types";
+import {BloggersType, PostType} from "../types";
 import {BloggersRepository} from "../repositories/bloggers-repository";
 import {PostsRepository} from "../repositories/posts-repository";
 import {inject, injectable} from "inversify";

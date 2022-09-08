@@ -1,7 +1,7 @@
 import {NextFunction, Request, Response} from "express";
 import {jwtService} from "../application/jwt-service";
 
-import {UserModelClass} from "../settingses/db";
+import {UsersModel} from "../settingses/db";
 
 
 
@@ -25,7 +25,7 @@ import {UserModelClass} from "../settingses/db";
         if (userId) {
 
 
-            req.user = await UserModelClass.findOne({id: userId}, {_id: 0, __v: 0})
+            req.user = await UsersModel.findOne({id: userId}, {_id: 0, __v: 0})
             next()
         } else {
             res.sendStatus(401)

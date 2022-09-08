@@ -1,7 +1,7 @@
 
 import {
-    EndpointsAttemptsTrysModelClass,
-    UsersEmailConfDataModelClass
+    EndpointsAttemptsTrysModel,
+    UsersEmailConfDataModel
 } from "../settingses/db";
 import {injectable} from "inversify";
 
@@ -10,7 +10,7 @@ export class AttemptsRepository  {
 
     async getLastAttempts(ip: string, url: string, limitTime: Date): Promise<number | undefined | null> {
 
-        const countAttempts = await UsersEmailConfDataModelClass.countDocuments({
+        const countAttempts = await UsersEmailConfDataModel.countDocuments({
             userIP: ip,
             url,
             time: {$gt: limitTime}
@@ -19,12 +19,12 @@ export class AttemptsRepository  {
     }
 
     async addAttempt(userIP: string, url: string, time: Date){
-        const result = EndpointsAttemptsTrysModelClass.insertMany({ userIP, url, time})
+        const result = EndpointsAttemptsTrysModel.insertMany({ userIP, url, time})
         return result
     }
 
     async deleteAllAttempts(): Promise<boolean> {
-        const result = await EndpointsAttemptsTrysModelClass.deleteMany({})
+        const result = await EndpointsAttemptsTrysModel.deleteMany({})
         return true
     }
 }

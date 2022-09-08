@@ -1,6 +1,6 @@
 
 import {ObjectId} from "mongodb";
-import {PostsType} from "../types";
+import {PostType} from "../types";
 import {PostsRepository} from "../repositories/posts-repository";
 import {BloggersRepository} from "../repositories/bloggers-repository";
 import {injectable} from "inversify";
@@ -23,7 +23,7 @@ export class PostsService {
     async findPostById(id: string) {
         return await this.postsRepository.findPostById(id)
     }
-    async createPost (title: string, shortDescription: string, content: string, bloggerId: string): Promise<PostsType | undefined> {
+    async createPost (title: string, shortDescription: string, content: string, bloggerId: string): Promise<PostType | undefined> {
         const blogger = await this.bloggersRepository.getBloggerById(bloggerId)
         if (blogger) {
             const newPost = {
@@ -64,7 +64,7 @@ export class PostsService {
     async getCountBloggerId(bloggerId: string) {
         return await this.postsRepository.getCountBloggerId(bloggerId)
     }
-    async getPostById (postId: string): Promise<PostsType | null> {
+    async getPostById (postId: string): Promise<PostType | null> {
         return this.postsRepository.getPostById(postId)
 
     }

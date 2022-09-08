@@ -1,7 +1,7 @@
 import {CommentsRepository} from "../repositories/comment-repository";
 import {PostsRepository} from "../repositories/posts-repository";
 import {injectable} from "inversify";
-import {CommentsType} from "../types";
+import {CommentType} from "../types";
 
 
 @injectable()
@@ -14,7 +14,7 @@ export class CommentsService {
         this.postsRepository = new PostsRepository()
     }
 
-    async createCommentByPostId(user: any, postId: string, content: string): Promise<CommentsType | undefined>  {
+    async createCommentByPostId(user: any, postId: string, content: string): Promise<CommentType | undefined>  {
         const post = await this.postsRepository.getPostById(postId)
         console.log(post)
         if (post) {
@@ -58,10 +58,6 @@ export class CommentsService {
 
     async updateComment(commentId: string, content: string) {
         return this.commentsRepository.updateComment(commentId, content)
-    }
-
-    async findUser(userId: string, commentId: string) {
-        return await this.commentsRepository.findUser(userId, commentId)
     }
 
     async updateLikeStatus (user: any, commentId: string, likeStatus: "None" | "Like" | "Dislike"): Promise<boolean|undefined>  {

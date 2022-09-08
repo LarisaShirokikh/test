@@ -1,23 +1,28 @@
-import {RefreshTokensBlackListModelClass} from "../settingses/db";
-import {injectable} from "inversify";
 
-@injectable()
-export class RefreshRepository  {
+import {injectable} from "inversify";
+import {RefreshTokensBlackListModel} from "../settingses/db";
+
+
+export const refreshTokensBLRepository = {
 
     async addRefreshTokenToBlackList(token: string) {
-        const result = await RefreshTokensBlackListModelClass.insertMany({refreshToken: token})
+
+        const result = await RefreshTokensBlackListModel.insertMany({refreshToken: token})
         return result
-    }
+    },
+
     async checkTokenInBlackList(refreshToken: string) {
-        const result  = await RefreshTokensBlackListModelClass.findOne({refreshToken}, {_id: 0})
+        const result  = await RefreshTokensBlackListModel.findOne({refreshToken}, {projection: {_id: 0}})
         if(result === null) {
             return false
         } else {
             return result
         }
-    }
+    },
+
     async deleteAllTokensInBlackList(): Promise<boolean> {
-        await RefreshTokensBlackListModelClass.deleteMany({})
+        await RefreshTokensBlackListModel.deleteMany({})
         return true
     }
+
 }

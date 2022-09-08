@@ -1,5 +1,5 @@
 import {NextFunction, Request, Response} from "express";
-import {EndpointsAttemptsTrysModelClass, UsersEmailConfDataModelClass} from "../settingses/db";
+import {EndpointsAttemptsTrysModel, UsersEmailConfDataModel} from "../settingses/db";
 
 const
     LIMIT_OF_ATTEMPTS = 10 * 1000
@@ -14,13 +14,13 @@ const
         const userIP = ip
         const time = new Date()
 
-        const countOfAttempts = await UsersEmailConfDataModelClass.countDocuments({
+        const countOfAttempts = await UsersEmailConfDataModel.countDocuments({
             userIP: ip,
             url,
             time: {$gt: limitTime}
         })
 
-        await EndpointsAttemptsTrysModelClass.insertMany({ userIP, url, time})
+        await EndpointsAttemptsTrysModel.insertMany({ userIP, url, time})
 
         if (countOfAttempts! < 10) {
             next()

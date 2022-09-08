@@ -1,14 +1,13 @@
-import {LikesStatusType, PostsType} from "../types";
-import {likesStatusCollection, PostsModelClass} from "../settingses/db";
+import {LikesStatusType, PostType} from "../types";
+import {likesStatusCollection, PostsModel} from "../settingses/db";
 import {injectable} from "inversify";
-import mongoose from "mongoose";
+
 
 @injectable()
 export class PostsRepository {
-    //constructor(@inject(PostsModelClass.name) private postsModelClass: mongoose.Model<PostsType> ) {
-    //}
+
     async findPosts(pageSize: number, pageNumber: number) {
-        return PostsModelClass.find({}, {
+        return PostsModel.find({}, {
 
                 _id: 0,
                 __v: 0
@@ -16,49 +15,45 @@ export class PostsRepository {
         }).skip((pageNumber - 1) * pageSize).limit(pageSize).lean()
     }
 
-    async findPostById(postId: string): Promise<PostsType | null> {
-        const post = await PostsModelClass.findOne({id: postId}, {_id: 0, __v: 0})
+    async findPostById(postId: string): Promise<PostType | null> {
+        const post = await PostsModel.findOne({id: postId}, {_id: 0, __v: 0})
         return post
     }
 
-    async createPost(newPost: PostsType): Promise<PostsType | undefined> {
-        await PostsModelClass.insertMany([newPost])
+    async createPost(newPost: PostType): Promise<PostType | undefined> {
+        await PostsModel.insertMany([newPost])
         return newPost
     }
 
     async updatePost(postId: string, title: string, shortDescription: string, content: string, bloggerId: string): Promise<boolean> {
-        const result = await PostsModelClass.updateOne({id: postId}, {$set: {title, shortDescription, content, bloggerId}})
+        const result = await PostsModel.updateOne({id: postId}, {$set: {title, shortDescription, content, bloggerId}})
         return result.matchedCount === 1
     }
 
     async deletePosts(id: string) {
 
-        const result = await PostsModelClass.deleteOne({id: id})
+        const result = await PostsModel.deleteOne({id: id})
         return result.deletedCount === 1
     }
 
     async getCount() {
-        return PostsModelClass.count({})
+        return PostsModel.count({})
     }
 
     async findBloggersPost(pageSize: number, pageNumber: number, bloggerId: string) {
-        return PostsModelClass.find({bloggerId: bloggerId}, {
+        return PostsModel.find({bloggerId: bloggerId}, {
             _id: 0,
             __v: 0
         }).skip((pageNumber - 1) * pageSize).limit(pageSize).lean()
     }
 
     async getCountBloggerId(bloggerId: string) {
-        return PostsModelClass.count({bloggerId: bloggerId})
+        return PostsModel.count({bloggerId: bloggerId})
     }
 
-    async deleteAllPost(): Promise<boolean> {
-        const result = PostsModelClass.deleteMany({})
-        return true
-    }
 
-    async getPostById(postId: string): Promise<PostsType | null> {
-        const post = await PostsModelClass.findOne({id: postId}, {_id: 0, __v: 0})
+    async getPostById(postId: string): Promise<PostType | null> {
+        const post = await PostsModel.findOne({id: postId}, {_id: 0, __v: 0})
 
         return post;
     }
@@ -73,7 +68,7 @@ export class PostsRepository {
             if(likeStatus === "Like") {
                 // await PostsModel.findOneAndUpdate({id: postId}, {$inc: {"likesInfo.likesCount": 1}, })
                 // await PostsModel.findOneAndUpdate({id: postId}, {"likesInfo.myStatus": likeStatus})
-                const a = await PostsModelClass.findOneAndUpdate({id: postId}, {$inc: {"likesInfo.likesCount": 1}, "likesInfo.myStatus": likeStatus})
+                const a = await PostsModel.findOneAndUpdate({id: postId}, {$inc: {"likesInfo.likesCount": 1}, "likesInfo.myStatus": likeStatus})
 
                 const newestLike = {
                     addedAt:addedLikeStatusAt,
@@ -88,7 +83,7 @@ export class PostsRepository {
                 return true
             }
             if(likeStatus === "Dislike") {
-                await PostsModelClass.findOneAndUpdate({id: postId}, {$inc: {"likesInfo.dislikesCount": 1}, "likesInfo.myStatus": likeStatus})
+                await PostsModel.findOneAndUpdate({id: postId}, {$inc: {"likesInfo.dislikesCount": 1}, "likesInfo.myStatus": likeStatus})
                 return true
             }
 
@@ -97,7 +92,7 @@ export class PostsRepository {
             await likesStatusCollection.updateOne({id: postId, userId: user.id}, {$set: {likeStatus}})
 
             if(likeStatus === "Like" && isLikeStatus.likeStatus === "Dislike") {
-                const a = await PostsModelClass.findOneAndUpdate({id: postId}, {$inc: {"likesInfo.likesCount": 1, "likesInfo.dislikesCount": -1}, "likesInfo.myStatus": likeStatus})
+                const a = await PostsModel.findOneAndUpdate({id: postId}, {$inc: {"likesInfo.likesCount": 1, "likesInfo.dislikesCount": -1}, "likesInfo.myStatus": likeStatus})
                 const newestLike = {
                     addedAt:addedLikeStatusAt,
                     userId: user.id,
@@ -111,7 +106,7 @@ export class PostsRepository {
             }
 
             if(likeStatus === "Like" && isLikeStatus.likeStatus === "None") {
-                const a = await PostsModelClass.findOneAndUpdate({id: postId}, {$inc: {"likesInfo.likesCount": 1}, "likesInfo.myStatus": likeStatus})
+                const a = await PostsModel.findOneAndUpdate({id: postId}, {$inc: {"likesInfo.likesCount": 1}, "likesInfo.myStatus": likeStatus})
 
                 const newestLike = {
                     addedAt:addedLikeStatusAt,
@@ -132,7 +127,7 @@ export class PostsRepository {
             if(likeStatus === "Dislike" && isLikeStatus.likeStatus === "Like") {
                 // await PostsModel.findOneAndUpdate({id: postId}, {$inc: {"likesInfo.likesCount": -1}})
                 // await PostsModel.findOneAndUpdate({id: postId}, {"likesInfo.myStatus": likeStatus})
-                await PostsModelClass.findOneAndUpdate({id: postId}, {$inc: {"likesInfo.likesCount": -1, "likesInfo.dislikesCount": 1}, "likesInfo.myStatus": likeStatus})
+                await PostsModel.findOneAndUpdate({id: postId}, {$inc: {"likesInfo.likesCount": -1, "likesInfo.dislikesCount": 1}, "likesInfo.myStatus": likeStatus})
                 return true
             }
 
@@ -141,17 +136,17 @@ export class PostsRepository {
             }
 
             if(likeStatus === "Dislike" && isLikeStatus.likeStatus !== "Like") {
-                await PostsModelClass.findOneAndUpdate({id: postId}, {$inc: {"likesInfo.likesCount": -1}, "likesInfo.myStatus": likeStatus})
+                await PostsModel.findOneAndUpdate({id: postId}, {$inc: {"likesInfo.likesCount": -1}, "likesInfo.myStatus": likeStatus})
                 return true
             }
 
             if(likeStatus === "None" && isLikeStatus.likeStatus === "Like") {
-                await PostsModelClass.findOneAndUpdate({id: postId}, {$inc: {"likesInfo.likesCount": -1}, "likesInfo.myStatus": likeStatus})
+                await PostsModel.findOneAndUpdate({id: postId}, {$inc: {"likesInfo.likesCount": -1}, "likesInfo.myStatus": likeStatus})
                 return true
             }
 
             if(likeStatus === "None" && isLikeStatus.likeStatus === "Dislike") {
-                await PostsModelClass.findOneAndUpdate({id: postId}, {$inc: {"likesInfo.dislikesCount": -1}, "likesInfo.myStatus": likeStatus})
+                await PostsModel.findOneAndUpdate({id: postId}, {$inc: {"likesInfo.dislikesCount": -1}, "likesInfo.myStatus": likeStatus})
                 return true
             }
 

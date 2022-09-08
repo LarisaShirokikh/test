@@ -1,11 +1,10 @@
 import {inject, injectable} from "inversify";
 import {Request, Response} from "express";
 import {
-    BloggersModelClass,
-    CommentsModelClass,
-    EndpointsAttemptsTrysModelClass, PostsModelClass,
-    UserModelClass,
-    UsersEmailConfDataModelClass
+    BloggersModel,
+    CommentsModel,
+    EndpointsAttemptsTrysModel, PostsModel,
+    UsersEmailConfDataModel, UsersModel
 } from "../settingses/db";
 import {BloggersRepository} from "../repositories/bloggers-repository";
 import {PostsRepository} from "../repositories/posts-repository";
@@ -25,12 +24,12 @@ export class TestingController {
 
     async deleteAll(req: Request, res: Response) {
 
-        await PostsModelClass.deleteMany()
-        await BloggersModelClass.deleteMany()
-        await UserModelClass.deleteMany()
-        await CommentsModelClass.deleteMany()
-        await EndpointsAttemptsTrysModelClass.deleteMany()
-        await UsersEmailConfDataModelClass.deleteMany()
+        await PostsModel.deleteMany()
+        await BloggersModel.deleteMany()
+        await UsersModel.deleteMany()
+        await CommentsModel.deleteMany()
+        await EndpointsAttemptsTrysModel.deleteMany()
+        await UsersEmailConfDataModel.deleteMany()
 
         res.sendStatus(204)
     }
