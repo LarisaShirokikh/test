@@ -4,7 +4,7 @@ import {injectable} from "inversify";
 import "reflect-metadata";
 import {UsersEmailConfDataModel, UsersModel} from "../settingses/db";
 
-
+@injectable()
 export class UsersRepository {
     async getAllUsers(pageNumber: number, pageSize: number): Promise<UsersExtendedType | undefined | null> {
 

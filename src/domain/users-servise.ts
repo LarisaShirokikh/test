@@ -1,14 +1,13 @@
 import {UsersRepository} from "../repositories/users-repository";
-
 import {UsersExtendedType, UsersType} from "../types";
+import {injectable} from "inversify";
 
-
+@injectable()
 export class UsersService {
     private usersRepository: UsersRepository;
     constructor() {
         this.usersRepository = new UsersRepository()
     }
-
     async getAllUsers(pageNumber: string = '1' || undefined, pageSize:string = '10' || undefined): Promise<UsersExtendedType | undefined | null> {
         return this.usersRepository.getAllUsers(+pageNumber, +pageSize)
     }
