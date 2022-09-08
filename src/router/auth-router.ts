@@ -28,6 +28,8 @@ authRouter.post('/login',
 
 
         res.cookie('refreshToken', jwtTokenPair.refreshToken, {
+            // httpOnly: true,
+            // secure: true
         })
 
         res.status(200).send({accessToken: jwtTokenPair.accessToken})
@@ -40,7 +42,7 @@ authRouter.post('/refresh-token', async (req: Request, res: Response) => {
         const refreshToken = await req.cookies?.refreshToken
         if (!refreshToken) return res.sendStatus(401)
 
-        let tokenExpTime = await jwtService.getTokenTime(refreshToken)
+        let tokenExpTime = await jwtService.getTokenExpTime(refreshToken)
         // if (tokenExpTime < +(new Date())) return res.sendStatus(401)
         if (!tokenExpTime) return res.sendStatus(401)
 
@@ -55,12 +57,15 @@ authRouter.post('/refresh-token', async (req: Request, res: Response) => {
 
         const jwtTokenPair = await jwtService.createJWTPair(user)
         res.cookie('refreshToken', jwtTokenPair.refreshToken, {
+            // httpOnly: true,
+            // secure: true
+            // secure: process.env.NODE_ENV === "production",
         })
 
         await authService.addRefreshTokenToBlackList(refreshToken)
 
         res.status(200).send({accessToken: jwtTokenPair.accessToken})
-
+        // res.status(200).send("New RefreshToken was sent")
     }
 )
 
@@ -69,7 +74,7 @@ authRouter.post('/logout', async (req: Request, res: Response) => {
         const refreshToken = await req.cookies?.refreshToken
         if (!refreshToken) return res.sendStatus(401)
 
-        let tokenExpTime = await jwtService.getTokenTime(refreshToken)
+        let tokenExpTime = await jwtService.getTokenExpTime(refreshToken)
         if (!tokenExpTime) return res.sendStatus(401)
 
         const isRefreshTokenInBlackList = await authService.checkTokenInBlackList(refreshToken)
@@ -101,7 +106,7 @@ authRouter.get('/me',
 )
 
 authRouter.post('/registration',
-    loginValidation,
+   loginValidation,
     emailValidation,
     passwordValidation,
     inputValidationMiddleWare,

@@ -6,7 +6,6 @@ import {UsersRepository} from "../repositories/users-repository";
 import {refreshTokensBLRepository} from "../repositories/refresh-repository";
 import {UsersWithEmailType} from "../settingses/db";
 
-
 class AuthService {
     private usersRepository: UsersRepository;
     constructor() {

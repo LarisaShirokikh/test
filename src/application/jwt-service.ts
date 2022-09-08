@@ -35,7 +35,7 @@ export const jwtService = {
         }
     },
 
-    async getTokenTime(token: string) {
+    async getTokenExpTime(token: string) {
 
 
         try{
@@ -49,5 +49,12 @@ export const jwtService = {
         catch (error){
             return false
         }
+
+        // const result: any = await jwt.verify(token, process.env.JWT_SECRET || '123')
+        // if(result) {
+        //     return result.exp
+        // } else {
+        //     return false
+        // }
     }
 }
