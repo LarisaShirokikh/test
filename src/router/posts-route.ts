@@ -1,14 +1,10 @@
 import { Router, Request, Response } from "express";
-import {authMiddleware} from "../middlewares/auth-middleware";
-import {
-    bloggerIdValidation, commentValidation,
-    contentValidation, likeStatusValidation,
-    shortDescriptionValidation,
-    titleValidation
-} from "../middlewares/validations";
-import {inputValidationMiddleWare} from "../middlewares/input-validation";
+
 import {postsService} from "../domain/posts-service";
 import {bloggersRepository} from "../repositories/bloggers-repository";
+import {authBaseMiddleware, authBearerMiddleware} from "../middlewares/auth-middleware";
+import {fieldsValidationMiddleware} from "../middlewares/fields-Validation-Middleware";
+import {inputValidationMiddleware} from "../middlewares/input-validation";
 
 
 export const postsRouter = Router({});
@@ -22,12 +18,12 @@ postsRouter.get('/', async (req: Request, res: Response) => {
 )
 
 postsRouter.post('/',
-    authMiddleware,
-    titleValidation,
-    shortDescriptionValidation,
-    contentValidation,
-    bloggerIdValidation,
-    inputValidationMiddleWare,
+    authBaseMiddleware,
+    fieldsValidationMiddleware.titleValidation,
+    fieldsValidationMiddleware.shortDescriptionValidation,
+    fieldsValidationMiddleware.contentValidation,
+    fieldsValidationMiddleware.bloggerIdValidation,
+    inputValidationMiddleware,
     async (req: Request, res: Response) => {
         const newPost = await postsService.createPost(req.body.title, req.body.shortDescription, req.body.content, req.body.bloggerId)
 
@@ -42,12 +38,12 @@ postsRouter.post('/',
 )
 
 postsRouter.put('/:postId',
-    authMiddleware,
-    titleValidation,
-    shortDescriptionValidation,
-    contentValidation,
-    bloggerIdValidation,
-    inputValidationMiddleWare,
+    authBaseMiddleware,
+    fieldsValidationMiddleware.titleValidation,
+    fieldsValidationMiddleware.shortDescriptionValidation,
+    fieldsValidationMiddleware.contentValidation,
+    fieldsValidationMiddleware.bloggerIdValidation,
+    inputValidationMiddleware,
     async (req: Request, res: Response) => {
 
 
@@ -86,7 +82,7 @@ postsRouter.get('/:postId', async (req: Request, res: Response) => {
     }
 )
 
-postsRouter.delete('/:postId', authMiddleware, async (req: Request, res: Response) => {
+postsRouter.delete('/:postId', authBaseMiddleware, async (req: Request, res: Response) => {
 
         const isDeleted = await postsService.deletePost(req.params.postId)
 
@@ -99,9 +95,9 @@ postsRouter.delete('/:postId', authMiddleware, async (req: Request, res: Respons
 )
 
 postsRouter.post('/:postId/comments',
-    authMiddleware,
-    commentValidation,
-    inputValidationMiddleWare,
+    authBearerMiddleware,
+    fieldsValidationMiddleware.commentContentValidation,
+    inputValidationMiddleware,
 
     async (req: Request, res: Response) => {
 
@@ -138,9 +134,9 @@ postsRouter.get('/:postId/comments', async (req: Request, res: Response) => {
 
 
 postsRouter.post('/:postId/like-status',
-    authMiddleware,
-   likeStatusValidation,
-    inputValidationMiddleWare,
+    authBearerMiddleware,
+    fieldsValidationMiddleware.likeStatusValidation,
+    inputValidationMiddleware,
     async (req: Request, res: Response) => {
 
         const post = await postsService.getPostById(req.params.postId)
@@ -156,6 +152,7 @@ postsRouter.post('/:postId/like-status',
         res.status(201).send(likeStatus)
     }
 )
+
 
 
 

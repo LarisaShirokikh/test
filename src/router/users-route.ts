@@ -1,8 +1,10 @@
 import {Request, Response, Router} from "express";
 import {UsersService} from "../domain/users-servise";
-import {authMiddleware} from "../middlewares/auth-middleware";
-import {inputValidationMiddleWare} from "../middlewares/input-validation";
-import {loginValidation, passwordValidation} from "../middlewares/validations";
+import {authBaseMiddleware} from "../middlewares/auth-middleware";
+import {inputValidationMiddleware} from "../middlewares/input-validation";
+import {
+    fieldsValidationMiddleware
+} from "../middlewares/fields-Validation-Middleware";
 
 
 export const usersRouter = Router({})
@@ -40,13 +42,14 @@ const usersControllerInstance = new UsersController()
 usersRouter.get('/', usersControllerInstance.getAllUsers.bind(usersControllerInstance))
 
 usersRouter.post('/',
-    authMiddleware,
-    loginValidation,
-    passwordValidation,
-    inputValidationMiddleWare,
+    authBaseMiddleware,
+    fieldsValidationMiddleware.loginValidation,
+    fieldsValidationMiddleware.passwordValidation,
+    inputValidationMiddleware,
     usersControllerInstance.createUser.bind(usersControllerInstance)
 )
 
-usersRouter.delete('/:id', authMiddleware,
+usersRouter.delete('/:id',
+    authBaseMiddleware,
     usersControllerInstance.deleteUser.bind(usersControllerInstance)
 )

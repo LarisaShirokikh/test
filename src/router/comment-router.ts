@@ -1,10 +1,11 @@
 import { Router, Request, Response } from "express";
-import {authBearer} from "../middlewares/auth-middleware";
-import {commentValidation, likeStatusValidation} from "../middlewares/validations";
-import {inputValidationMiddleWare} from "../middlewares/input-validation";
+
 import {jwtService} from "../application/jwt-service";
 import {commentsService} from "../domain/comment-service";
 import {CommentType} from "../settingses/db";
+import {authBearerMiddleware} from "../middlewares/auth-middleware";
+import {fieldsValidationMiddleware} from "../middlewares/fields-Validation-Middleware";
+import {inputValidationMiddleware} from "../middlewares/input-validation";
 
 
 
@@ -12,9 +13,9 @@ import {CommentType} from "../settingses/db";
 export const commentsRouter = Router({})
 
 commentsRouter.put('/:commentId',
-    authBearer,
-    commentValidation,
-    inputValidationMiddleWare,
+    authBearerMiddleware,
+    fieldsValidationMiddleware.commentContentValidation,
+    inputValidationMiddleware,
     async (req: Request, res: Response) => {
 
         const comment: CommentType | null | undefined = await commentsService.findComment(req.params.commentId)
@@ -47,7 +48,7 @@ commentsRouter.put('/:commentId',
 )
 
 
-commentsRouter.delete('/:commentId', authBearer, async (req: Request, res: Response) => {
+commentsRouter.delete('/:commentId', authBearerMiddleware, async (req: Request, res: Response) => {
 
         const comment: CommentType | null | undefined = await commentsService.findComment(req.params.commentId)
 
@@ -96,9 +97,9 @@ commentsRouter.get('/:commentId', async (req: Request, res: Response) => {
 )
 
 commentsRouter.put('/:commentId/like-status',
-    authBearer,
-    likeStatusValidation,
-    inputValidationMiddleWare,
+    authBearerMiddleware,
+    fieldsValidationMiddleware.likeStatusValidation,
+    inputValidationMiddleware,
     async (req: Request, res: Response) => {
         const comment = await commentsService.findComment(req.params.commentId)
         if (!comment) {
@@ -110,6 +111,8 @@ commentsRouter.put('/:commentId/like-status',
         res.sendStatus(204)
     }
 )
+
+
 
 
 

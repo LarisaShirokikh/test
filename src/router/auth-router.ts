@@ -1,10 +1,12 @@
 import {Router, Response, Request} from "express";
 import {checkLimitsIPAttemptsMiddleware} from "../middlewares/checkLimitsIpAttemptsMiddleware";
-import {emailValidation, loginValidation, passwordValidation} from "../middlewares/validations";
-import {inputValidationMiddleWare} from "../middlewares/input-validation";
+import {
+    fieldsValidationMiddleware,
+} from "../middlewares/fields-Validation-Middleware";
+import {inputValidationMiddleware} from "../middlewares/input-validation";
 import {authService} from "../domain/auth-service";
 import {jwtService} from "../application/jwt-service";
-import {authBearer} from "../middlewares/auth-middleware";
+import {authBearerMiddleware} from "../middlewares/auth-middleware";
 import {usersRepository} from "../repositories/users-repository";
 
 
@@ -12,9 +14,9 @@ import {usersRepository} from "../repositories/users-repository";
 export const authRouter = Router({})
 
 authRouter.post('/login',
-    loginValidation,
-    passwordValidation,
-    inputValidationMiddleWare,
+    fieldsValidationMiddleware.loginValidation,
+    fieldsValidationMiddleware.passwordValidation,
+    inputValidationMiddleware,
     checkLimitsIPAttemptsMiddleware,
 
     async (req: Request, res: Response) => {
@@ -87,7 +89,7 @@ authRouter.post('/logout', async (req: Request, res: Response) => {
 )
 
 authRouter.get('/me',
-    authBearer,
+    authBearerMiddleware,
     async (req: Request, res: Response) => {
 
         const header = req.headers.authorization
@@ -106,10 +108,10 @@ authRouter.get('/me',
 )
 
 authRouter.post('/registration',
-   loginValidation,
-    emailValidation,
-    passwordValidation,
-    inputValidationMiddleWare,
+    fieldsValidationMiddleware.loginValidation,
+    fieldsValidationMiddleware.emailValidation,
+    fieldsValidationMiddleware.passwordValidation,
+    inputValidationMiddleware,
     checkLimitsIPAttemptsMiddleware,
 
     async (req: Request, res: Response) => {
@@ -148,8 +150,8 @@ authRouter.post('/registration-confirmation',
 )
 
 authRouter.post('/registration-email-resending',
-    emailValidation,
-    inputValidationMiddleWare,
+    fieldsValidationMiddleware.emailValidation,
+    inputValidationMiddleware,
     checkLimitsIPAttemptsMiddleware,
 
     async (req: Request, res: Response) => {

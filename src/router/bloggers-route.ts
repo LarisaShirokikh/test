@@ -1,17 +1,10 @@
 import {Router, Request, Response} from "express";
-import {authMiddleware} from "../middlewares/auth-middleware";
-import {
-    contentValidation,
-    nameValidation,
-    shortDescriptionValidation,
-    titleValidation,
-    urlValidation
-} from "../middlewares/validations";
-import {inputValidationMiddleWare} from "../middlewares/input-validation";
+
 import {bloggersRepository} from "../repositories/bloggers-repository";
 import {bloggersService} from "../domain/bloggers-service";
-
-
+import {authBaseMiddleware} from "../middlewares/auth-middleware";
+import {fieldsValidationMiddleware} from "../middlewares/fields-Validation-Middleware";
+import {inputValidationMiddleware} from "../middlewares/input-validation";
 
 
 
@@ -33,10 +26,10 @@ bloggersRouter.get('/',
 )
 
 bloggersRouter.post('/',
-    authMiddleware,
-    nameValidation,
-    urlValidation,
-    inputValidationMiddleWare,
+    authBaseMiddleware,
+    fieldsValidationMiddleware.nameValidation,
+    fieldsValidationMiddleware.youtubeValidation,
+    inputValidationMiddleware,
     async (req: Request, res: Response) => {
         const newBlogger = await bloggersService.createBlogger(req.body.name, req.body.youtubeUrl)
         res.status(201).send(newBlogger)
@@ -54,10 +47,10 @@ bloggersRouter.get('/:bloggerId', async (req: Request, res: Response) => {
 )
 
 bloggersRouter.put('/:bloggerId',
-    authMiddleware,
-    nameValidation,
-    urlValidation,
-   inputValidationMiddleWare,
+    authBaseMiddleware,
+    fieldsValidationMiddleware.nameValidation,
+    fieldsValidationMiddleware.youtubeValidation,
+    inputValidationMiddleware,
     async (req: Request, res: Response) => {
 
         const isUpdated = await bloggersService.updateBlogger(req.params.bloggerId, req.body.name, req.body.youtubeUrl)
@@ -72,7 +65,7 @@ bloggersRouter.put('/:bloggerId',
 )
 
 bloggersRouter.delete('/:bloggerId',
-    authMiddleware,
+    authBaseMiddleware,
     async (req: Request, res: Response) => {
         const isDeleted = await bloggersService.deleteBlogger(req.params.bloggerId)
         if (isDeleted) {
@@ -97,11 +90,11 @@ bloggersRouter.get('/:bloggerId/posts', async (req: Request, res: Response) => {
 )
 
 bloggersRouter.post('/:bloggerId/posts',
-    authMiddleware,
-    titleValidation,
-    shortDescriptionValidation,
-    contentValidation,
-    inputValidationMiddleWare,
+    authBaseMiddleware,
+    fieldsValidationMiddleware.titleValidation,
+    fieldsValidationMiddleware.shortDescriptionValidation,
+    fieldsValidationMiddleware.contentValidation,
+    inputValidationMiddleware,
 
     async (req: Request, res: Response) => {
 
