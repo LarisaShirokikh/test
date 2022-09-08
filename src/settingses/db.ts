@@ -74,7 +74,7 @@ const postsSchema = new mongoose.Schema<PostsType>({
             ]
 
         }
-    }, //{_id: false}
+    }, {_id: false}
 )
 const bloggersSchema = new mongoose.Schema<BloggersType>({
     id: String,
