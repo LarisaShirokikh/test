@@ -26,7 +26,7 @@ async findComment(req: Request, res: Response) {
         }
     }
     const updatedComment = await this.commentsService.updateComment(req.params.commentId, req.body.content)
-    console.log(updatedComment)
+
     if (updatedComment) {
         res.status(204).send(updatedComment);
     } else {
