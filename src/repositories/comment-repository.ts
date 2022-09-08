@@ -14,8 +14,7 @@ export class CommentsRepository {
         const comment = await CommentsModelClass.findOne({id: commentId},
             {
                 _id: 0,
-                __v: 0,
-                likesInfo: 0
+                __v: 0
             })
         return comment
     }
