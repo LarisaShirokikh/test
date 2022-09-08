@@ -171,7 +171,7 @@ export class PostsRepository {
 
             if (likeStatus === "Dislike" && isLikeStatus.likeStatus !== "Like") {
                 await PostsModelClass.findOneAndUpdate({id: postId}, {
-                    $inc: {"extendedLikesInfo.likesCount": 1},
+                    $inc: {"extendedLikesInfo.likesCount": -1},
                     "extendedLikesInfo.myStatus": likeStatus
                 })
                 return true
@@ -187,7 +187,7 @@ export class PostsRepository {
 
             if (likeStatus === "None" && isLikeStatus.likeStatus === "Dislike") {
                 await PostsModelClass.findOneAndUpdate({id: postId}, {
-                    $inc: {"extendedLikesInfo.dislikesCount": 1},
+                    $inc: {"extendedLikesInfo.dislikesCount": -1},
                     "extendedLikesInfo.myStatus": likeStatus
                 })
                 return true

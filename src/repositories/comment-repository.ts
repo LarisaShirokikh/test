@@ -15,7 +15,7 @@ export class CommentsRepository {
             {
                 _id: 0,
                 __v: 0,
-
+                likesInfo: 0
             })
         return comment
     }
