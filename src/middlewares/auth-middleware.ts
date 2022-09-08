@@ -26,7 +26,7 @@ import {UserModelClass} from "../settingses/db";
         if (userId) {
 
 
-            req.user = await UserModelClass.findOne({id: userId},  {projection: {_id: 0}})
+            req.user = await UserModelClass.findOne({id: userId}, {_id: 0, __v: 0})
             next()
         } else {
             res.sendStatus(401)
