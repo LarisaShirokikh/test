@@ -5,7 +5,7 @@ import {PostsService} from "../domain/posts-service";
 import {authBearer, authMiddleware} from "../middlewares/auth-middleware";
 import {
     commentValidation,
-    contentValidation,
+    contentValidation, likeStatusValidation,
     shortDescriptionValidation,
     titleValidation
 } from "../middlewares/validations";
@@ -25,7 +25,6 @@ postsRouter.post('/', authMiddleware, titleValidation,
     shortDescriptionValidation, contentValidation,
     inputValidationMiddleWare,  postsController.creatPost.bind(postsController))
 
-postsRouter.get('/:id', postsController.getPostById.bind(postsController))
 
 postsRouter.put('/:id', authMiddleware,
     titleValidation, shortDescriptionValidation, contentValidation, inputValidationMiddleWare,
@@ -40,7 +39,10 @@ postsRouter.post('/:postId/comments',
 
 postsRouter.get('/:postId/comments', postsController.getCountCommentsPost.bind(postsController))
 
+postsRouter.get('/:id', postsController.getPostById.bind(postsController))
+
 postsRouter.put('/:postId/like-status',
-   authBearer, postsController.likeStatusPost.bind(postsController))
+   authBearer, likeStatusValidation, inputValidationMiddleWare,
+    postsController.likeStatusPost.bind(postsController))
 
 

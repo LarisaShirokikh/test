@@ -1,6 +1,6 @@
 import {NewestLikes, PostsType} from "../types";
 import {likesStatusCollection, PostsModelClass} from "../settingses/db";
-import {inject, injectable} from "inversify";
+import {injectable} from "inversify";
 import mongoose from "mongoose";
 
 @injectable()
@@ -9,16 +9,16 @@ export class PostsRepository {
     //}
     async findPosts(pageSize: number, pageNumber: number) {
         return PostsModelClass.find({}, {
-            projection: {
+
                 _id: 0,
                 __v: 0
-            }
+
         }).skip((pageNumber - 1) * pageSize).limit(pageSize).lean()
     }
 
     async findPostById(id: string) {
         const post = await PostsModelClass.findOne({id: id}, {_id: 0, __v: 0}).lean()
-        console.log('post2', post)
+        if (post)
         return post
     }
 
@@ -26,14 +26,14 @@ export class PostsRepository {
         //const postInstance = new PostsModelClass({...newPosts})
         //console.log(postIn)
         //await postInstance.save()
-        const post = await PostsModelClass.insertMany({...newPosts})
+        const post = await PostsModelClass.create({...newPosts})
         console.log(post)
         return newPosts;
 
     }
 
     async updatePost(id: string, title: string, shortDescription: string, content: string, bloggerId: string) {
-        const postInstance = await PostsModelClass.findOne({id: id}, {projection: {_id: 0, __v: 0}})
+        const postInstance = await PostsModelClass.findOne({id: id},  {_id: 0, __v: 0})
         if (!postInstance) return false
         postInstance.title = title;
         postInstance.shortDescription = shortDescription;
@@ -70,15 +70,14 @@ export class PostsRepository {
     }
 
     async getPostById(postId: string): Promise<PostsType | null> {
-        const post = await PostsModelClass.findOne({id: postId}, {_id: false, __v: false})
-        console.log('post1', post)
+        const post = await PostsModelClass.findOne({id: postId}, {_id: 0, __v: 0})
         return post;
     }
 
     async updateLikeStatus(user: any, postId: string, likeStatus: "None" | "Like" | "Dislike", addedLikeStatusAt: Date) {
 
 
-        const isLikeStatus = await likesStatusCollection.findOne({id: postId, userId: user.id})
+        const isLikeStatus = await likesStatusCollection.findOne({id: postId, userId: user.id}, {_id: 0})
 
         if (!isLikeStatus) {
             await likesStatusCollection.create({id: postId, userId: user.id, likeStatus})
