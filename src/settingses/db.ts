@@ -51,7 +51,7 @@ const commentsSchema = new mongoose.Schema<CommentsType>({
             dislikesCount: Number,
             myStatus: String
         }
-    }, //{_id: false}
+    }, {_id: false}
 )
 const postsSchema = new mongoose.Schema<PostsType>({
         id: String,
