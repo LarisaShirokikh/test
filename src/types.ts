@@ -14,7 +14,7 @@ export type PostsType = {
     bloggerId: string
     bloggerName: string
     addedAt: object
-    extendedLikesInfo: {
+    likesInfo: {
         likesCount: number
         dislikesCount: number
         myStatus: string
