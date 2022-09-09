@@ -42,36 +42,45 @@ const usersSchema = new mongoose.Schema<UsersDBType>({
     }
 });
 const commentSchema = new mongoose.Schema<CommentsType>({
-    userId: String,
-    id: String,
-    content: String
-})
+        postId: String,
+        id: String,
+        content: String,
+        userId: String,
+        userLogin: String,
+        addedAt: Object,
+        likesInfo: {
+            likesCount: Number,
+            dislikesCount: Number,
+            myStatus: String
+        }
+    }, {_id: false}
+)
 
-const  NewestLikesSchema = new mongoose.Schema<NewestLikesType>( {
-
-          addedAt: Object,
-         userId: String,
-         login: String
-
-
-})
 
 
 const postsSchema = new mongoose.Schema<PostsType>({
-    id: String,
-    title: String,
-    shortDescription: String,
-    content: String,
-    bloggerId: String,
-    bloggerName: String,
-    addedAt: Date,
-    extendedLikesInfo: {
-        likesCount: Number,
-        dislikesCount: Number,
-        myStatus: String,
-        newestLikes: []
-    }
-})
+        id: String,
+        title: String,
+        shortDescription: String,
+        content: String,
+        bloggerId: String,
+        bloggerName: String,
+        addedAt: Object, // new
+        likesInfo: {
+            likesCount: Number,
+            dislikesCount: Number,
+            myStatus: String,
+            newestLikes: [
+                {
+                    addedAt: Object,
+                    userId: String,
+                    login: String
+                }
+            ]
+        }
+    }, {_id: false}
+)
+
 const bloggersSchema = new mongoose.Schema<BloggersType>({
     id: String,
     name: String,
