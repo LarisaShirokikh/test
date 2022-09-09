@@ -4,7 +4,6 @@ import {inject, injectable} from "inversify";
 import {UsersService} from "../domain/users-servise";
 import {UsersRepository} from "../repositories/users-repository";
 import {AuthService} from "../domain/auth-service";
-import {UsersType} from "../types";
 
 
 @injectable()
@@ -43,7 +42,7 @@ export class AuthController {
 
     async resendingEmailConfirm(req: Request, res: Response) {
         const user = await this.usersRepository.findUserByEmail(req.body.email)
-        if (user?.isConfirmed === true || !user) {
+        if (user?.accountData.isConfirmed === true || !user) {
             res.status(400).send({errorsMessages: [{message: "ErrorMessage", field: "email"}]})
         } else {
             const result = await this.authService.resendingEmailConfirm(req.body.email)
@@ -63,7 +62,6 @@ export class AuthController {
             res.status(401).send()
             return
         }
-        // @ts-ignore
         const jwtTokenPair = await jwtService.createJWTPair(user)
         res.cookie('refreshToken', jwtTokenPair.refreshToken, {httpOnly: true, secure: true})
         res.status(200).send({accessToken: jwtTokenPair.accessToken})
@@ -127,9 +125,9 @@ export class AuthController {
 
         if (user) {
             res.status(200).send({
-                email: user.email,
-                login: user.login,
-                userId: user.id,
+                email: user.accountData.email,
+                login: user.accountData.login,
+                userId: user.accountData.id,
             })
         } else {
             res.sendStatus(401)

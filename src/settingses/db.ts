@@ -5,7 +5,7 @@ import {
     BloggersType,
     CommentsType,
     PostsType, RefreshTokensCollectionType, UsersDBType,
-    UsersEmailConfDataType, LikesStatusType, NewestLikesType, UsersType
+    UsersEmailConfDataType, LikesStatusType, NewestLikesType
 } from "../types";
 import Array = module
 import * as module from "module";
@@ -27,28 +27,34 @@ let dbName = "mongoose-example"
 //export const endpointsAttemptsTrysCollection = db.collection<AttemptType>("attempts")
 //export const refreshTokensBlackListCollection = db.collection<RefreshTokensCollectionType>('refreshBlackList')
 
-const usersSchema = new mongoose.Schema<UsersType>({
-
+const usersSchema = new mongoose.Schema<UsersDBType>({
+    accountData: {
         id: String,
         login: String,
         email: String,
         passwordHash: String,
         isConfirmed: Boolean
+    },
+    emailConfirmation: {
+        confirmationCode: String,
+        expirationDate: String,
+        isConfirmed: Boolean
+    }
 });
 const commentSchema = new mongoose.Schema<CommentsType>({
-    postId: String,
-    id: String,
-    content: String,
     userId: String,
-    userLogin: String,
-    addedAt: Object,
-    likesInfo: {
-        likesCount: Number,
-        dislikesCount: Number,
-        myStatus: String
-    }
-}, {_id: false}
-)
+    id: String,
+    content: String
+})
+
+const  NewestLikesSchema = new mongoose.Schema<NewestLikesType>( {
+
+          addedAt: Object,
+         userId: String,
+         login: String
+
+
+})
 
 
 const postsSchema = new mongoose.Schema<PostsType>({
@@ -58,21 +64,14 @@ const postsSchema = new mongoose.Schema<PostsType>({
     content: String,
     bloggerId: String,
     bloggerName: String,
-    addedAt: Object, // new
-    likesInfo: {
+    addedAt: Date,
+    extendedLikesInfo: {
         likesCount: Number,
         dislikesCount: Number,
         myStatus: String,
-        newestLikes: [
-            {
-                addedAt: Object,
-                userId: String,
-                login: String
-            }
-        ]
+        newestLikes: []
     }
-}, {_id: false})
-
+})
 const bloggersSchema = new mongoose.Schema<BloggersType>({
     id: String,
     name: String,
@@ -94,7 +93,7 @@ const refreshTokensBlackListSchema = new mongoose.Schema<RefreshTokensCollection
 const likesStatusSchema = new mongoose.Schema<LikesStatusType>({
     id: String,
     userId: String,
-    likeStatus: String
+
 
 })
 

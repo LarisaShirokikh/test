@@ -62,7 +62,7 @@ export class CommentsRepository {
         const isLikeStatus: LikesStatusType|null = await likesStatusCollection.findOne({id: commentId, userId: user.id})
 
         if (!isLikeStatus) {
-            await likesStatusCollection.insertMany({id: commentId, userId: user.id, likeStatus})
+            await likesStatusCollection.create({id: commentId, userId: user.id, likeStatus})
             if(likeStatus === "Like") {
                 const a = await CommentsModelClass.findOneAndUpdate({id: commentId}, {$inc: {"likesInfo.likesCount": 1}, "likesInfo.myStatus": likeStatus})
                 return true

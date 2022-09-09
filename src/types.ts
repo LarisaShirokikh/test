@@ -25,12 +25,12 @@ export class PostsType {
         public content: string,
         public bloggerId: string,
         public bloggerName: string,
-        public addedAt: object,
-        public likesInfo: {
+        public addedAt: Date,
+        public extendedLikesInfo: {
             likesCount: number,
             dislikesCount: number,
             myStatus: string,
-            newestLikes:  [NewestLikesType | NewestLikesType[]]
+            newestLikes: []
         }) {
     }
 }
@@ -38,27 +38,16 @@ export class PostsType {
 export class UsersType {
     constructor(
         public id: string,
-        public login: string,
-        public isConfirmed?: boolean,
-        public email?: string,
-        public passwordHash?: string
+        public login: string
     ) {
     }
 }
 
 export class CommentsType {
     constructor(
-        public postId: string,
         public id: string,
-        public content: string,
         public userId: string,
-        public userLogin: string,
-        public addedAt: object,
-        public likesInfo: {
-            likesCount: number
-            dislikesCount: number
-            myStatus: string
-        }
+        public content: string
     ) {
     }
 }

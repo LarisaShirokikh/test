@@ -3,7 +3,7 @@ import {emailManager} from "../managers/email-manager";
 import {v4 as uuidv4} from 'uuid';
 import add from 'date-fns/add'
 import bcrypt from "bcrypt";
-import {UsersDBType, UsersType} from "../types";
+import {UsersDBType} from "../types";
 import {ObjectId} from "mongodb";
 import {inject, injectable} from "inversify";
 import {UsersRepository} from "../repositories/users-repository";
@@ -65,7 +65,7 @@ export class AuthService  {
     async resendingEmailConfirm(email: string) {
         const user = await this.usersRepository.findUserByEmail(email)
         if (!user) return false
-        if (user?.isConfirmed === true) return false
+        if (user?.emailConfirmation.isConfirmed === true) return false
         const newEmailConfirmation = {
             email,
             confirmationCode: uuidv4(),
@@ -81,11 +81,10 @@ export class AuthService  {
         await emailManager.sendEmailConfirmationCode( newEmailConfirmation.confirmationCode, email)
         return true
     }
-    async checkCredentials(login: string, password: string): Promise<UsersType | boolean | null>{
+    async checkCredentials(login: string, password: string){
             const user = await this.usersRepository.findUserByLogin(login)
         if (!user) return null
-            // @ts-ignore
-        const validPassword = bcrypt.compare(password, user.passwordHash)
+            const validPassword = await bcrypt.compare(password, user.accountData.passwordHash)
         if (validPassword) return user
                 return false
     }
@@ -97,7 +96,7 @@ export class AuthService  {
 
         return result
     }
-    async findUserById(userId: string): Promise<UsersType | undefined | null>{
+    async findUserById(userId: string): Promise<UsersDBType | undefined | null>{
         const user = await this.usersRepository.findUserWithEmailById(userId)
         return user
     }
