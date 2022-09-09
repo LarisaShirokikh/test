@@ -3,6 +3,7 @@ import {PostsService} from "../domain/posts-service";
 import {NextFunction, Request, Response} from "express";
 import {BloggersService} from "../domain/bloggers-service";
 import {CommentsService} from "../domain/comment-service";
+import {ObjectId} from "mongodb";
 
 @injectable()
 export class PostsController {
@@ -34,7 +35,7 @@ export class PostsController {
     async creatPost(req: Request, res: Response) {
         const post = await this.postsService.createPost(req.body.title, req.body.shortDescription,
             req.body.content, req.body.bloggerId)
-        if (!post) return res.sendStatus(404)
+        if (!post) return res.sendStatus(400)
         res.status(201).send(post)
         return
 
@@ -60,16 +61,18 @@ export class PostsController {
         //проверка на токен
         //если токен, то расшифровка и передать юзер айди/логин, передать в файнд логин
         //если найдено все то отдаем myStatus
-        const post = await this.postsService.findPostById(req.params.id)
+        if (typeof req.params.postId !== "string") {
+            res.send(400);
+            return;
+        }
 
-        if (post) return res.send(post)
-        res.status(404).send({
-            errorsMessages: [{
-                message: "Post with specified postId doesn't exists",
-                field: "postId"
-            }]
-        });
-        return
+        const post = await this.postsService.findPostById(req.params.postId)
+
+        if (post) {
+            res.status(200).send(post);
+        } else {
+            res.send(404);
+        }
 
     }
 
