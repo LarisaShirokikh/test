@@ -93,7 +93,7 @@ const refreshTokensBlackListSchema = new mongoose.Schema<RefreshTokensCollection
 const likesStatusSchema = new mongoose.Schema<LikesStatusType>({
     id: String,
     userId: String,
-
+    likeStatus: String
 
 })
 

@@ -30,7 +30,7 @@ export class PostsType {
             likesCount: number,
             dislikesCount: number,
             myStatus: string,
-            newestLikes: []
+            newestLikes:  NewestLikesType[]
         }) {
     }
 }
