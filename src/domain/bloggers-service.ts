@@ -43,7 +43,7 @@ export class BloggersService {
         const blogger = await this.bloggersRepository.getBloggerById(bloggerId)
         if (blogger) {
             const newPost = {
-                postId: (new ObjectId()).toString(),
+                id: (new ObjectId()).toString(),
                 title,
                 shortDescription,
                 content,

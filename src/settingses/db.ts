@@ -58,7 +58,7 @@ const NewestLikesSchema = new mongoose.Schema<NewestLikesType>({
 
 
 const postsSchema = new mongoose.Schema<PostsType>({
-    postId: String,
+    id: String,
     title: String,
     shortDescription: String,
     content: String,

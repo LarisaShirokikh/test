@@ -19,7 +19,7 @@ export class NewestLikesType {
 
 export class PostsType {
     constructor(
-        public postId: string,
+        public id: string,
         public title: string,
         public shortDescription: string,
         public content: string,

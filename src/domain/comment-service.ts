@@ -14,13 +14,13 @@ export class CommentsService {
         this.postsRepository = new PostsRepository()
     }
 
-    async createCommentByPostId(user: any, postId: string, content: string): Promise<CommentsType | undefined> {
-        const post = await this.postsRepository.getPostById(postId)
+    async createCommentByPostId(user: any, id: string, content: string): Promise<CommentsType | undefined> {
+        const post = await this.postsRepository.getPostById(id)
 
         if (post) {
 
             const newComment = {
-                postId: postId,
+                postId: id,
                 id: (+(new Date())).toString(),
                 content: content,
                 userId: user.accountData.id,

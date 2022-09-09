@@ -68,12 +68,11 @@ export class PostsRepository {
         return true
     }
 
-    async getPostById(postId: string): Promise<PostsType | null> {
+    async getPostById(id: string): Promise<PostsType | null> {
 
-        const post = await PostsModelClass.findOne({postId: postId},
+        const post = await PostsModelClass.findOne({id: id},
             {_id: 0, __v: 0}
         )
-        console.log('post', post)
         return post;
     }
 
