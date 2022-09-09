@@ -25,7 +25,11 @@ import {UserModelClass} from "../settingses/db";
         if (userId) {
 
 
-            req.user = await UserModelClass.findOne({id: userId}, {_id: 0, __v: 0})
+            const user = await UserModelClass.findOne({'accountData.id': userId}, {_id: 0, __v: 0})
+            if (!user)
+                res.sendStatus(401)
+            //@ts-ignore
+            req.user = user;
             next()
         } else {
             res.sendStatus(401)
