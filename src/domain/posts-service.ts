@@ -32,7 +32,7 @@ export class PostsService {
                 bloggerId,
                 bloggerName: blogger.name,
                 addedAt: new Date,
-                extendedLikesInfo: {
+                likesInfo: {
                     likesCount: 0,
                     dislikesCount: 0,
                     myStatus: "None",
@@ -42,6 +42,7 @@ export class PostsService {
                 }
             }
 
+            // @ts-ignore
             const createdPost = await this.postsRepository.createPost(newPost)
             return createdPost
         }
@@ -61,7 +62,8 @@ export class PostsService {
     async getCountBloggerId(bloggerId: string) {
         return await this.postsRepository.getCountBloggerId(bloggerId)
     }
-    async getPostById (postId: string): Promise<Promise<PostsType> | null> {
+
+    async getPostById(postId: string): Promise<PostsType | null> {
         return this.postsRepository.getPostById(postId)
     }
 

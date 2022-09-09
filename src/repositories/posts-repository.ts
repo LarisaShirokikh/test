@@ -81,8 +81,7 @@ export class PostsRepository {
         if (!isLikeStatus) {
             await likesStatusCollection.insertMany({id: postId, userId: user.id, likeStatus})
             if(likeStatus === "Like") {
-                // await PostsModel.findOneAndUpdate({id: postId}, {$inc: {"likesInfo.likesCount": 1}, })
-                // await PostsModel.findOneAndUpdate({id: postId}, {"likesInfo.myStatus": likeStatus})
+
                 const a = await PostsModelClass.findOneAndUpdate({id: postId}, {$inc: {"likesInfo.likesCount": 1}, "likesInfo.myStatus": likeStatus})
 
                 const newestLike = {

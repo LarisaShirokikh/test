@@ -7,6 +7,16 @@ export class BloggersType {
     }
 }
 
+export class NewestLikesType {
+    constructor(
+        public addedAt: object,
+        public userId: string,
+        public login: string
+    ) {
+    }
+
+}
+
 export class PostsType {
     constructor(
         public id: string,
@@ -16,15 +26,11 @@ export class PostsType {
         public bloggerId: string,
         public bloggerName: string,
         public addedAt: Date,
-        public extendedLikesInfo: {
+        public likesInfo: {
             likesCount: number,
             dislikesCount: number,
             myStatus: string,
-            newestLikes:   NewestLikes[]
-
-
-
-
+            newestLikes: []
         }) {
     }
 }
@@ -100,13 +106,14 @@ export class LikesStatusType {
     }
 
 }
-export class NewestLikes {
-constructor(
 
-       public addedAt: Date,
-       public userId: string,
-       public login: string
-) {}
+export class NewestLikes {
+    constructor(
+        public addedAt: Date,
+        public userId: string,
+        public login: string
+    ) {
+    }
 }
 
 

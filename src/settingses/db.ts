@@ -5,7 +5,7 @@ import {
     BloggersType,
     CommentsType,
     PostsType, RefreshTokensCollectionType, UsersDBType,
-    UsersEmailConfDataType, LikesStatusType
+    UsersEmailConfDataType, LikesStatusType, NewestLikesType
 } from "../types";
 import Array = module
 import * as module from "module";
@@ -46,6 +46,17 @@ const commentSchema = new mongoose.Schema<CommentsType>({
     id: String,
     content: String
 })
+
+const  NewestLikesSchema = new mongoose.Schema<NewestLikesType>( {
+
+          addedAt: Object,
+         userId: String,
+         login: String
+
+
+})
+
+
 const postsSchema = new mongoose.Schema<PostsType>({
     id: String,
     title: String,
@@ -54,17 +65,11 @@ const postsSchema = new mongoose.Schema<PostsType>({
     bloggerId: String,
     bloggerName: String,
     addedAt: Date,
-    extendedLikesInfo: {
+    likesInfo: {
         likesCount: Number,
         dislikesCount: Number,
         myStatus: String,
-        newestLikes: [
-            {
-                addedAt: Date,
-                userId: String,
-                login: String
-            }
-        ]
+        newestLikes: []
     }
 })
 const bloggersSchema = new mongoose.Schema<BloggersType>({
