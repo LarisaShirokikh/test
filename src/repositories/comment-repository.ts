@@ -122,7 +122,6 @@ export class CommentsRepository {
                 return true
             }
             return true
-
         }
     }
 }
