@@ -14,6 +14,5 @@ export const inputValidationMiddleWare = (req: Request, res: Response, next: Nex
         });
     } else {
         next()
-        return
     }
 }

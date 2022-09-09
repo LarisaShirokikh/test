@@ -16,8 +16,9 @@ export class PostsRepository {
         }).skip((pageNumber - 1) * pageSize).limit(pageSize).lean()
     }
 
-    async findPostById(postId: string): Promise<PostsType | null> {
-        const post = await PostsModelClass.findOne({id: postId}, {_id: 0, __v: 0})
+    async findPostById(id: string) {
+        const post = await PostsModelClass.findOne({id: id}, {_id: 0, __v: 0}).lean()
+        if (post)
         return post
     }
 
@@ -170,7 +171,7 @@ export class PostsRepository {
 
             if (likeStatus === "Dislike" && isLikeStatus.likeStatus !== "Like") {
                 await PostsModelClass.findOneAndUpdate({id: postId}, {
-                    $inc: {"extendedLikesInfo.likesCount": 1},
+                    $inc: {"extendedLikesInfo.likesCount": -1},
                     "extendedLikesInfo.myStatus": likeStatus
                 })
                 return true
@@ -186,7 +187,7 @@ export class PostsRepository {
 
             if (likeStatus === "None" && isLikeStatus.likeStatus === "Dislike") {
                 await PostsModelClass.findOneAndUpdate({id: postId}, {
-                    $inc: {"extendedLikesInfo.dislikesCount": 1},
+                    $inc: {"extendedLikesInfo.dislikesCount": -1},
                     "extendedLikesInfo.myStatus": likeStatus
                 })
                 return true

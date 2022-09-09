@@ -3,7 +3,6 @@ import {PostsService} from "../domain/posts-service";
 import {NextFunction, Request, Response} from "express";
 import {BloggersService} from "../domain/bloggers-service";
 import {CommentsService} from "../domain/comment-service";
-import {ObjectId} from "mongodb";
 
 @injectable()
 export class PostsController {
@@ -12,8 +11,7 @@ export class PostsController {
                 protected postsService: PostsService,
                 protected bloggersService: BloggersService,
                 protected commentService: CommentsService
-    ) {
-    }
+    ) {}
 
     async getAllPosts(req: Request, res: Response) {
 
@@ -31,16 +29,14 @@ export class PostsController {
             "items": findPost
         })
     }
-
     async creatPost(req: Request, res: Response) {
         const post = await this.postsService.createPost(req.body.title, req.body.shortDescription,
             req.body.content, req.body.bloggerId)
-        if (!post) return res.sendStatus(400)
+        if (!post) return res.sendStatus(404)
         res.status(201).send(post)
         return
 
     }
-
     async creatPostByBlogger(req: Request, res: Response) {
         const blogger = await this.bloggersService.findBloggersById(req.params.bloggerId)
         console.log(blogger)
@@ -58,24 +54,17 @@ export class PostsController {
     }
 
     async getPostById(req: Request, res: Response) {
-        //проверка на токен
-        //если токен, то расшифровка и передать юзер айди/логин, передать в файнд логин
-        //если найдено все то отдаем myStatus
-        if (typeof req.params.postId !== "string") {
-            res.send(400);
-            return;
-        }
-
-        const post = await this.postsService.findPostById(req.params.postId)
-
-        if (post) {
-            res.status(200).send(post);
-        } else {
-            res.send(404);
-        }
+        const post = await this.postsService.findPostById(req.params.id)
+        if (post) return res.send(post)
+        res.status(404).send({
+            errorsMessages: [{
+                message: "Post with specified postId doesn't exists",
+                field: "postId"
+            }]
+        });
+        return
 
     }
-
     async updatePost(req: Request, res: Response) {
 
         let blogger = await this.bloggersService.findBloggersById(req.body.bloggerId)
@@ -93,7 +82,6 @@ export class PostsController {
         }
 
     }
-
     async deletePost(req: Request, res: Response) {
         const isDeleted = await this.postsService.deletePosts(req.params.id)
         if (isDeleted) {
@@ -105,13 +93,12 @@ export class PostsController {
 
     async createCommentByPostId(req: Request, res: Response) {
         const post = await this.postsService.getPostById(req.params.postId)
-        if (!post) res.status(404)
+        if (!post)  res.status(404)
         return
         const newComment = await this.commentService.createCommentByPostId(req.user, req.params.postId, req.body.content)
         res.status(201).send(newComment)
         return
     }
-
     async getCountCommentsPost(req: Request, res: Response) {
         const pageSize: number = Number(req.query.PageSize) || 10
         const pageNumber: number = Number(req.query.PageNumber) || 1
@@ -129,16 +116,13 @@ export class PostsController {
         return
     }
 
-    async likeStatusPost(req: Request, res: Response) {
+    async likeStatusPost(req: Request, res: Response){
         const post = await this.postsService.getPostById(req.params.postId)
+        console.log(post)
+        if (null) return res.status(404)
+        const likeStatus = this.postsService.updateLike(req.user, req.params.postId, req.body.likeStatus)
 
-        if (post === null) return res.send(404)
-        const likeStatus = await this.postsService.updateLike(req.user, req.params.postId, req.body.likeStatus)
-        if (likeStatus) {
-            res.send(204)
-            return
-        }
-        res.status(404).send()
+        res.status(201).send(likeStatus)
         return
     }
 
