@@ -85,8 +85,10 @@ async getComment(req: Request, res: Response) {
 
 async commentLikeStatus(req: Request, res: Response) {
         const comment = await this.commentsService.findComment(req.params.commentId)
+
     if (!comment) res.status(404).send({errorsMessages: [{message: "Comment not found", field: "commentId"}]})
     await this.commentsService.updateLikeStatus(req.params.user, req.params.commentId, req.body.likeStatus)
+    console.log(9090)
     res.status(204)
     return
 

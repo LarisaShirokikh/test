@@ -77,7 +77,7 @@ export class PostsRepository {
 
 
         const isLikeStatus = await likesStatusCollection.findOne({id: postId, userId: user.id}, {_id: 0})
-
+        console.log('user', user)
         if (!isLikeStatus) {
             await likesStatusCollection.create({id: postId, userId: user.id, likeStatus})
             if (likeStatus === "Like") {
@@ -87,7 +87,7 @@ export class PostsRepository {
                     "extendedLikesInfo.myStatus": likeStatus
                 })
                 console.log('like', like)
-                console.log('user', user)
+
 
                 const newestLike = new NewestLikes(
                     addedLikeStatusAt,
