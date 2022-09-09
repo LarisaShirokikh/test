@@ -12,11 +12,7 @@ export class CommentsRepository {
 
     async findComment(commentId: string): Promise<CommentsType | undefined | null> {
         const comment = await CommentsModelClass.findOne({id: commentId},
-            {
-                _id: 0,
-                __v: 0,
-
-            })
+            {_id: 0, postId: 0, __v: 0})
         return comment
     }
 
@@ -66,7 +62,7 @@ export class CommentsRepository {
         const isLikeStatus: LikesStatusType|null = await likesStatusCollection.findOne({id: commentId, userId: user.id})
 
         if (!isLikeStatus) {
-            await likesStatusCollection.create({id: commentId, userId: user.id, likeStatus})
+            await likesStatusCollection.insertMany({id: commentId, userId: user.id, likeStatus})
             if(likeStatus === "Like") {
                 const a = await CommentsModelClass.findOneAndUpdate({id: commentId}, {$inc: {"likesInfo.likesCount": 1}, "likesInfo.myStatus": likeStatus})
                 return true

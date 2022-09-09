@@ -1,6 +1,7 @@
 import {CommentsRepository} from "../repositories/comment-repository";
 import {PostsRepository} from "../repositories/posts-repository";
 import {injectable} from "inversify";
+import {CommentsType} from "../types";
 
 
 @injectable()
@@ -37,7 +38,7 @@ export class CommentsService {
         }
     }
 
-    async findComment(commentId: string) {
+    async findComment(commentId: string): Promise<CommentsType | undefined | null> {
         const comment = await this.commentsRepository.findComment(commentId)
         return comment
     }
@@ -62,7 +63,7 @@ export class CommentsService {
         return await this.commentsRepository.findUser(userId, commentId)
     }
 
-    async updateLikeStatus(user: string, commentId: string, likeStatus: "None" | "Like" | "Dislike") {
+    async updateLikeStatus(user: string, commentId: string, likeStatus: "None" | "Like" | "Dislike"): Promise<boolean|undefined> {
         return await this.commentsRepository.updateLikeStatus(user, commentId, likeStatus)
     }
 }
