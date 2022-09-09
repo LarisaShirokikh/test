@@ -86,6 +86,8 @@ export class PostsRepository {
                     $inc: {"extendedLikesInfo.likesCount": 1},
                     "extendedLikesInfo.myStatus": likeStatus
                 })
+                console.log('like', like)
+                console.log('user', user)
 
                 const newestLike = new NewestLikes(
                     addedLikeStatusAt,
