@@ -1,6 +1,7 @@
 import { Router} from "express";
 import {authBearer, authMiddleware} from "../middlewares/auth-middleware";
 import {
+    commentContentValidation,
     commentValidation,
     contentValidation, likeStatusValidation,
     shortDescriptionValidation,
@@ -30,7 +31,7 @@ postsRouter.delete('/:id', authMiddleware, postsController.deletePost.bind(posts
 
 postsRouter.post('/:postId/comments',
     authBearer,
-    commentValidation,
+    commentContentValidation,
     inputValidationMiddleWare,
     postsController.createCommentByPostId.bind(postsController))
 
