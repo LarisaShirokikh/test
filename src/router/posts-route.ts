@@ -1,7 +1,6 @@
 import { Router} from "express";
 import {authBearer, authMiddleware} from "../middlewares/auth-middleware";
 import {
-    bloggerIdValidation,
     commentValidation,
     contentValidation, likeStatusValidation,
     shortDescriptionValidation,
@@ -20,12 +19,12 @@ export const postsRouter = Router({})
 postsRouter.get('/', postsController.getAllPosts.bind(postsController))
 
 postsRouter.post('/', authMiddleware, titleValidation,
-    shortDescriptionValidation, contentValidation, bloggerIdValidation,
+    shortDescriptionValidation, contentValidation,
     inputValidationMiddleWare,  postsController.creatPost.bind(postsController))
 
 
 postsRouter.put('/:id', authMiddleware,
-    titleValidation, shortDescriptionValidation, contentValidation, bloggerIdValidation, inputValidationMiddleWare,
+    titleValidation, shortDescriptionValidation, contentValidation, inputValidationMiddleWare,
     postsController.updatePost.bind(postsController))
 postsRouter.delete('/:id', authMiddleware, postsController.deletePost.bind(postsController))
 

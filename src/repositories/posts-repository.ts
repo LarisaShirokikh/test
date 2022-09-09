@@ -21,12 +21,13 @@ export class PostsRepository {
         return post
     }
 
-    async createPost(newPost: PostsType): Promise<PostsType | undefined> {
+    async createPost(newPosts: PostsType) {
         //const postInstance = new PostsModelClass({...newPosts})
         //console.log(postIn)
         //await postInstance.save()
-        await PostsModelClass.insertMany([newPost])
-        return newPost
+        const post = await PostsModelClass.create({...newPosts})
+        console.log(post)
+        return newPosts;
 
     }
 

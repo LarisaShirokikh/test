@@ -25,14 +25,14 @@ export class PostsService {
 
         if (blogger) {
             const newPost = {
-                id: (+(new Date())).toString(),
+                id: (new ObjectId()).toString(),
                 title,
                 shortDescription,
                 content,
                 bloggerId,
                 bloggerName: blogger.name,
                 addedAt: new Date,
-                likesInfo: {
+                extendedLikesInfo: {
                     likesCount: 0,
                     dislikesCount: 0,
                     myStatus: "None",
@@ -41,7 +41,7 @@ export class PostsService {
                     ]
                 }
             }
-// @ts-ignore
+
             const createdPost = await this.postsRepository.createPost(newPost)
             return createdPost
         }
