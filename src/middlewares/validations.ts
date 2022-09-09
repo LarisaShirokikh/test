@@ -10,6 +10,7 @@ export const loginValidation = body('login').trim().isLength({min: 3, max: 10})
 export const passwordValidation = body('password').trim().isLength({min: 6, max: 20})
 export const commentValidation = body('content').trim().isLength({min: 20, max: 300})
 export const emailValidation = body('email').trim().isString().isEmail()
+export const bloggerIdValidation = body('bloggerId').isNumeric()
 export const likeStatusValidation = body('likeStatus').isIn(["None", "Like", "Dislike"])
 
 
