@@ -47,11 +47,11 @@ const commentSchema = new mongoose.Schema<CommentsType>({
     content: String
 })
 
-const  NewestLikesSchema = new mongoose.Schema<NewestLikesType>( {
+const NewestLikesSchema = new mongoose.Schema<NewestLikesType>({
 
-          addedAt: Object,
-         userId: String,
-         login: String
+    addedAt: Object,
+    userId: String,
+    login: String
 
 
 })

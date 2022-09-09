@@ -109,7 +109,7 @@ export class LikesStatusType {
 
 export class NewestLikes {
     constructor(
-        public addedAt: Date,
+        public addedAt: object,
         public userId: string,
         public login: string
     ) {
