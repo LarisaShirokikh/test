@@ -26,7 +26,7 @@ export class PostsType {
         public bloggerId: string,
         public bloggerName: string,
         public addedAt: Date,
-        public likesInfo: {
+        public extendedLikesInfo: {
             likesCount: number,
             dislikesCount: number,
             myStatus: string,
