@@ -31,8 +31,6 @@ app.use('/auth', authRouter)
 app.use('/testing', testingRouter)
 
 
-
-
 app.get('/', (req, res) => {
     res.send('Hello World!')
 })

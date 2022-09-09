@@ -1,7 +1,4 @@
-import {NextFunction, Request, Response, Router} from "express";
-
-import {PostsService} from "../domain/posts-service";
-
+import { Router} from "express";
 import {authBearer, authMiddleware} from "../middlewares/auth-middleware";
 import {
     commentValidation,
@@ -10,7 +7,7 @@ import {
     titleValidation
 } from "../middlewares/validations";
 import {inputValidationMiddleWare} from "../middlewares/input-validation";
-import {BloggersService} from "../domain/bloggers-service";
+
 import {container} from "../composition-root";
 import {PostsController} from "../controllers/posts-controller";
 

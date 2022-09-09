@@ -15,7 +15,7 @@ export class CommentsRepository {
             {
                 _id: 0,
                 __v: 0,
-                likesInfo: 0
+
             })
         return comment
     }
@@ -37,7 +37,7 @@ export class CommentsRepository {
     }
 
     async updateComment(commentId: string, content: string) {
-        const update = await CommentsModelClass.updateOne({id: commentId}, {$set: {content}})
+        await CommentsModelClass.updateOne({id: commentId}, {$set: {content}})
         const updatedComment = await CommentsModelClass.findOne({id: commentId},
             {
                 _id: 0,
@@ -45,7 +45,8 @@ export class CommentsRepository {
                 id: 0,
                 userId: 0,
                 userLogin: 0,
-                addedAt: 0
+                addedAt: 0,
+                __v: 0
             }
         )
         return updatedComment
