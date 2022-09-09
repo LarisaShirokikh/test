@@ -31,7 +31,7 @@ postsRouter.delete('/:id', authMiddleware, postsController.deletePost.bind(posts
 
 postsRouter.post('/:postId/comments',
     authBearer,
-    commentContentValidation,
+    commentValidation,
     inputValidationMiddleWare,
     postsController.createCommentByPostId.bind(postsController))
 
