@@ -27,8 +27,7 @@ export class BloggersService {
             name,
             youtubeUrl
         }
-        const createdBlogger = this.bloggersRepository.createBlogger(newBlogger)
-        return createdBlogger
+        return this.bloggersRepository.createBlogger(newBlogger)
     }
     async updateBlogger(id: string, name: string, youtubeUrl: string) {
         return await this.bloggersRepository.updateBlogger(id, name, youtubeUrl)
