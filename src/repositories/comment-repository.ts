@@ -1,5 +1,5 @@
-import {CommentsType} from "../types";
-import {CommentsModelClass} from "../settingses/db";
+import {CommentsType, LikesStatusType} from "../types";
+import {CommentsModelClass, likesStatusCollection} from "../settingses/db";
 import {injectable} from "inversify";
 
 
@@ -14,7 +14,8 @@ export class CommentsRepository {
         const comment = await CommentsModelClass.findOne({id: commentId},
             {
                 _id: 0,
-                __v: 0
+                __v: 0,
+                likesInfo: 0
             })
         return comment
     }
@@ -59,7 +60,67 @@ export class CommentsRepository {
         return result
     }
 
-    async updateCommentLikeStatus(user: string, commentId: string, likeStatus: string) {
-        return CommentsModelClass.updateOne({id: commentId}, {$set: {likeStatus: +1}})
+    async updateLikeStatus(user: any, commentId: string, likeStatus: "None" | "Like" | "Dislike"): Promise<boolean|undefined> {
+
+        const isLikeStatus: LikesStatusType|null = await likesStatusCollection.findOne({id: commentId, userId: user.id})
+
+        if (!isLikeStatus) {
+            await likesStatusCollection.create({id: commentId, userId: user.id, likeStatus})
+            if(likeStatus === "Like") {
+                const a = await CommentsModelClass.findOneAndUpdate({id: commentId}, {$inc: {"likesInfo.likesCount": 1}, "likesInfo.myStatus": likeStatus})
+                return true
+            }
+            if(likeStatus === "Dislike") {
+                await CommentsModelClass.findOneAndUpdate({id: commentId}, {$inc: {"likesInfo.dislikesCount": 1}, "likesInfo.myStatus": likeStatus})
+                return true
+            }
+
+        } else {
+
+            await likesStatusCollection.updateOne({id: commentId, userId: user.id}, {$set: {likeStatus}})
+
+            if(likeStatus === "Like" && isLikeStatus.likeStatus === "Dislike") {
+                const a = await CommentsModelClass.findOneAndUpdate({id: commentId}, {$inc: {"likesInfo.likesCount": 1, "likesInfo.dislikesCount": -1}, "likesInfo.myStatus": likeStatus})
+                return true
+            }
+
+            if(likeStatus === "Like" && isLikeStatus.likeStatus === "None") {
+                const a = await CommentsModelClass.findOneAndUpdate({id: commentId}, {$inc: {"likesInfo.likesCount": 1}, "likesInfo.myStatus": likeStatus})
+                return true
+            }
+
+            if(likeStatus === "Like" && isLikeStatus.likeStatus === "Like") {
+                return true
+            }
+
+            if(likeStatus === "Dislike" && isLikeStatus.likeStatus === "Like") {
+                await CommentsModelClass.findOneAndUpdate({id: commentId}, {$inc: {"likesInfo.likesCount": -1, "likesInfo.dislikesCount": 1}, "likesInfo.myStatus": likeStatus})
+                return true
+            }
+
+            if(likeStatus === "Dislike" && isLikeStatus.likeStatus === "Dislike") {
+                return true
+            }
+
+            if(likeStatus === "Dislike" && isLikeStatus.likeStatus !== "Like") {
+                await CommentsModelClass.findOneAndUpdate({id: commentId}, {$inc: {"likesInfo.likesCount": -1}, "likesInfo.myStatus": likeStatus})
+                return true
+            }
+
+            if(likeStatus === "None" && isLikeStatus.likeStatus === "Like") {
+                await CommentsModelClass.findOneAndUpdate({id: commentId}, {$inc: {"likesInfo.likesCount": -1}, "likesInfo.myStatus": likeStatus})
+                return true
+            }
+
+            if(likeStatus === "None" && isLikeStatus.likeStatus === "Dislike") {
+                await CommentsModelClass.findOneAndUpdate({id: commentId}, {$inc: {"likesInfo.dislikesCount": -1}, "likesInfo.myStatus": likeStatus})
+                return true
+            }
+
+            if(likeStatus === "None" && isLikeStatus.likeStatus === "None") {
+                return true
+            }
+            return true
+        }
     }
 }
