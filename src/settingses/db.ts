@@ -5,7 +5,7 @@ import {
     BloggersType,
     CommentsType,
     PostsType, RefreshTokensCollectionType, UsersDBType,
-    UsersEmailConfDataType, LikesStatusType, NewestLikesType
+    UsersEmailConfDataType, LikesStatusType, NewestLikesType, UsersType
 } from "../types";
 import Array = module
 import * as module from "module";
@@ -27,34 +27,28 @@ let dbName = "mongoose-example"
 //export const endpointsAttemptsTrysCollection = db.collection<AttemptType>("attempts")
 //export const refreshTokensBlackListCollection = db.collection<RefreshTokensCollectionType>('refreshBlackList')
 
-const usersSchema = new mongoose.Schema<UsersDBType>({
-    accountData: {
+const usersSchema = new mongoose.Schema<UsersType>({
+
         id: String,
         login: String,
         email: String,
         passwordHash: String,
         isConfirmed: Boolean
-    },
-    emailConfirmation: {
-        confirmationCode: String,
-        expirationDate: String,
-        isConfirmed: Boolean
-    }
 });
 const commentSchema = new mongoose.Schema<CommentsType>({
-    userId: String,
+    postId: String,
     id: String,
-    content: String
-})
-
-const  NewestLikesSchema = new mongoose.Schema<NewestLikesType>( {
-
-          addedAt: Object,
-         userId: String,
-         login: String
-
-
-})
+    content: String,
+    userId: String,
+    userLogin: String,
+    addedAt: Object,
+    likesInfo: {
+        likesCount: Number,
+        dislikesCount: Number,
+        myStatus: String
+    }
+}, {_id: false}
+)
 
 
 const postsSchema = new mongoose.Schema<PostsType>({

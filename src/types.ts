@@ -25,7 +25,7 @@ export class PostsType {
         public content: string,
         public bloggerId: string,
         public bloggerName: string,
-        public addedAt: Date,
+        public addedAt: object,
         public likesInfo: {
             likesCount: number,
             dislikesCount: number,
@@ -38,16 +38,27 @@ export class PostsType {
 export class UsersType {
     constructor(
         public id: string,
-        public login: string
+        public login: string,
+        public isConfirmed?: boolean,
+        public email?: string,
+        public passwordHash?: string
     ) {
     }
 }
 
 export class CommentsType {
     constructor(
+        public postId: string,
         public id: string,
+        public content: string,
         public userId: string,
-        public content: string
+        public userLogin: string,
+        public addedAt: object,
+        public likesInfo: {
+            likesCount: number
+            dislikesCount: number
+            myStatus: string
+        }
     ) {
     }
 }
