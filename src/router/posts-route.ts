@@ -36,7 +36,7 @@ postsRouter.post('/:postId/comments',
 
 postsRouter.get('/:postId/comments', postsController.getCountCommentsPost.bind(postsController))
 
-postsRouter.get('/:id', postsController.getPostById.bind(postsController))
+postsRouter.get('/:postId', postsController.getPostById.bind(postsController))
 
 postsRouter.put('/:postId/like-status',
    authBearer, likeStatusValidation, inputValidationMiddleWare,

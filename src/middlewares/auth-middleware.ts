@@ -29,5 +29,6 @@ import {UserModelClass} from "../settingses/db";
             next()
         } else {
             res.sendStatus(401)
+            return
         }
     }

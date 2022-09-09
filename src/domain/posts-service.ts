@@ -24,23 +24,26 @@ export class PostsService {
         const blogger = await this.bloggersRepository.getBloggerById(bloggerId)
 
         if (blogger) {
-            const newPost: PostsType = new PostsType(
-                (new ObjectId()).toString(),
+            const newPost = {
+                id: (new ObjectId()).toString(),
                 title,
                 shortDescription,
                 content,
                 bloggerId,
-                blogger.name,
-                new Date,
-                {
+                bloggerName: blogger.name,
+                addedAt: new Date,
+                extendedLikesInfo: {
                     likesCount: 0,
                     dislikesCount: 0,
-                    myStatus: 'None',
-                    newestLikes: []
-                })
+                    myStatus: "None",
+                    newestLikes: [
 
-            await this.postsRepository.createPost(newPost)
-            return newPost
+                    ]
+                }
+            }
+
+            const createdPost = await this.postsRepository.createPost(newPost)
+            return createdPost
         }
     }
     async updatePost(id: string, title: string, shortDescription: string, content: string, bloggerId: string) {

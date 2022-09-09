@@ -17,16 +17,18 @@ export class BloggersRepository  {
 
     }
     async createBlogger(newBlogger: BloggersType): Promise<BloggersType> {
-        const bloggerInstance = new BloggersModelClass(newBlogger)
+        await BloggersModelClass.insertMany([newBlogger])
+        const blogger = await BloggersModelClass.findOne({id: newBlogger.id}, {_id: 0, __v: 0})
+        /*const bloggerInstance = new BloggersModelClass(newBlogger)
         bloggerInstance.id = newBlogger.id;
         bloggerInstance.name = newBlogger.name;
         bloggerInstance.youtubeUrl = newBlogger.youtubeUrl
 
-        await bloggerInstance.save()
-
+        await bloggerInstance.save()*/
         //const result = await BloggersModelClass.insertMany([newBlogger])
         //const blogger = await BloggersModelClass.findOne({id: newBlogger.id}, {projection: {_id: 0}})
-        return newBlogger;
+        // @ts-ignore
+        return blogger;
     }
     async updateBlogger(id: string, name: string, youtubeUrl: string) {
         const bloggerInstance = await BloggersModelClass.findOne({id: id}, {_id: 0, __v: 0})
