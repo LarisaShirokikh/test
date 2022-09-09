@@ -76,18 +76,18 @@ export class PostsRepository {
     async updateLikeStatus(user: any, postId: string, likeStatus: "None" | "Like" | "Dislike", addedLikeStatusAt: object): Promise<boolean|undefined> {
 
 
-        const isLikeStatus:LikesStatusType|null = await likesStatusCollection.findOne({id: postId, userId: user.id})
+        const isLikeStatus:LikesStatusType|null = await likesStatusCollection.findOne({id: postId, userId: user.accountData.id})
 
         if (!isLikeStatus) {
-            await likesStatusCollection.insertMany({id: postId, userId: user.id, likeStatus})
+            await likesStatusCollection.insertMany({id: postId, userId: user.accountData.id, likeStatus})
             if(likeStatus === "Like") {
 
                 const a = await PostsModelClass.findOneAndUpdate({id: postId}, {$inc: {"extendedLikesInfo.likesCount": 1}, "likesInfo.myStatus": likeStatus})
 
                 const newestLike = {
                     addedAt:addedLikeStatusAt,
-                    userId: user.id,
-                    login: user.login
+                    userId: user.accountData.id,
+                    login: user.accountData.login
                 }
 
                 // @ts-ignore
@@ -103,14 +103,14 @@ export class PostsRepository {
 
         } else {
 
-            await likesStatusCollection.updateOne({id: postId, userId: user.id}, {$set: {likeStatus}})
+            await likesStatusCollection.updateOne({id: postId, userId: user.accountData.id}, {$set: {likeStatus}})
 
             if(likeStatus === "Like" && isLikeStatus.likeStatus === "Dislike") {
                 const a = await PostsModelClass.findOneAndUpdate({id: postId}, {$inc: {"extendedLikesInfo.likesCount": 1, "extendedLikesInfo.dislikesCount": -1}, "extendedLikesInfo.myStatus": likeStatus})
                 const newestLike = {
                     addedAt:addedLikeStatusAt,
-                    userId: user.id,
-                    login: user.login
+                    userId: user.accountData.id,
+                    login: user.accountData.login
                 }
                 // @ts-ignore
                 a.extendedLikesInfo.newestLikes = [newestLike, ...a.extendedLikesInfo.newestLikes]
@@ -124,8 +124,8 @@ export class PostsRepository {
 
                 const newestLike = {
                     addedAt:addedLikeStatusAt,
-                    userId: user.id,
-                    login: user.login
+                    userId: user.accountData.id,
+                    login: user.accountData.login
                 }
                 // @ts-ignore
                 a.extendedLikesInfo.newestLikes = [newestLike, ...a.extendedLikesInfo.newestLikes]
