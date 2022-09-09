@@ -130,16 +130,18 @@ export class PostsController {
     }
 
     async likeStatusPost(req: Request, res: Response) {
+
         const post = await this.postsService.getPostById(req.params.postId)
 
-        if (post === null) return res.send(404)
-        const likeStatus = await this.postsService.updateLike(req.user, req.params.postId, req.body.likeStatus)
-        if (likeStatus) {
-            res.send(204)
+        if (!post) {
+            res.status(404).send({errorsMessages: [{message: "Post with specified postId doesn't exists", field: "postId"}]});
             return
         }
-        res.status(404).send()
-        return
+
+
+        const likeStatus = await this.postsService.updateLikeStatus(req.user, req.params.postId, req.body.likeStatus)
+
+        res.status(201).send(likeStatus)
     }
 
 }

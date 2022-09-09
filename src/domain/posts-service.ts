@@ -65,7 +65,7 @@ export class PostsService {
         return this.postsRepository.getPostById(postId)
     }
 
-    async updateLike(user: any, postId: string, likeStatus: "None" | "Like" | "Dislike") {
+    async updateLikeStatus(user: any, postId: string, likeStatus: "None" | "Like" | "Dislike") {
         const addedLikeStatusAt = new Date()
          return this.postsRepository.updateLikeStatus(user, postId, likeStatus, addedLikeStatusAt)
 
