@@ -21,13 +21,9 @@ export class PostsRepository {
         return post
     }
 
-    async createPost(newPosts: PostsType) {
-        //const postInstance = new PostsModelClass({...newPosts})
-        //console.log(postIn)
-        //await postInstance.save()
-        const post = await PostsModelClass.create({...newPosts})
-        console.log(post)
-        return newPosts;
+    async createPost(newPost: PostsType): Promise<PostsType | undefined> {
+        await PostsModelClass.insertMany([newPost])
+        return newPost
 
     }
 
