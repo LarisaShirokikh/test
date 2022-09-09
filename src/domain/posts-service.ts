@@ -63,8 +63,8 @@ export class PostsService {
         return await this.postsRepository.getCountBloggerId(bloggerId)
     }
 
-    async getPostById(id: string): Promise<PostsType | null> {
-        return this.postsRepository.getPostById(id)
+    async getPostById(postId: string): Promise<PostsType | null> {
+        return this.postsRepository.getPostById(postId)
     }
 
     async updateLikeStatus(user: any, postId: string, likeStatus: "None" | "Like" | "Dislike"): Promise<boolean|undefined>  {

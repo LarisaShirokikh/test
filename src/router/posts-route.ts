@@ -35,6 +35,7 @@ postsRouter.post('/:postId/comments',
     inputValidationMiddleWare,
     postsController.createCommentByPostId.bind(postsController))
 
+
 postsRouter.get('/:postId/comments', postsController.getCountCommentsPost.bind(postsController))
 
 postsRouter.get('/:postId', postsController.getPostById.bind(postsController))

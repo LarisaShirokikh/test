@@ -44,6 +44,7 @@ export class BloggersService {
         if (blogger) {
             const newPost = {
                 id: (new ObjectId()).toString(),
+                postId: (new ObjectId()).toString(),
                 title,
                 shortDescription,
                 content,
