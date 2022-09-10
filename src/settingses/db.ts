@@ -42,10 +42,19 @@ const usersSchema = new mongoose.Schema<UsersDBType>({
     }
 });
 const commentSchema = new mongoose.Schema<CommentsType>({
-    userId: String,
+    postId: String,
     id: String,
-    content: String
-})
+    content: String,
+    userId: String,
+    userLogin: String,
+    addedAt: Object,
+    likesInfo: {
+        likesCount: Number,
+        dislikesCount: Number,
+        myStatus: String
+    }
+}, {_id: false}
+)
 
 const NewestLikesSchema = new mongoose.Schema<NewestLikesType>({
 
@@ -91,10 +100,9 @@ const refreshTokensBlackListSchema = new mongoose.Schema<RefreshTokensCollection
     refreshToken: String
 })
 const likesStatusSchema = new mongoose.Schema<LikesStatusType>({
-    id: String,
     userId: String,
-
-
+    parentId: String,
+    likeStatus: {type: String, enum: ['None', 'Like', 'Dislike']}
 })
 
 export const EndpointsAttemptsTrysModelClass = mongoose.model('endpointsAttemptsTrys', endpointsAttemptsTrysSchema);

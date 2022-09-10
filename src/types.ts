@@ -1,3 +1,4 @@
+
 export class BloggersType {
     constructor(
         public id: string,
@@ -45,9 +46,17 @@ export class UsersType {
 
 export class CommentsType {
     constructor(
+        public postId: string,
         public id: string,
+        public content: string,
         public userId: string,
-        public content: string
+        public userLogin: string,
+        public addedAt: object,
+        public likesInfo: {
+            likesCount: number,
+            dislikesCount: number,
+            myStatus: string
+        }
     ) {
     }
 }
@@ -96,12 +105,13 @@ export class UsersDBType {
     ) {
     }
 }
+export enum likeStatusEnum {None = "None", Like = "Like", Dislike = "Dislike"}
 
 export class LikesStatusType {
     constructor(
-        public id: string,
         public userId: string,
-        public likeStatus: "None" | "Like" | "Dislike"
+        public parentId: string,
+        public likeStatus: likeStatusEnum
     ) {
     }
 

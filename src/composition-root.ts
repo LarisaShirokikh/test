@@ -17,6 +17,7 @@ import {CommentsController} from "./controllers/comments-controller";
 import {CommentsService} from "./domain/comment-service";
 import {CommentsRepository} from "./repositories/comment-repository";
 import {PostsModelClass} from "./settingses/db";
+import {LikesRepository} from "./repositories/likes-repository";
 
 /*const object: any[] = []
 
@@ -57,3 +58,6 @@ container.bind(PostsRepository).to(PostsRepository);
 container.bind(CommentsController).to(CommentsController);
 container.bind(CommentsService).to(CommentsService);
 container.bind(CommentsRepository).to(CommentsRepository)
+
+//like
+container.bind(LikesRepository).to(LikesRepository);

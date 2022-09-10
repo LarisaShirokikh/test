@@ -1,25 +1,27 @@
 import {CommentsRepository} from "../repositories/comment-repository";
 import {PostsRepository} from "../repositories/posts-repository";
 import {injectable} from "inversify";
-import {CommentsType} from "../types";
+import {CommentsType, likeStatusEnum, UsersDBType, UsersType} from "../types";
 import {Schema} from "mongoose";
 import {ObjectId} from "mongodb";
-
+import {LikesRepository} from "../repositories/likes-repository";
 
 
 @injectable()
 export class CommentsService {
     commentsRepository: CommentsRepository
     postsRepository: PostsRepository
+    likesRepository: LikesRepository
 
     constructor() {
         this.commentsRepository = new CommentsRepository()
         this.postsRepository = new PostsRepository()
+        this.likesRepository = new LikesRepository()
     }
 
     async createCommentByPostId(user: any, id: string, content: string): Promise<CommentsType | undefined> {
         const post = await this.postsRepository.getPostById(id)
-        console.log('post', post )
+
         if (post) {
 
             const newComment = {
@@ -36,7 +38,6 @@ export class CommentsService {
                 }
             }
 
-            console.log(20012345)
             const createdComment = await this.commentsRepository.createComment(newComment)
             return createdComment
         }
@@ -67,8 +68,20 @@ export class CommentsService {
         return await this.commentsRepository.findUser(userId, commentId)
     }
 
-    async updateLikeStatus(user: string, commentId: string, likeStatus: "None" | "Like" | "Dislike"): Promise<boolean|undefined> {
-        return await this.commentsRepository.updateLikeStatus(user, commentId, likeStatus)
+    async updateLikeStatus(user: UsersType, commentId: string, likeStatus: likeStatusEnum): Promise<boolean | null> {
+        //в репо созд функцию которая
+        // будет искать лайк по юзеру и комментарию
+        //будем сравнивать лайк по юзеру и с этим статусом
+        // +1 делать в репо комментариев
+        await this.likesRepository.getLikesAndDislikesByCommentId(user, commentId)
+        if (likeStatus === 'Like') {
+
+            const status = await this.likesRepository.updateLikeStatus(user, commentId, likeStatus)
+            return status
+        }
+        return null
+
+
     }
 }
 

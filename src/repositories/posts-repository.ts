@@ -77,7 +77,7 @@ export class PostsRepository {
     async updateLikeStatus(user: any, postId: string, likeStatus: "None" | "Like" | "Dislike", addedLikeStatusAt: object): Promise<boolean|undefined> {
 
 
-        const isLikeStatus:LikesStatusType|null = await likesStatusCollection.findOne({id: postId, userId: user.accountData.id})
+        const isLikeStatus:LikesStatusType|null = await likesStatusCollection.findOne({parentId: postId, userId: user.accountData.id})
 
         if (!isLikeStatus) {
             await likesStatusCollection.insertMany({id: postId, userId: user.accountData.id, likeStatus})

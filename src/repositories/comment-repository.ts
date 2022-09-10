@@ -1,4 +1,4 @@
-import {CommentsType, LikesStatusType} from "../types";
+import {CommentsType, LikesStatusType, UsersDBType, UsersType} from "../types";
 import {CommentsModelClass, likesStatusCollection} from "../settingses/db";
 import {injectable} from "inversify";
 
@@ -57,22 +57,17 @@ export class CommentsRepository {
         return CommentsModelClass.findOne({userId: userId, id: commentId}, {_id: 0, __v: 0})
     }
 
-    async deleteAllComments() {
-        const result = await CommentsModelClass.deleteMany({})
-        return result
-    }
-
-    async updateLikeStatus(user: any, commentId: string, likeStatus: "None" | "Like" | "Dislike"): Promise<boolean | undefined> {
+    /*async updateLikeStatus(user: UsersType, commentId: string, likeStatus: "None" | "Like" | "Dislike"): Promise<boolean|null> {
 
         const isLikeStatus: LikesStatusType | null = await likesStatusCollection.findOne({
-            id: commentId,
-            userId: user.accountData.id
+            parentId: commentId,
+            userId: user.id
         })
 
         if (!isLikeStatus) {
-            await likesStatusCollection.create({id: commentId, userId: user.accountData.id, likeStatus})
+            await likesStatusCollection.insertMany({id: commentId, userId: user.id, likeStatus})
             if (likeStatus === "Like") {
-                const a = await CommentsModelClass.findOneAndUpdate({id: commentId}, {
+                await CommentsModelClass.findOneAndUpdate({id: commentId}, {
                     $inc: {"likesInfo.likesCount": 1},
                     "likesInfo.myStatus": likeStatus
                 })
@@ -86,12 +81,13 @@ export class CommentsRepository {
                 return true
             }
 
-        } else {
+        }
+        else {
 
-            await likesStatusCollection.updateOne({id: commentId, userId: user.accountData.id}, {$set: {likeStatus}})
+            await likesStatusCollection.updateOne({id: commentId, userId: user.id}, {$set: {likeStatus}})
 
             if (likeStatus === "Like" && isLikeStatus.likeStatus === "Dislike") {
-                const a = await CommentsModelClass.findOneAndUpdate({id: commentId}, {
+                await CommentsModelClass.findOneAndUpdate({id: commentId}, {
                     $inc: {
                         "likesInfo.likesCount": 1,
                         "likesInfo.dislikesCount": -1
@@ -101,7 +97,7 @@ export class CommentsRepository {
             }
 
             if (likeStatus === "Like" && isLikeStatus.likeStatus === "None") {
-                const a = await CommentsModelClass.findOneAndUpdate({id: commentId}, {
+                await CommentsModelClass.findOneAndUpdate({id: commentId}, {
                     $inc: {"likesInfo.likesCount": 1},
                     "likesInfo.myStatus": likeStatus
                 })
@@ -155,5 +151,8 @@ export class CommentsRepository {
             }
             return true
         }
-    }
+        return null
+    }*/
+
+
 }
