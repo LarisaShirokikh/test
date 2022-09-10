@@ -57,15 +57,15 @@ export class CommentsRepository {
         return CommentsModelClass.findOne({userId: userId, id: commentId}, {_id: 0, __v: 0})
     }
 
-    async updateLikeStatus(user: UsersType, commentId: string, likeStatus: "None" | "Like" | "Dislike"): Promise<boolean|null> {
+    async updateLikeStatus(user: any, commentId: string, likeStatus: "None" | "Like" | "Dislike"): Promise<boolean|null> {
 
         const isLikeStatus: LikesStatusType | null = await likesStatusCollection.findOne({
-            parentId: commentId,
-            userId: user.id
+            commentId: commentId,
+            userId: user.accountData.id
         })
 
         if (!isLikeStatus) {
-            await likesStatusCollection.insertMany({id: commentId, userId: user.id, likeStatus})
+            await likesStatusCollection.insertMany({id: commentId, userId: user.accountData.id, likeStatus})
             if (likeStatus === "Like") {
                 await CommentsModelClass.findOneAndUpdate({id: commentId}, {
                     $inc: {"likesInfo.likesCount": 1},
@@ -84,7 +84,7 @@ export class CommentsRepository {
         }
         else {
 
-            await likesStatusCollection.updateOne({id: commentId, userId: user.id}, {$set: {likeStatus}})
+            await likesStatusCollection.updateOne({id: commentId, userId: user.accountData.id}, {$set: {likeStatus}})
 
             if (likeStatus === "Like" && isLikeStatus.likeStatus === "Dislike") {
                 await CommentsModelClass.findOneAndUpdate({id: commentId}, {

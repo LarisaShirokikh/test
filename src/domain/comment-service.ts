@@ -69,10 +69,6 @@ export class CommentsService {
     }
 
     async updateLikeStatus(user: any, commentId: string, likeStatus: "None" | "Like" | "Dislike"): Promise<boolean | null> {
-        //в репо созд функцию которая
-        // будет искать лайк по юзеру и комментарию
-        //будем сравнивать лайк по юзеру и с этим статусом
-        // +1 делать в репо комментариев
         /*await this.likesRepository.getLikesAndDislikesByCommentId(user, commentId)
         if (likeStatus === 'Like') {
 
