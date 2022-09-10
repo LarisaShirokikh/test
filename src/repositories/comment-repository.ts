@@ -57,7 +57,7 @@ export class CommentsRepository {
         return CommentsModelClass.findOne({userId: userId, id: commentId}, {_id: 0, __v: 0})
     }
 
-    /*async updateLikeStatus(user: UsersType, commentId: string, likeStatus: "None" | "Like" | "Dislike"): Promise<boolean|null> {
+    async updateLikeStatus(user: UsersType, commentId: string, likeStatus: "None" | "Like" | "Dislike"): Promise<boolean|null> {
 
         const isLikeStatus: LikesStatusType | null = await likesStatusCollection.findOne({
             parentId: commentId,
@@ -152,7 +152,7 @@ export class CommentsRepository {
             return true
         }
         return null
-    }*/
+    }
 
 
 }
