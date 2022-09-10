@@ -105,9 +105,12 @@ export class PostsController {
 
     async createCommentByPostId(req: Request, res: Response) {
         const post = await this.postsService.getPostById(req.params.postId)
-        if (!post) res.status(404)
-        return
-        const newComment = await this.commentService.createCommentByPostId(req.user, req.params.postId, req.body.content)
+
+        if (!post) return res.sendStatus(404)
+
+        const newComment = await this.commentService.createCommentByPostId(req.user, post.id, req.body.content)
+        console.log(newComment)
+
         res.status(201).send(newComment)
         return
     }

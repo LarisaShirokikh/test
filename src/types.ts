@@ -107,6 +107,7 @@ export class LikesStatusType {
 
 }
 
+
 export class NewestLikes {
     constructor(
         public addedAt: object,

@@ -2,6 +2,9 @@ import {CommentsRepository} from "../repositories/comment-repository";
 import {PostsRepository} from "../repositories/posts-repository";
 import {injectable} from "inversify";
 import {CommentsType} from "../types";
+import {Schema} from "mongoose";
+import {ObjectId} from "mongodb";
+
 
 
 @injectable()
@@ -14,13 +17,14 @@ export class CommentsService {
         this.postsRepository = new PostsRepository()
     }
 
-    async createCommentByPostId(user: any, postId: string, content: string): Promise<CommentsType | undefined> {
-        const post = await this.postsRepository.getPostById(postId)
+    async createCommentByPostId(user: any, id: string, content: string): Promise<CommentsType | undefined> {
+        const post = await this.postsRepository.getPostById(id)
+        console.log('post', post )
         if (post) {
 
             const newComment = {
-                postId: postId,
-                id: new Object().toString(),
+                postId: id,
+                id: new ObjectId().toString(),
                 content: content,
                 userId: user.accountData.id,
                 userLogin: user.accountData.login,
@@ -32,7 +36,7 @@ export class CommentsService {
                 }
             }
 
-
+            console.log(20012345)
             const createdComment = await this.commentsRepository.createComment(newComment)
             return createdComment
         }
