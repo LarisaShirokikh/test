@@ -1,7 +1,6 @@
 import { Router} from "express";
 import {authBearer, authMiddleware} from "../middlewares/auth-middleware";
 import {
-    commentContentValidation,
     commentValidation,
     contentValidation, likeStatusValidation,
     shortDescriptionValidation,
@@ -34,7 +33,6 @@ postsRouter.post('/:postId/comments',
     commentValidation,
     inputValidationMiddleWare,
     postsController.createCommentByPostId.bind(postsController))
-
 
 postsRouter.get('/:postId/comments', postsController.getCountCommentsPost.bind(postsController))
 

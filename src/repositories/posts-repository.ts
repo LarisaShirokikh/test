@@ -25,7 +25,7 @@ export class PostsRepository {
         //const postInstance = new PostsModelClass({...newPosts})
         //console.log(postIn)
         //await postInstance.save()
-        const post = await PostsModelClass.insertMany({...newPosts})
+        const post = await PostsModelClass.create({...newPosts})
         console.log(post)
         return newPosts;
 
@@ -69,10 +69,7 @@ export class PostsRepository {
     }
 
     async getPostById(postId: string): Promise<PostsType | null> {
-
-        const post = await PostsModelClass.findOne({postId: postId},
-            {_id: 0, __v: 0}
-        )
+        const post = await PostsModelClass.findOne({id: postId}, {_id: 0, __v: 0})
         return post;
     }
 

@@ -11,7 +11,6 @@ export const passwordValidation = body('password').trim().isLength({min: 6, max:
 export const commentValidation = body('content').trim().isLength({min: 20, max: 300})
 export const emailValidation = body('email').trim().isString().isEmail()
 export const likeStatusValidation = body('likeStatus').isIn(["None", "Like", "Dislike"])
-export const commentContentValidation = body('content').trim().isLength({min: 20, max: 300}).isString()
 
 
 
