@@ -27,11 +27,11 @@ export class PostsType {
         public bloggerId: string,
         public bloggerName: string,
         public addedAt: object,
-        public extendedLikesInfo: {
+        public likesInfo: {
             likesCount: number,
             dislikesCount: number,
             myStatus: string,
-            newestLikes: []
+            newestLikes: [NewestLikesType | NewestLikesType[]]
         }) {
     }
 }
