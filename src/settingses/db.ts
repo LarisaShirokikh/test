@@ -73,21 +73,14 @@ const postsSchema = new mongoose.Schema<PostsType>({
     content: String,
     bloggerId: String,
     bloggerName: String,
-    addedAt: Object, // new
-    likesInfo: {
+    addedAt: Object,
+    extendedLikesInfo: {
         likesCount: Number,
         dislikesCount: Number,
         myStatus: String,
-        newestLikes: [
-            {
-                addedAt: Object,
-                userId: String,
-                login: String
-            }
-        ]
+        newestLikes: []
     }
-}, {_id: false}
-)
+})
 const bloggersSchema = new mongoose.Schema<BloggersType>({
     id: String,
     name: String,
