@@ -19,8 +19,8 @@ export class PostsService {
         return await this.postsRepository.findPosts(pageSize, pageNumber)
     }
 
-    async findPostById(postId: string): Promise<PostsType | null> {
-        return await this.postsRepository.findPostById(postId)
+    async findPostById(postId: string, userId: string): Promise<PostsType | null> {
+        return await this.postsRepository.findPostById(postId, userId)
     }
 
     async createPost(title: string, shortDescription: string, content: string, bloggerId: string): Promise<PostsType | undefined> {

@@ -1,4 +1,3 @@
-
 export class BloggersType {
     constructor(
         public id: string,
@@ -31,7 +30,14 @@ export class PostsType {
             likesCount: number,
             dislikesCount: number,
             myStatus: string,
-            newestLikes: []
+            newestLikes: [
+                {
+                    addedAt: object,
+                    userId: string,
+                    login: string,
+                    myStatus: string
+                }
+            ]
         }) {
     }
 }
@@ -105,6 +111,7 @@ export class UsersDBType {
     ) {
     }
 }
+
 export enum likeStatusEnum {None = "None", Like = "Like", Dislike = "Dislike"}
 
 export class LikesStatusType {

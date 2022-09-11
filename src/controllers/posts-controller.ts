@@ -4,6 +4,8 @@ import {NextFunction, Request, Response} from "express";
 import {BloggersService} from "../domain/bloggers-service";
 import {CommentsService} from "../domain/comment-service";
 import {ObjectId} from "mongodb";
+import jwt from "jsonwebtoken";
+import {jwtService} from "../application/jwt-service";
 
 @injectable()
 export class PostsController {
@@ -58,6 +60,13 @@ export class PostsController {
     }
 
     async getPostById(req: Request, res: Response) {
+        const token = req.headers.authorization?.split(' ')[1]
+        let userId = ' '
+        if (token) {
+            userId = await jwtService.getUserIdByToken(token)
+
+        }
+        console.log(1234, userId)
         //проверка на токен
         //если токен, то расшифровка и передать юзер айди/логин, передать в файнд логин
         //если найдено все то отдаем myStatus
@@ -66,7 +75,7 @@ export class PostsController {
             return;
         }
 
-        const post = await this.postsService.findPostById(req.params.postId)
+        const post = await this.postsService.findPostById(req.params.postId, userId)
 
         if (post) {
             res.status(200).send(post);

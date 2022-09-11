@@ -81,11 +81,12 @@ const postsSchema = new mongoose.Schema<PostsType>({
             newestLikes: [{
                 addedAt: Object,
                 userId: String,
-                login: String
+                login: String,
+                myStatus: String
             }]
         }
     }, {_id: false}
-)
+ )
 const bloggersSchema = new mongoose.Schema<BloggersType>({
     id: String,
     name: String,
