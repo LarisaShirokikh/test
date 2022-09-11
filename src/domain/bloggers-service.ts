@@ -42,7 +42,7 @@ export class BloggersService {
     async createPostByBloggerId (bloggerId: string, title: string, shortDescription: string, content: string) {
         const blogger = await this.bloggersRepository.getBloggerById(bloggerId)
         if (blogger) {
-            const newPost: PostsType = {
+            const newPost = {
                 id: (new ObjectId()).toString(),
                 title,
                 shortDescription,
@@ -54,11 +54,10 @@ export class BloggersService {
                     likesCount: 0,
                     dislikesCount: 0,
                     myStatus: 'None',
-                    newestLikes: [
-
-                    ]
+                    newestLikes: []
                 }
             }
+            //@ts-ignore
             const createdPostDb = await this.postsRepository.createPost(newPost)
             return createdPostDb
         }
