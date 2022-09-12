@@ -28,6 +28,10 @@ export class PostsRepository {
                     myStatus = likesPost.myStatus || 'None'
                 }
             }
+
+            //const action = post.extendedLikesInfo.likesCount
+            //const counter = action === 'Like' ? 1 : -1;
+
             console.log('my', myStatus)
             const returnPost = JSON.parse(JSON.stringify(post))
             return {
@@ -83,7 +87,6 @@ export class PostsRepository {
         return PostsModelClass.count({bloggerId: bloggerId})
     }
 
-
     async getPostById(postId: string): Promise<PostsType | null> {
         const post = await PostsModelClass.findOne({id: postId}, {_id: 0, __v: 0})
 
@@ -106,7 +109,6 @@ export class PostsRepository {
                     addedAt: addedLikeStatusAt,
                     userId: user.accountData.id,
                     login: user.accountData.login,
-                    myStatus: likeStatus
                 }
                 // @ts-ignore
                 a.extendedLikesInfo.newestLikes = [newestLike, ...a.extendedLikesInfo.newestLikes]
@@ -120,8 +122,7 @@ export class PostsRepository {
                         'extendedLikesInfo.newestLikes': {
                             ddedAt: addedLikeStatusAt,
                             userId: user.accountData.id,
-                            login: user.accountData.login,
-                            myStatus: likeStatus
+                            login: user.accountData.login
                         }
                     }
                 })
@@ -129,7 +130,8 @@ export class PostsRepository {
         }
     }
 }
-// 1. в запросе гет пост
+
+//TODO 1. в запросе гет пост
 // при каждом запросе считать количество лайков и дизлайков
 // 2. в обновлении счет лайков и дислайков
 // протестировать логику при изменении статуса (лайка 1 юсера), протестировать логику двух и более лайков от разных
