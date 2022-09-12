@@ -28,19 +28,46 @@ export class PostsRepository {
                     myStatus = likesPost.myStatus || 'None'
                 }
             }
-            /*const likes = await likesStatusCollection.find({})
+            console.log(post.extendedLikesInfo.newestLikes)
 
-            const dislikes = await likesStatusCollection.countDocuments({
-                postId, userId, likeStatus: likeStatusEnum.Dislike
-            })*/
+            const arrayStatus = post.extendedLikesInfo.newestLikes;
+            let like = 0;
+            let dislike = 0;
+            for (let x = 0; arrayStatus.length > x; x++) {
+                if (arrayStatus[x].myStatus === 'Like') {
+                    like = like + 1
+                }
+                if (arrayStatus[x].myStatus === 'Dislike') {
+                    dislike = dislike + 1
+                }
+            }
 
+            function byDate(a: any, b: any) {
+                if (a.addedAt < b.addedAt) return 1;
+                if (a.addedAt > b.addedAt) return -1;
+                return 0;
+            }
 
+            const newArr = arrayStatus
+                .filter(a => a.myStatus !== 'None')
+                .filter(a => a.myStatus !== 'Dislike')
+                .sort(byDate)
+                .slice(0, 3)
+
+            const newestLikes = newArr.map(a => ({
+                addedAt: a.addedAt,
+                userId: a.userId,
+                login: a.login
+            }))
             const returnPost = JSON.parse(JSON.stringify(post))
             return {
                 ...returnPost,
                 extendedLikesInfo: {
                     ...returnPost.extendedLikesInfo,
-                    myStatus: myStatus
+                    likesCount: like,
+                    dislikesCount: dislike,
+                    myStatus: myStatus,
+                    newestLikes: newestLikes
                 }
             }
         }
@@ -96,42 +123,35 @@ export class PostsRepository {
     }
 
     async updateLikeStatus(user: any, postId: string, likeStatus: "None" | "Like" | "Dislike", addedLikeStatusAt: object): Promise<boolean | undefined> {
+
         const post = await PostsModelClass.findOne({id: postId})
         if (post !== null) {
             const findUser = post.extendedLikesInfo.newestLikes.find(p => p.userId === user.accountData.id)
 
-            if (findUser && likeStatus === 'Like') {
+            if (findUser) {
                 const a = await PostsModelClass.findOneAndUpdate({id: postId}, {
                     $inc: {
                         "extendedLikesInfo.likesCount": 1,
-                       // "extendedLikesInfo.dislikesCount": -1
+                        // "extendedLikesInfo.dislikesCount": -1
                     }, "extendedLikesInfo.myStatus": likeStatus
                 })
                 const newestLike = {
                     addedAt: addedLikeStatusAt,
                     userId: user.accountData.id,
                     login: user.accountData.login,
+                    myStatus: likeStatus
                 }
-                // @ts-ignore
-                a.extendedLikesInfo.newestLikes = [newestLike, ...a.extendedLikesInfo.newestLikes]
-                // @ts-ignore
-                await a.save()
+
                 return true
-            } else if (findUser && likeStatus === 'Dislike') {
-                const a = await PostsModelClass.findOneAndUpdate({id: postId}, {
-                    $inc: {
-                        //"extendedLikesInfo.likesCount": 1,
-                        "extendedLikesInfo.dislikesCount": 1
-                    }, "extendedLikesInfo.myStatus": likeStatus
-                })
             }
             await PostsModelClass.updateOne({id: postId},
                 {
-                    $set: {
+                    $push: {
                         'extendedLikesInfo.newestLikes': {
                             addedAt: addedLikeStatusAt,
                             userId: user.accountData.id,
-                            login: user.accountData.login
+                            login: user.accountData.login,
+                            myStatus: likeStatus
                         }
                     }
                 })
@@ -140,12 +160,5 @@ export class PostsRepository {
     }
 }
 
-//TODO 1. в запросе гет пост
-// при каждом запросе считать количество лайков и дизлайков
-// 2. в обновлении счет лайков и дислайков
-// протестировать логику при изменении статуса (лайка 1 юсера), протестировать логику двух и более лайков от разных
-// юсеров. 3. при запросе поста надо вернуть три последних лайка по времени (функция типа сорт)
 
-// В правльном порядке вернуть значение ньюислайкс
-// Самое главное перевернуть все обьекты, reverse
 

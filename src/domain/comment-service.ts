@@ -69,13 +69,7 @@ export class CommentsService {
     }
 
     async updateLikeStatus(user: any, commentId: string, likeStatus: "None" | "Like" | "Dislike"): Promise<boolean | null> {
-        /*await this.likesRepository.getLikesAndDislikesByCommentId(user, commentId)
-        if (likeStatus === 'Like') {
 
-            const status = await this.likesRepository.updateLikeStatus(user, commentId, likeStatus)
-            return status
-        }
-        return null*/
 
         return this.commentsRepository.updateLikeStatus(user, commentId, likeStatus)
     }
