@@ -1,4 +1,4 @@
-import {LikesStatusType, NewestLikes, PostsType} from "../types";
+import {LikesStatusType, likeStatusEnum, NewestLikes, PostsType} from "../types";
 import {likesStatusCollection, PostsModelClass} from "../settingses/db";
 import {injectable} from "inversify";
 import mongoose from "mongoose";
@@ -28,11 +28,13 @@ export class PostsRepository {
                     myStatus = likesPost.myStatus || 'None'
                 }
             }
+            /*const likes = await likesStatusCollection.find({})
 
-            //const action = post.extendedLikesInfo.likesCount
-            //const counter = action === 'Like' ? 1 : -1;
+            const dislikes = await likesStatusCollection.countDocuments({
+                postId, userId, likeStatus: likeStatusEnum.Dislike
+            })*/
 
-            console.log('my', myStatus)
+
             const returnPost = JSON.parse(JSON.stringify(post))
             return {
                 ...returnPost,
@@ -98,11 +100,11 @@ export class PostsRepository {
         if (post !== null) {
             const findUser = post.extendedLikesInfo.newestLikes.find(p => p.userId === user.accountData.id)
 
-            if (findUser) {
+            if (findUser && likeStatus === 'Like') {
                 const a = await PostsModelClass.findOneAndUpdate({id: postId}, {
                     $inc: {
                         "extendedLikesInfo.likesCount": 1,
-                        "extendedLikesInfo.dislikesCount": -1
+                       // "extendedLikesInfo.dislikesCount": -1
                     }, "extendedLikesInfo.myStatus": likeStatus
                 })
                 const newestLike = {
@@ -115,12 +117,19 @@ export class PostsRepository {
                 // @ts-ignore
                 await a.save()
                 return true
+            } else if (findUser && likeStatus === 'Dislike') {
+                const a = await PostsModelClass.findOneAndUpdate({id: postId}, {
+                    $inc: {
+                        //"extendedLikesInfo.likesCount": 1,
+                        "extendedLikesInfo.dislikesCount": 1
+                    }, "extendedLikesInfo.myStatus": likeStatus
+                })
             }
             await PostsModelClass.updateOne({id: postId},
                 {
                     $set: {
                         'extendedLikesInfo.newestLikes': {
-                            ddedAt: addedLikeStatusAt,
+                            addedAt: addedLikeStatusAt,
                             userId: user.accountData.id,
                             login: user.accountData.login
                         }
@@ -137,4 +146,6 @@ export class PostsRepository {
 // протестировать логику при изменении статуса (лайка 1 юсера), протестировать логику двух и более лайков от разных
 // юсеров. 3. при запросе поста надо вернуть три последних лайка по времени (функция типа сорт)
 
+// В правльном порядке вернуть значение ньюислайкс
+// Самое главное перевернуть все обьекты, reverse
 
