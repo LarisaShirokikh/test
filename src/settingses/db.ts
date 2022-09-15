@@ -51,7 +51,13 @@ const commentSchema = new mongoose.Schema<CommentsType>({
         likesInfo: {
             likesCount: Number,
             dislikesCount: Number,
-            myStatus: String
+            myStatus: String,
+            newestLikes: [{
+                addedAt: Object,
+                userId: String,
+                login: String,
+                myStatus: String
+            }]
         }
     }, {_id: false}
 )

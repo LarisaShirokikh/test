@@ -61,7 +61,15 @@ export class CommentsType {
         public likesInfo: {
             likesCount: number,
             dislikesCount: number,
-            myStatus: string
+            myStatus: string,
+            newestLikes: [
+                {
+                    addedAt: object,
+                    userId: string,
+                    login: string,
+                    myStatus: string
+                }
+            ]
         }
     ) {
     }
