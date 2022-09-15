@@ -12,7 +12,7 @@ export class CommentsController {
     }
 
     async findComment(req: Request, res: Response) {
-        const comment = await this.commentsService.getComment(req.params.commentId, req.body.userId)
+        const comment: CommentsType | null | undefined = await this.commentsService.findComment(req.params.commentId)
         if (!comment) {
             res.status(404).send({errorsMessages: [{message: "Comment not found", field: "commentId"}]});
             return
@@ -39,7 +39,7 @@ export class CommentsController {
 
     async deleteComment(req: Request, res: Response) {
 
-        const comment = await this.commentsService.getComment(req.params.commentId, req.body.userId)
+        const comment: CommentsType | null | undefined = await this.commentsService.findComment(req.params.commentId)
 
         if (!comment) {
             res.status(404).send({errorsMessages: [{message: "Comment not found", field: "commentId"}]});
@@ -69,31 +69,25 @@ export class CommentsController {
     }
 
     async getComment(req: Request, res: Response) {
-        const token = req.headers.authorization?.split(' ')[1]
-        console.log('token', token)
-        let userId = ' '
-        if (token) {
-            userId = await jwtService.getUserIdByToken(token)
 
-        }
-        console.log(1234, userId)
         if (typeof req.params.commentId !== "string") {
             res.status(400);
             return;
         }
-        const comment = await this.commentsService.getComment(req.params.commentId, userId)
+
+        const comment = await this.commentsService.findComment(req.params.commentId)
 
         if (comment) {
             res.status(200).send(comment);
         } else {
-            res.status(404);
+            res.send(404);
             return
         }
     }
 
     async commentLikeStatus(req: Request, res: Response) {
         const user = req.user!
-        const comment = await this.commentsService.getComment(req.params.commentId, req.body.userId)
+        const comment = await this.commentsService.findComment(req.params.commentId)
         console.log('comment', comment)
         if (!comment) return res.status(404).send({errorsMessages: [{message: "Comment not found", field: "commentId"}]})
 
