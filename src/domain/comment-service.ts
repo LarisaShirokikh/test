@@ -43,8 +43,8 @@ export class CommentsService {
         }
     }
 
-    async findComment(commentId: string): Promise<CommentsType | undefined | null> {
-        const comment = await this.commentsRepository.findComment(commentId)
+    async findComment(commentId: string, userId: string): Promise<CommentsType | undefined | null> {
+        const comment = await this.commentsRepository.findComment(commentId, userId)
         return comment
     }
 
