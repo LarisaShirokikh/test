@@ -1,5 +1,5 @@
 import {CommentsType, LikesStatusType, UsersDBType, UsersType} from "../types";
-import {CommentsModelClass, likesStatusCollection} from "../settingses/db";
+import {CommentsModelClass, likesStatusCollection, PostsModelClass} from "../settingses/db";
 import {injectable} from "inversify";
 
 
@@ -18,29 +18,32 @@ export class CommentsRepository {
     async getComment(commentId: string, userId: string) {
         let myStatus = 'None'
         const comment = await CommentsModelClass.findOne({id: commentId}, {_id: 0, __v: 0})
-        console.log(comment!.likesInfo.newestLikes.length)
-        //if (comment !== null) {
-            if (comment!.likesInfo.newestLikes.length > 0) {
-                console.log('comment12345', comment)
-            const likeComment = comment!.likesInfo.newestLikes.find((comment: any) => comment.userId === userId)
-                //Object.values({comment}).map(i => Object.values(i))
-            console.log(likeComment)
-            if (likeComment) {
-                myStatus = likeComment.myStatus || 'None'
-            }
 
-            const objectStatus = comment!.likesInfo.newestLikes;
-            let likesCount = 0;
-            let dislikesCount = 0;
+        if (comment !== null) {
+            console.log('comment 1', comment)
+            if (comment.likesInfo.newestLikes.length > 0) {
+                console.log('comment12345', comment.likesInfo.newestLikes)
+                const likeComment = comment.likesInfo.newestLikes.find((comment: any) => comment.userId === userId)
 
-            for (let x = 0; objectStatus.length > x; x++) {
-                if (objectStatus[x].myStatus === 'Like') {
+                console.log(likeComment)
+                if (likeComment) {
+                    myStatus = likeComment.myStatus || 'None'
+                }
+
+                const objectStatus = comment.likesInfo.newestLikes;
+                let likesCount = 0;
+                let dislikesCount = 0;
+
+                // for (let x = 0; objectStatus.length > x; x++) {
+                //     if (objectStatus[x].myStatus === 'Like')
+                if (objectStatus.map(l => l.myStatus === 'Like')) {
                     likesCount = likesCount + 1
                 }
-                if (objectStatus[x].myStatus === 'Dislike') {
+                if (objectStatus.map(l => l.myStatus === 'Dislike')) {
                     dislikesCount = dislikesCount + 1
                 }
-            }
+
+
                 function byDate(a: any, b: any) {
                     if (a.addedAt < b.addedAt) return 1;
                     if (a.addedAt > b.addedAt) return -1;
@@ -58,18 +61,19 @@ export class CommentsRepository {
                     userId: a.userId,
                     login: a.login
                 }))
-
-            return {
-                ...comment,
-                likeInfo: {
-                    ...comment!.likesInfo,
-                    likesCount: likesCount,
-                    dislikesCount: dislikesCount,
-                    myStatus: myStatus,
-                    newestLikes: newestLikes
+                const returnComment = JSON.parse(JSON.stringify(comment))
+                return {
+                    ...returnComment,
+                    likeInfo: {
+                        ...returnComment.likesInfo,
+                        likesCount: likesCount,
+                        dislikesCount: dislikesCount,
+                        myStatus: myStatus,
+                        newestLikes: newestLikes
+                    }
                 }
-
             }
+            return comment
         }
         // const comment = await CommentsModelClass.findOne({id: commentId},
         //     {_id: 0, postId: 0, __v: 0})
@@ -114,28 +118,49 @@ export class CommentsRepository {
 
     async updateLikeStatus(user: any, commentId: string, likeStatus: "None" | "Like" | "Dislike"): Promise<boolean | null> {
         const comment = await CommentsModelClass.findOne({id: commentId})
-        const findUser = comment!.likesInfo.newestLikes.find((comment: any) => comment.userId === user.accountData.id)
 
-        if (findUser) {
-            const count = CommentsModelClass.findOneAndUpdate({id: commentId}, {
-                $inc: {
-                    'likesInfo.likesCount': 1
-                }, 'likesInfo.myStatus': likeStatus
-            })
+        if (comment !== null) {
+            console.log(comment.likesInfo.newestLikes)
+            const findUser = comment.likesInfo.newestLikes.find(c => c.userId === user.accountData.id)
+            console.log(findUser, 'findUser')
+            if (findUser) {
+                const count = CommentsModelClass.findOneAndUpdate({id: commentId}, {
+                    $inc: {
+                        'likesInfo.likesCount': 1
+                    }, 'likesInfo.myStatus': likeStatus
+                })
+                const newestLike = {
+                    //addedAt: addedLikeStatusAt,
+                    userId: user.accountData.id,
+                    login: user.accountData.login,
+                    myStatus: likeStatus
+                }
+                return true
+            }
+            await CommentsModelClass.updateOne({id: commentId},
+                {
+                    $push: {
+                        'likesInfo.newestLikes': {
+                            //addedAt: addedLikeStatusAt,
+                            userId: user.accountData.id,
+                            login: user.accountData.login,
+                            myStatus: likeStatus
+                        }
+                    }
+                })
+            // await CommentsModelClass.updateOne({id: commentId},
+            //     {
+            //         $push: {
+            //             'likesInfo': {
+            //
+            //             }
+            //         }
+            //     }
+            //     )
             return true
+
         }
-        // await CommentsModelClass.updateOne({id: commentId},
-        //     {
-        //         $push: {
-        //             'likesInfo': {
-        //
-        //             }
-        //         }
-        //     }
-        //     )
         return null
-
-
         // const isLikeStatus: LikesStatusType | null = await likesStatusCollection.findOne({
         //     commentId: commentId,
         //     userId: user.accountData.id
@@ -230,6 +255,7 @@ export class CommentsRepository {
         // }
         // return null
     }
+
 
 
 }
