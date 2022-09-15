@@ -69,13 +69,18 @@ export class CommentsController {
     }
 
     async getComment(req: Request, res: Response) {
+        const token = req.headers.authorization?.split(' ')[1]
+        let userId = ' '
+        if (token) {
+            userId = await jwtService.getUserIdByToken(token)
 
+        }
         if (typeof req.params.commentId !== "string") {
             res.status(400);
             return;
         }
 
-        const comment = await this.commentsService.findComment(req.params.commentId)
+        const comment = await this.commentsService.getComment(req.params.commentId, userId)
 
         if (comment) {
             res.status(200).send(comment);

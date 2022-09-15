@@ -15,7 +15,7 @@ export class CommentsRepository {
 
     }
 
-    async findComment(commentId: string): Promise<CommentsType | undefined | null> {
+    async findComment(commentId: string, userId: string): Promise<CommentsType | undefined | null> {
         const comment = await CommentsModelClass.findOne({id: commentId},
             {_id: 0, postId: 0, __v: 0})
         return comment
@@ -155,4 +155,8 @@ export class CommentsRepository {
     }
 
 
+    async getComment(commentId: string, userId: string) {
+        let myStatus = 'None'
+        return Promise.resolve(undefined);
+    }
 }

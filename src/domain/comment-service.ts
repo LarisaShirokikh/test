@@ -73,5 +73,9 @@ export class CommentsService {
 
         return this.commentsRepository.updateLikeStatus(user, commentId, likeStatus)
     }
+
+    async getComment(commentId: string, userId: string) {
+        return await this.commentsRepository.findComment(commentId,userId)
+    }
 }
 
