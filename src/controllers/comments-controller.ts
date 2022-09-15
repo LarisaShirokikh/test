@@ -12,7 +12,7 @@ export class CommentsController {
     }
 
     async findComment(req: Request, res: Response) {
-        const comment: CommentsType | null | undefined = await this.commentsService.findComment(req.params.commentId)
+        const comment: CommentsType | null | undefined = await this.commentsService.findComment(req.params.commentId, req.body.userId)
         if (!comment) {
             res.status(404).send({errorsMessages: [{message: "Comment not found", field: "commentId"}]});
             return
@@ -39,7 +39,7 @@ export class CommentsController {
 
     async deleteComment(req: Request, res: Response) {
 
-        const comment: CommentsType | null | undefined = await this.commentsService.findComment(req.params.commentId)
+        const comment: CommentsType | null | undefined = await this.commentsService.findComment(req.params.commentId, req.body.userId)
 
         if (!comment) {
             res.status(404).send({errorsMessages: [{message: "Comment not found", field: "commentId"}]});
@@ -92,7 +92,7 @@ export class CommentsController {
 
     async commentLikeStatus(req: Request, res: Response) {
         const user = req.user!
-        const comment = await this.commentsService.findComment(req.params.commentId)
+        const comment = await this.commentsService.findComment(req.params.commentId, req.body.userId)
         console.log('comment', comment)
         if (!comment) return res.status(404).send({errorsMessages: [{message: "Comment not found", field: "commentId"}]})
 
