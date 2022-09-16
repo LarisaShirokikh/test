@@ -7,27 +7,33 @@ import mongoose from "mongoose";
 export class PostsRepository {
 
     async findPosts(pageSize: number, pageNumber: number) {
-        return PostsModelClass.find({}, {
+        const allPost = await PostsModelClass.find({}, {_id: 0, __v: 0, 'extendedLikesInfo.newestLikes.myStatus': 0})
+            .skip((pageNumber - 1) * pageSize).limit(pageSize).lean()
+        // if (allPost) {
+        //     await PostsModelClass.findOneAndUpdate({},
+        //         {
+        //             $set: {
+        //                 'extendedLikesInfo.newestLikes': {
+        //                     myStatus: false
+        //                 }
+        //             }
+        //         })
+            return allPost
 
-            _id: 0,
-            __v: 0
-
-        }).skip((pageNumber - 1) * pageSize).limit(pageSize).lean()
     }
 
     async findPostById(postId: string, userId: string) {
         let myStatus = 'None'
         const post = await PostsModelClass.findOne({id: postId}, {_id: 0, __v: 0})
         if (post !== null) {
-            //console.log('post', post)
+
             if (post.extendedLikesInfo.newestLikes.length > 0) {
                 const userInNewestLikes = post.extendedLikesInfo.newestLikes.find((l: any) => l.userId === userId)
-                //console.log('likesPost', likesPost)
+
                 if (userInNewestLikes) {
                     myStatus = userInNewestLikes.myStatus
                 }
             }
-            console.log()
 
             const newestLikesArray = post.extendedLikesInfo.newestLikes;
             let like = 0;

@@ -66,7 +66,7 @@ export class PostsController {
             userId = await jwtService.getUserIdByToken(token)
 
         }
-        console.log(1234, userId)
+        //console.log(1234, userId)
 
         if (typeof req.params.postId !== "string") {
             res.send(400);
