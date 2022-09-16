@@ -18,12 +18,18 @@ export class PostsController {
     }
 
     async getAllPosts(req: Request, res: Response) {
+        const token = req.headers.authorization?.split(' ')[1]
+        let userId = ' '
+        if (token) {
+            userId = await jwtService.getUserIdByToken(token)
+
+        }
 
         const pageSize: number = Number(req.query.PageSize) || 10
         const pageNumber: number = Number(req.query.PageNumber) || 1
 
 
-        const findPost = await this.postsService.findPosts(pageSize, pageNumber)
+        const findPost = await this.postsService.findPosts(pageSize, pageNumber, userId)
         const getCount = await this.postsService.getCount()
         res.send({
             "pagesCount": Math.ceil(getCount / pageSize),

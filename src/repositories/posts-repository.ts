@@ -6,20 +6,11 @@ import mongoose from "mongoose";
 @injectable()
 export class PostsRepository {
 
-    async findPosts(pageSize: number, pageNumber: number) {
-        const allPost = await PostsModelClass.find({}, {_id: 0, __v: 0, 'extendedLikesInfo.newestLikes.myStatus': 0})
+    async findPosts(pageSize: number, pageNumber: number, userId: string) {
+        let myStatus = 'None'
+        const posts = PostsModelClass.find({}, {_id: 0, __v: 0, 'extendedLikesInfo.newestLikes.myStatus': 0})
             .skip((pageNumber - 1) * pageSize).limit(pageSize).lean()
-        // if (allPost) {
-        //     await PostsModelClass.findOneAndUpdate({},
-        //         {
-        //             $set: {
-        //                 'extendedLikesInfo.newestLikes': {
-        //                     myStatus: false
-        //                 }
-        //             }
-        //         })
-            return allPost
-
+        return posts
     }
 
     async findPostById(postId: string, userId: string) {
