@@ -5,8 +5,7 @@ import mongoose from "mongoose";
 
 @injectable()
 export class PostsRepository {
-    //constructor(@inject(PostsModelClass.name) private postsModelClass: mongoose.Model<PostsType> ) {
-    //}
+
     async findPosts(pageSize: number, pageNumber: number) {
         return PostsModelClass.find({}, {
 
@@ -20,24 +19,24 @@ export class PostsRepository {
         let myStatus = 'None'
         const post = await PostsModelClass.findOne({id: postId}, {_id: 0, __v: 0})
         if (post !== null) {
-            console.log('1234post', post)
+            //console.log('post', post)
             if (post.extendedLikesInfo.newestLikes.length > 0) {
-                const likesPost = post.extendedLikesInfo.newestLikes.find((l: any) => l.userId === userId)
-                console.log('likesPost', likesPost)
-                if (likesPost) {
-                    myStatus = likesPost.myStatus || 'None'
+                const userInNewestLikes = post.extendedLikesInfo.newestLikes.find((l: any) => l.userId === userId)
+                //console.log('likesPost', likesPost)
+                if (userInNewestLikes) {
+                    myStatus = userInNewestLikes.myStatus
                 }
             }
-            console.log(post.extendedLikesInfo.newestLikes)
+            console.log()
 
-            const arrayStatus = post.extendedLikesInfo.newestLikes;
+            const newestLikesArray = post.extendedLikesInfo.newestLikes;
             let like = 0;
             let dislike = 0;
-            for (let x = 0; arrayStatus.length > x; x++) {
-                if (arrayStatus[x].myStatus === 'Like') {
+            for (let x = 0; newestLikesArray.length > x; x++) {
+                if (newestLikesArray[x].myStatus === 'Like') {
                     like = like + 1
                 }
-                if (arrayStatus[x].myStatus === 'Dislike') {
+                if (newestLikesArray[x].myStatus === 'Dislike') {
                     dislike = dislike + 1
                 }
             }
@@ -48,7 +47,7 @@ export class PostsRepository {
                 return 0;
             }
 
-            const newArr = arrayStatus
+            const newArr = newestLikesArray
                 .filter(a => a.myStatus !== 'None')
                 .filter(a => a.myStatus !== 'Dislike')
                 .sort(byDate)
@@ -125,38 +124,74 @@ export class PostsRepository {
     async updateLikeStatus(user: any, postId: string, likeStatus: "None" | "Like" | "Dislike", addedLikeStatusAt: object): Promise<boolean | undefined> {
 
         const post = await PostsModelClass.findOne({id: postId})
-        if (post !== null) {
-            const findUser = post.extendedLikesInfo.newestLikes.find(p => p.userId === user.accountData.id)
+            if (post !== null) {
+                const findUser = post.extendedLikesInfo.newestLikes.find(p => p.userId === user.accountData.id)
+                //const postLikeStatus = post.extendedLikesInfo.myStatus
+                //if (postLikeStatus == likeStatus)
+                if (!findUser) {
+                    await PostsModelClass.updateOne({id: postId},
+                        {
+                            $push: {
+                                'extendedLikesInfo.newestLikes': {
+                                    addedAt: addedLikeStatusAt,
+                                    userId: user.accountData.id,
+                                    login: user.accountData.login,
+                                    myStatus: likeStatus
+                                }
+                            }
+                        })
+                    return true
+                } else {
 
-            if (findUser) {
-                const a = await PostsModelClass.findOneAndUpdate({id: postId}, {
-                    $inc: {
-                        "extendedLikesInfo.likesCount": 1,
-                        // "extendedLikesInfo.dislikesCount": -1
-                    }, "extendedLikesInfo.myStatus": likeStatus
-                })
-                const newestLike = {
-                    addedAt: addedLikeStatusAt,
-                    userId: user.accountData.id,
-                    login: user.accountData.login,
-                    myStatus: likeStatus
+                     await PostsModelClass.updateOne({id:postId, 'extendedLikesInfo.newestLikes.userId': findUser.userId},
+                            {$pull:
+                                    {
+                                        'extendedLikesInfo.newestLikes': {'userId': findUser.userId}
+                                    }})
+                    await PostsModelClass.updateOne({id: postId},
+                        {
+                            $push: {
+                                'extendedLikesInfo.newestLikes': {
+                                    addedAt: addedLikeStatusAt,
+                                    userId: user.accountData.id,
+                                    login: user.accountData.login,
+                                    myStatus: likeStatus
+                                }
+                            }
+                        })
+                    return true
                 }
+                //(!findUser && likeStatus === 'Like')
+                // else {
+                //     if (findUser.myStatus === 'Dislike' && likeStatus === 'Like' | 'None') {
+                //         await PostsModelClass.findOneAndUpdate({id: postId}, {
+                //             $inc: {
+                //                 "extendedLikesInfo.likesCount": 1,
+                //                 // "extendedLikesInfo.dislikesCount": -1
+                //             }, "extendedLikesInfo.myStatus": likeStatus
+                //         })
+                //     }
+                //     await PostsModelClass.findOneAndUpdate({id: postId}, {
+                //         $inc: {
+                //             "extendedLikesInfo.likesCount": 1,
+                //             // "extendedLikesInfo.dislikesCount": -1
+                //         }, "extendedLikesInfo.myStatus": likeStatus
+                //     })
+                //     await PostsModelClass.updateOne({id: postId},
+                //         {
+                //             $push: {
+                //                 'extendedLikesInfo.newestLikes': {
+                //                     addedAt: addedLikeStatusAt,
+                //                     userId: user.accountData.id,
+                //                     login: user.accountData.login,
+                //                     myStatus: likeStatus
+                //                 }
+                //             }
+                //         })
+                //     return true
+                // }
 
-                return true
             }
-            await PostsModelClass.updateOne({id: postId},
-                {
-                    $push: {
-                        'extendedLikesInfo.newestLikes': {
-                            addedAt: addedLikeStatusAt,
-                            userId: user.accountData.id,
-                            login: user.accountData.login,
-                            myStatus: likeStatus
-                        }
-                    }
-                })
-            return true
-        }
     }
 }
 

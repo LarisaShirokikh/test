@@ -67,9 +67,7 @@ export class PostsController {
 
         }
         console.log(1234, userId)
-        //проверка на токен
-        //если токен, то расшифровка и передать юзер айди/логин, передать в файнд логин
-        //если найдено все то отдаем myStatus
+
         if (typeof req.params.postId !== "string") {
             res.send(400);
             return;
