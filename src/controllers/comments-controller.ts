@@ -75,6 +75,7 @@ export class CommentsController {
             userId = await jwtService.getUserIdByToken(token)
 
         }
+        console.log(1234, userId)
         if (typeof req.params.commentId !== "string") {
             res.status(400);
             return;

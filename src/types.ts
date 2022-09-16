@@ -62,6 +62,14 @@ export class CommentsType {
             likesCount: number,
             dislikesCount: number,
             myStatus: string
+            newestLikes: [
+                {
+                    addedAt: object,
+                    userId: string,
+                    login: string,
+                    myStatus: string
+                }
+            ]
         }
     ) {
     }
