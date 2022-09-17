@@ -59,7 +59,7 @@ export class CommentsRepository {
             const returnComment = JSON.parse(JSON.stringify(comment))
             return {
                 ...returnComment,
-                lLikesInfo: {
+                likesInfo: {
                     ...returnComment.likesInfo,
                     likesCount: like,
                     dislikesCount: dislike,
@@ -148,130 +148,7 @@ export class CommentsRepository {
                     })
                 return true
             }
-            //(!findUser && likeStatus === 'Like')
-            // else {
-            //     if (findUser.myStatus === 'Dislike' && likeStatus === 'Like' | 'None') {
-            //         await PostsModelClass.findOneAndUpdate({id: postId}, {
-            //             $inc: {
-            //                 "extendedLikesInfo.likesCount": 1,
-            //                 // "extendedLikesInfo.dislikesCount": -1
-            //             }, "extendedLikesInfo.myStatus": likeStatus
-            //         })
-            //     }
-            //     await PostsModelClass.findOneAndUpdate({id: postId}, {
-            //         $inc: {
-            //             "extendedLikesInfo.likesCount": 1,
-            //             // "extendedLikesInfo.dislikesCount": -1
-            //         }, "extendedLikesInfo.myStatus": likeStatus
-            //     })
-            //     await PostsModelClass.updateOne({id: postId},
-            //         {
-            //             $push: {
-            //                 'extendedLikesInfo.newestLikes': {
-            //                     addedAt: addedLikeStatusAt,
-            //                     userId: user.accountData.id,
-            //                     login: user.accountData.login,
-            //                     myStatus: likeStatus
-            //                 }
-            //             }
-            //         })
-            //     return true
-            // }
-
         }
-        //     const isLikeStatus: LikesStatusType | null = await likesStatusCollection.findOne({
-        //         commentId: commentId,
-        //         userId: user.accountData.id
-        //     })
-        //
-        //     if (!isLikeStatus) {
-        //         await likesStatusCollection.insertMany({id: commentId, userId: user.accountData.id, likeStatus})
-        //         if (likeStatus === "Like") {
-        //             await CommentsModelClass.findOneAndUpdate({id: commentId}, {
-        //                 $inc: {"likesInfo.likesCount": 1},
-        //                 "likesInfo.myStatus": likeStatus
-        //             })
-        //             return true
-        //         }
-        //         if (likeStatus === "Dislike") {
-        //             await CommentsModelClass.findOneAndUpdate({id: commentId}, {
-        //                 $inc: {"likesInfo.dislikesCount": 1},
-        //                 "likesInfo.myStatus": likeStatus
-        //             })
-        //             return true
-        //         }
-        //
-        //     } else {
-        //
-        //         await likesStatusCollection.updateOne({id: commentId, userId: user.accountData.id}, {$set: {likeStatus}})
-        //
-        //         if (likeStatus === "Like" && isLikeStatus.likeStatus === "Dislike") {
-        //             await CommentsModelClass.findOneAndUpdate({id: commentId}, {
-        //                 $inc: {
-        //                     "likesInfo.likesCount": 1,
-        //                     "likesInfo.dislikesCount": -1
-        //                 }, "likesInfo.myStatus": likeStatus
-        //             })
-        //             return true
-        //         }
-        //
-        //         if (likeStatus === "Like" && isLikeStatus.likeStatus === "None") {
-        //             await CommentsModelClass.findOneAndUpdate({id: commentId}, {
-        //                 $inc: {"likesInfo.likesCount": 1},
-        //                 "likesInfo.myStatus": likeStatus
-        //             })
-        //             return true
-        //         }
-        //
-        //         if (likeStatus === "Like" && isLikeStatus.likeStatus === "Like") {
-        //             return true
-        //         }
-        //
-        //         if (likeStatus === "Dislike" && isLikeStatus.likeStatus === "Like") {
-        //             await CommentsModelClass.findOneAndUpdate({id: commentId}, {
-        //                 $inc: {
-        //                     "likesInfo.likesCount": -1,
-        //                     "likesInfo.dislikesCount": 1
-        //                 }, "likesInfo.myStatus": likeStatus
-        //             })
-        //             return true
-        //         }
-        //
-        //         if (likeStatus === "Dislike" && isLikeStatus.likeStatus === "Dislike") {
-        //             return true
-        //         }
-        //
-        //         if (likeStatus === "Dislike" && isLikeStatus.likeStatus !== "Like") {
-        //             await CommentsModelClass.findOneAndUpdate({id: commentId}, {
-        //                 $inc: {"likesInfo.likesCount": -1},
-        //                 "likesInfo.myStatus": likeStatus
-        //             })
-        //             return true
-        //         }
-        //
-        //         if (likeStatus === "None" && isLikeStatus.likeStatus === "Like") {
-        //             await CommentsModelClass.findOneAndUpdate({id: commentId}, {
-        //                 $inc: {"likesInfo.likesCount": -1},
-        //                 "likesInfo.myStatus": likeStatus
-        //             })
-        //             return true
-        //         }
-        //
-        //         if (likeStatus === "None" && isLikeStatus.likeStatus === "Dislike") {
-        //             await CommentsModelClass.findOneAndUpdate({id: commentId}, {
-        //                 $inc: {"likesInfo.dislikesCount": -1},
-        //                 "likesInfo.myStatus": likeStatus
-        //             })
-        //             return true
-        //         }
-        //
-        //         if (likeStatus === "None" && isLikeStatus.likeStatus === "None") {
-        //             return true
-        //         }
-        //         return true
-        //     }
-        //     return null
-        // }
     }
 
 
