@@ -57,14 +57,15 @@ export class CommentsRepository {
                 login: a.login
             }))
             const returnComment = JSON.parse(JSON.stringify(comment))
+            const retComment = delete returnComment.likesInfo.newestLikes
+            console.log(retComment)
             return {
                 ...returnComment,
                 likesInfo: {
                     ...returnComment.likesInfo,
                     likesCount: like,
                     dislikesCount: dislike,
-                    myStatus: myStatus,
-                    newestLikes: newestLikes
+                    myStatus: myStatus
                 }
             }
         }
