@@ -17,60 +17,61 @@ export class CommentsRepository {
 
     async findComment(commentId: string, userId: string) {
         let myStatus = "None"
-        const comment = await CommentsModelClass.findOne({id: commentId},
+        return  CommentsModelClass.findOne({id: commentId},
             {_id: 0, postId: 0, __v: 0})
-        if (comment !== null) {
-            if (comment.likesInfo.newestLikes.length > 0) {
-                const userInNewestLikes = comment.likesInfo.newestLikes.find((l: any) => l.userId === userId)
-
-                if (userInNewestLikes) {
-                    myStatus = userInNewestLikes.myStatus
-                }
-            }
-            const newestLikesArray = comment.likesInfo.newestLikes;
-            let like = 0;
-            let dislike = 0;
-            for (let x = 0; newestLikesArray.length > x; x++) {
-                if (newestLikesArray[x].myStatus === 'Like') {
-                    like = like + 1
-                }
-                if (newestLikesArray[x].myStatus === 'Dislike') {
-                    dislike = dislike + 1
-                }
-            }
-
-            function byDate(a: any, b: any) {
-                if (a.addedAt < b.addedAt) return 1;
-                if (a.addedAt > b.addedAt) return -1;
-                return 0;
-            }
-
-            const newArr = newestLikesArray
-                .filter(a => a.myStatus !== 'None')
-                .filter(a => a.myStatus !== 'Dislike')
-                .sort(byDate)
-                .slice(0, 3)
-
-            const newestLikes = newArr.map(a => ({
-                addedAt: a.addedAt,
-                userId: a.userId,
-                login: a.login
-            }))
-            const returnComment = JSON.parse(JSON.stringify(comment))
-            const retComment = delete returnComment.likesInfo.newestLikes
-            console.log(retComment)
-            return {
-                ...returnComment,
-                likesInfo: {
-                    ...returnComment.likesInfo,
-                    likesCount: like,
-                    dislikesCount: dislike,
-                    myStatus: myStatus
-                }
-            }
-        }
-        return comment
     }
+    //     if (comment !== null) {
+    //         if (comment.likesInfo.newestLikes.length > 0) {
+    //             const userInNewestLikes = comment.likesInfo.newestLikes.find((l: any) => l.userId === userId)
+    //
+    //             if (userInNewestLikes) {
+    //                 myStatus = userInNewestLikes.myStatus
+    //             }
+    //         }
+    //         const newestLikesArray = comment.likesInfo.newestLikes;
+    //         let like = 0;
+    //         let dislike = 0;
+    //         for (let x = 0; newestLikesArray.length > x; x++) {
+    //             if (newestLikesArray[x].myStatus === 'Like') {
+    //                 like = like + 1
+    //             }
+    //             if (newestLikesArray[x].myStatus === 'Dislike') {
+    //                 dislike = dislike + 1
+    //             }
+    //         }
+    //
+    //         function byDate(a: any, b: any) {
+    //             if (a.addedAt < b.addedAt) return 1;
+    //             if (a.addedAt > b.addedAt) return -1;
+    //             return 0;
+    //         }
+    //
+    //         const newArr = newestLikesArray
+    //             .filter(a => a.myStatus !== 'None')
+    //             .filter(a => a.myStatus !== 'Dislike')
+    //             .sort(byDate)
+    //             .slice(0, 3)
+    //
+    //         const newestLikes = newArr.map(a => ({
+    //             addedAt: a.addedAt,
+    //             userId: a.userId,
+    //             login: a.login
+    //         }))
+    //         const returnComment = JSON.parse(JSON.stringify(comment))
+    //         const retComment = delete returnComment.likesInfo.newestLikes
+    //         console.log(retComment)
+    //         return {
+    //             ...returnComment,
+    //             likesInfo: {
+    //                 ...returnComment.likesInfo,
+    //                 likesCount: like,
+    //                 dislikesCount: dislike,
+    //                 myStatus: myStatus
+    //             }
+    //         }
+    //     }
+    //     return comment
+    // }
 
     async findCommentWithPag(postId: string, pageSize: number, pageNumber: number) {
         return CommentsModelClass.find({postId: postId}, {
