@@ -18,7 +18,7 @@ export class CommentsRepository {
     async findComment(commentId: string, userId: string) {
         let myStatus = "None"
         return  CommentsModelClass.findOne({id: commentId},
-            {_id: 0, postId: 0, __v: 0, 'likeInfo.newestLikes': 0})
+            {_id: 0, postId: 0, __v: 0, 'likesInfo.newestLikes': 0})
     }
     //     if (comment !== null) {
     //         if (comment.likesInfo.newestLikes.length > 0) {
