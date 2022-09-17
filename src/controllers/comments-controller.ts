@@ -1,7 +1,7 @@
 import {inject, injectable} from "inversify";
 import {CommentsService} from "../domain/comment-service";
 import {Request, Response} from "express";
-import {CommentsType} from "../types";
+import {CommentsType, ReturnFindCommentIdType} from "../types";
 import {jwtService} from "../application/jwt-service";
 
 @injectable()
@@ -12,7 +12,7 @@ export class CommentsController {
     }
 
     async findComment(req: Request, res: Response) {
-        const comment: CommentsType | null | undefined = await this.commentsService.findComment(req.params.commentId, req.body.userId)
+        const comment: ReturnFindCommentIdType | null | undefined = await this.commentsService.findComment(req.params.commentId, req.body.userId)
         if (!comment) {
             res.status(404).send({errorsMessages: [{message: "Comment not found", field: "commentId"}]});
             return
@@ -39,7 +39,7 @@ export class CommentsController {
 
     async deleteComment(req: Request, res: Response) {
 
-        const comment: CommentsType | null | undefined = await this.commentsService.findComment(req.params.commentId, req.body.userId)
+        const comment: ReturnFindCommentIdType | null | undefined = await this.commentsService.findComment(req.params.commentId, req.body.userId)
 
         if (!comment) {
             res.status(404).send({errorsMessages: [{message: "Comment not found", field: "commentId"}]});

@@ -1,7 +1,7 @@
 import {CommentsRepository} from "../repositories/comment-repository";
 import {PostsRepository} from "../repositories/posts-repository";
 import {injectable} from "inversify";
-import {CommentsType, likeStatusEnum, PostsType, UsersDBType, UsersType} from "../types";
+import {CommentsType, likeStatusEnum, PostsType, ReturnFindCommentIdType, UsersDBType, UsersType} from "../types";
 import {Schema} from "mongoose";
 import {ObjectId} from "mongodb";
 import {LikesRepository} from "../repositories/likes-repository";
@@ -34,9 +34,7 @@ export class CommentsService {
                 likesInfo: {
                     likesCount: 0,
                     dislikesCount: 0,
-                    myStatus: "None",
-                    newestLikes: []
-
+                    myStatus: "None"
                 }
             }
 //@ts-ignore
@@ -45,7 +43,7 @@ export class CommentsService {
         }
     }
 
-    async findComment(commentId: string, userId: string): Promise<CommentsType | undefined | null> {
+    async findComment(commentId: string, userId: string): Promise<ReturnFindCommentIdType | undefined | null> {
         const comment = await this.commentsRepository.findComment(commentId, userId)
         return comment
     }
@@ -76,7 +74,7 @@ export class CommentsService {
         return this.commentsRepository.updateLikeStatus(user, commentId, likeStatus, addedLikeStatusAt)
     }
 
-    async getComment(commentId: string, userId: string): Promise<CommentsType | null> {
+    async getComment(commentId: string, userId: string): Promise<ReturnFindCommentIdType | null> {
         return await this.commentsRepository.findComment(commentId,userId)
     }
 }

@@ -62,14 +62,12 @@ export class CommentsType {
             likesCount: number,
             dislikesCount: number,
             myStatus: string
-            newestLikes: [
-                {
-                    addedAt: object,
-                    userId: string,
-                    login: string,
-                    myStatus: string
-                }
-            ]
+            newestLikes: [{
+                addedAt: object,
+                userId: string,
+                login: string,
+                myStatus: string
+            }]
         }
     ) {
     }
@@ -143,5 +141,16 @@ export class NewestLikes {
 }
 
 
+export type ReturnFindCommentIdType = {
 
-
+    id: string,
+    content: string,
+    userId: string,
+    userLogin: string,
+    addedAt: any,
+    likesInfo: {
+        likesCount: number,
+        dislikesCount: number,
+        myStatus: string,
+    }
+}

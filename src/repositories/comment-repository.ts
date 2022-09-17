@@ -1,4 +1,4 @@
-import {CommentsType, LikesStatusType, UsersDBType, UsersType} from "../types";
+import {CommentsType, LikesStatusType, ReturnFindCommentIdType, UsersDBType, UsersType} from "../types";
 import {CommentsModelClass, likesStatusCollection, PostsModelClass} from "../settingses/db";
 import {injectable} from "inversify";
 
@@ -7,7 +7,7 @@ import {injectable} from "inversify";
 export class CommentsRepository {
 
     async createComment(newComment: CommentsType): Promise<CommentsType | undefined> {
-        await CommentsModelClass.insertMany([newComment])
+        await CommentsModelClass.insertMany({...newComment})
         console.log(newComment)
         const comment = await CommentsModelClass.findOne({id: newComment.id}, {_id: 0, postId: 0, __v: 0})
         //@ts-ignore
@@ -15,63 +15,68 @@ export class CommentsRepository {
 
     }
 
-    async findComment(commentId: string, userId: string) {
+    async findComment(commentId: string, userId: string): Promise<ReturnFindCommentIdType | null> {
         let myStatus = "None"
-        return  CommentsModelClass.findOne({id: commentId},
-            {_id: 0, postId: 0, __v: 0, 'likesInfo.newestLikes': 0})
+        const comment = await CommentsModelClass.findOne({id: commentId})
+
+        if (comment !== null) {
+            if (comment.likesInfo.newestLikes.length > 0) {
+                const userInNewestLikes = comment.likesInfo.newestLikes.find((l: any) => l.userId === userId)
+
+                if (userInNewestLikes) {
+                    myStatus = userInNewestLikes.myStatus
+                }
+            }
+            const newestLikesArray = comment.likesInfo.newestLikes;
+            let like = 0;
+            let dislike = 0;
+            for (let x = 0; newestLikesArray.length > x; x++) {
+                if (newestLikesArray[x].myStatus === 'Like') {
+                    like = like + 1
+                }
+                if (newestLikesArray[x].myStatus === 'Dislike') {
+                    dislike = dislike + 1
+                }
+            }
+
+            function byDate(a: any, b: any) {
+                if (a.addedAt < b.addedAt) return 1;
+                if (a.addedAt > b.addedAt) return -1;
+                return 0;
+            }
+
+            const newArr = newestLikesArray
+                .filter(a => a.myStatus !== 'None')
+                .filter(a => a.myStatus !== 'Dislike')
+                .sort(byDate)
+                .slice(0, 3)
+
+            const newestLikes = newArr.map(a => ({
+                addedAt: a.addedAt,
+                userId: a.userId,
+                login: a.login
+            }))
+            const returnComment = JSON.parse(JSON.stringify(comment))
+            //  const retComment = delete returnComment.likesInfo.newestLikes
+
+            const commentId: ReturnFindCommentIdType = {
+                id: returnComment.id as string,
+                content: returnComment.content as string,
+                userId: returnComment.userId as string,
+                userLogin: returnComment.userLogin as string,
+                addedAt: returnComment.addedAt as any,
+                likesInfo: {
+                    likesCount: like as number,
+                    dislikesCount: dislike as number,
+                    myStatus: myStatus as string
+                }
+
+            }
+            return commentId
+        }
+        return comment
+
     }
-    //     if (comment !== null) {
-    //         if (comment.likesInfo.newestLikes.length > 0) {
-    //             const userInNewestLikes = comment.likesInfo.newestLikes.find((l: any) => l.userId === userId)
-    //
-    //             if (userInNewestLikes) {
-    //                 myStatus = userInNewestLikes.myStatus
-    //             }
-    //         }
-    //         const newestLikesArray = comment.likesInfo.newestLikes;
-    //         let like = 0;
-    //         let dislike = 0;
-    //         for (let x = 0; newestLikesArray.length > x; x++) {
-    //             if (newestLikesArray[x].myStatus === 'Like') {
-    //                 like = like + 1
-    //             }
-    //             if (newestLikesArray[x].myStatus === 'Dislike') {
-    //                 dislike = dislike + 1
-    //             }
-    //         }
-    //
-    //         function byDate(a: any, b: any) {
-    //             if (a.addedAt < b.addedAt) return 1;
-    //             if (a.addedAt > b.addedAt) return -1;
-    //             return 0;
-    //         }
-    //
-    //         const newArr = newestLikesArray
-    //             .filter(a => a.myStatus !== 'None')
-    //             .filter(a => a.myStatus !== 'Dislike')
-    //             .sort(byDate)
-    //             .slice(0, 3)
-    //
-    //         const newestLikes = newArr.map(a => ({
-    //             addedAt: a.addedAt,
-    //             userId: a.userId,
-    //             login: a.login
-    //         }))
-    //         const returnComment = JSON.parse(JSON.stringify(comment))
-    //         const retComment = delete returnComment.likesInfo.newestLikes
-    //         console.log(retComment)
-    //         return {
-    //             ...returnComment,
-    //             likesInfo: {
-    //                 ...returnComment.likesInfo,
-    //                 likesCount: like,
-    //                 dislikesCount: dislike,
-    //                 myStatus: myStatus
-    //             }
-    //         }
-    //     }
-    //     return comment
-    // }
 
     async findCommentWithPag(postId: string, pageSize: number, pageNumber: number) {
         return CommentsModelClass.find({postId: postId}, {
