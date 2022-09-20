@@ -1,6 +1,66 @@
-import {CommentsType, LikesStatusType, ReturnFindCommentIdType, UsersDBType, UsersType} from "../types";
+import {CommentsType, LikesStatusType, PostsType, ReturnFindCommentIdType, UsersDBType, UsersType} from "../types";
 import {CommentsModelClass, likesStatusCollection, PostsModelClass} from "../settingses/db";
 import {injectable} from "inversify";
+
+
+const addLikesToComment = async (comment: CommentsType, userId: string) => {
+    let myStatus = 'None'
+    if (comment !== null) {
+        if (comment.likesInfo.newestLikes.length > 0) {
+            const userInNewestLikes = comment.likesInfo.newestLikes
+                .find((l: any) => l.userId === userId)
+
+            if (userInNewestLikes) {
+                myStatus = userInNewestLikes.myStatus
+            }
+        }
+
+        const newestLikesArray = comment.likesInfo.newestLikes;
+        let like = 0;
+        let dislike = 0;
+        for (let x = 0; newestLikesArray.length > x; x++) {
+            if (newestLikesArray[x].myStatus === 'Like') {
+                like = like + 1
+            }
+            if (newestLikesArray[x].myStatus === 'Dislike') {
+                dislike = dislike + 1
+            }
+        }
+
+        function byDate(a: any, b: any) {
+            if (a.addedAt < b.addedAt) return 1;
+            if (a.addedAt > b.addedAt) return -1;
+            return 0;
+        }
+        const newArr = newestLikesArray
+            .filter(a => a.myStatus !== 'None')
+            .filter(a => a.myStatus !== 'Dislike')
+            .sort(byDate)
+            .slice(0, 3)
+
+        const newestLikes = newArr.map(a => ({
+            addedAt: a.addedAt,
+            userId: a.userId,
+            login: a.login
+        }))
+
+        const returnComment = JSON.parse(JSON.stringify(comment))
+        return {
+            ...returnComment,
+            LikesInfo: {
+                ...returnComment.LikesInfo,
+                likesCount: like,
+                dislikesCount: dislike,
+                myStatus: myStatus,
+                newestLikes: newestLikes
+            }
+        }
+    }
+    return addLikesToComment
+}
+
+
+
 
 
 @injectable()
@@ -78,11 +138,28 @@ export class CommentsRepository {
 
     }
 
-    async findCommentWithPag(postId: string, pageSize: number, pageNumber: number) {
-        return CommentsModelClass.find({postId: postId}, {
-            _id: 0,
-            __v: 0
-        }).skip((pageNumber - 1) * pageSize).limit(pageSize).lean()
+    async findAllCommentWithPag(postId: string, pageSize: number, pageNumber: number, userId: string) {
+        const commentsCount = await CommentsModelClass.count({})
+        const pagesCount = Math.ceil(commentsCount / pageSize)
+
+        const comments = await CommentsModelClass.find({postId: postId}, {_id: 0, __v: 0})
+            .skip((pageNumber - 1) * pageSize).limit(pageSize).lean()
+
+        let commentsWithLikes: CommentsType[] = []
+
+        for (let comment of comments) {
+            const commentWithLikesInfo = await addLikesToComment(comment, userId)
+            commentsWithLikes.push(commentWithLikesInfo)
+        }
+
+        const allComments = {
+            pagesCount: pagesCount,
+            page: pageNumber,
+            pageSize,
+            totalCount: commentsCount,
+            items: commentsWithLikes
+        }
+        return allComments
     }
 
     async getCount(postId: string) {

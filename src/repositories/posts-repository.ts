@@ -8,7 +8,8 @@ const addLikesToPost = async (post: PostsType, userId: string) => {
     if (post !== null) {
 
         if (post.extendedLikesInfo.newestLikes.length > 0) {
-            const userInNewestLikes = post.extendedLikesInfo.newestLikes.find((l: any) => l.userId === userId)
+            const userInNewestLikes = post.extendedLikesInfo.newestLikes
+                .find((l: any) => l.userId === userId)
 
             if (userInNewestLikes) {
                 myStatus = userInNewestLikes.myStatus

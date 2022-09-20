@@ -30,6 +30,36 @@ export class PostsController {
         return
     }
 
+    async getCountCommentsPost(req: Request, res: Response) {
+        const token = req.headers.authorization?.split(' ')[1]
+        let userId = ' '
+        if (token) {
+            userId = await jwtService.getUserIdByToken(token)
+        }
+
+        const posts = await this.commentService
+            //@ts-ignore
+            .findAllCommentWithPag(req.params.postId, req.query.PageNumber, req.query.PageSize, userId)
+        //const getCount = await this.commentService.getCount(req.params.postId)
+        res.status(200).send(posts);
+        return
+
+        // const pageSize: number = Number(req.query.PageSize) || 10
+        // const pageNumber: number = Number(req.query.PageNumber) || 1
+        //
+        // const findComment = await this.commentService.findCommentWithPag(req.params.postId, pageSize, pageNumber)
+        // const getCount = await this.commentService.getCount(req.params.postId)
+        // const result = {
+        //     "pagesCount": Math.ceil(getCount / pageSize),
+        //     "page": pageNumber,
+        //     "pageSize": pageSize,
+        //     "totalCount": getCount,
+        //     "items": findComment
+        // }
+        // res.send(result)
+        // return
+    }
+
     async creatPost(req: Request, res: Response) {
         const post = await this.postsService.createPost(req.body.title, req.body.shortDescription,
             req.body.content, req.body.bloggerId)
@@ -118,23 +148,23 @@ export class PostsController {
         return
     }
 
-    async getCountCommentsPost(req: Request, res: Response) {
-        const pageSize: number = Number(req.query.PageSize) || 10
-        const pageNumber: number = Number(req.query.PageNumber) || 1
-
-        const findComment = await this.commentService.findCommentWithPag(req.params.postId, pageSize, pageNumber)
-        const getCount = await this.commentService.getCount(req.params.postId)
-        const result = {
-            "pagesCount": Math.ceil(getCount / pageSize),
-            "page": pageNumber,
-            "pageSize": pageSize,
-            "totalCount": getCount,
-            "items": findComment
-        }
-        res.send(result)
-        return
-    }
-
+    // async getCountCommentsPost(req: Request, res: Response) {
+    //     const pageSize: number = Number(req.query.PageSize) || 10
+    //     const pageNumber: number = Number(req.query.PageNumber) || 1
+    //
+    //     const findComment = await this.commentService.findCommentWithPag(req.params.postId, pageSize, pageNumber)
+    //     const getCount = await this.commentService.getCount(req.params.postId)
+    //     const result = {
+    //         "pagesCount": Math.ceil(getCount / pageSize),
+    //         "page": pageNumber,
+    //         "pageSize": pageSize,
+    //         "totalCount": getCount,
+    //         "items": findComment
+    //     }
+    //     res.send(result)
+    //     return
+    // }
+    //
     async likeStatusPost(req: Request, res: Response) {
 
         const post = await this.postsService.getPostById(req.params.postId)

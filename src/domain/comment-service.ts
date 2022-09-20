@@ -48,8 +48,8 @@ export class CommentsService {
         return comment
     }
 
-    async findCommentWithPag(postId: string, pageSize: number, pageNumber: number) {
-        return await this.commentsRepository.findCommentWithPag(postId, pageSize, pageNumber)
+    async findAllCommentWithPag(postId: string, pageSize: number, pageNumber: number, userId: string) {
+        return await this.commentsRepository.findAllCommentWithPag(postId, pageSize, pageNumber, userId)
     }
 
     async getCount(postId: string) {
