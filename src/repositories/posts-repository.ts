@@ -266,10 +266,8 @@ export class PostsRepository {
     }
 
     async findBloggersPost(pageSize: number, pageNumber: number, bloggerId: string) {
-        return PostsModelClass.find({bloggerId: bloggerId}, {
-            _id: 0,
-            __v: 0
-        }).skip((pageNumber - 1) * pageSize).limit(pageSize).lean()
+        return PostsModelClass.find({bloggerId: bloggerId}, {_id: 0, __v: 0})
+            .skip((pageNumber - 1) * pageSize).limit(pageSize).lean()
     }
 
     async getCountBloggerId(bloggerId: string) {

@@ -40,4 +40,4 @@ bloggersRouter.post('/:bloggerId/posts',
     inputValidationMiddleWare,
     bloggersController.createPostByBloggerId.bind(bloggersController))
 
-bloggersRouter.get('/:bloggerId/posts', bloggersController.createPostByBloggerId.bind(bloggersController))
+bloggersRouter.get('/:bloggerId/posts', bloggersController.findBloggersPost.bind(bloggersController))
