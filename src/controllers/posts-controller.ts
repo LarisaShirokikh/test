@@ -25,7 +25,7 @@ export class PostsController {
 
         }
 // @ts-ignore
-        const posts = await this.postsService.getAllPosts(req.query.PageNumber, req.query.PageSize, req.body.userId)
+        const posts = await this.postsService.getAllPosts(req.query.PageNumber, req.query.PageSize, userId)
         res.status(200).send(posts);
         return
     }

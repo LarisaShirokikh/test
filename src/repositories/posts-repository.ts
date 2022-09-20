@@ -126,11 +126,18 @@ export class PostsRepository {
         //     return addLikesToPost
         // }
 
-        const postsWithLikes = posts.map((post) => {
-             addLikesToPost(post, userId)
+        // const postsWithLikes = posts.map(async(post) => {
+        //     const postWithLikesInfo = await addLikesToPost(post, userId)
+        //     //console.log(postWithLikesInfo)
+        //     return postWithLikesInfo
+        // })
 
-            return addLikesToPost(post, userId)
-        })
+        let postsWithLikes: PostsType[] = []
+
+        for (let post of posts){
+            const postWithLikesInfo = await addLikesToPost(post, userId)
+            postsWithLikes.push(postWithLikesInfo)
+        }
 
         const allPosts = {
             pagesCount: pagesCount,
@@ -139,7 +146,7 @@ export class PostsRepository {
             totalCount: postsCount,
             items: postsWithLikes
         }
-        console.log('posts', allPosts)
+         console.log('posts', allPosts)
 
         // for (let items in allPosts) {
         //     if (allPosts.items.length > 0) {
