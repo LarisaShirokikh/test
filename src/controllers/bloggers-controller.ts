@@ -59,7 +59,7 @@ export class BloggersController {
             .createPostByBloggerId(req.params.bloggerId, req.body.title, req.body.shortDescription,
                 req.body.content)
         if (newPost) {
-            res.status(200).send(newPost)
+            res.status(201).send(newPost)
             return
         }
     }
