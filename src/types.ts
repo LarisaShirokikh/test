@@ -154,3 +154,11 @@ export type ReturnFindCommentIdType = {
         myStatus: string,
     }
 }
+
+export type PostsOfBloggerType = {
+    pagesCount: number
+    page: number
+    pageSize: number
+    totalCount: number
+    items: [PostsType | PostsType[]]
+}

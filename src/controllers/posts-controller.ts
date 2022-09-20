@@ -24,20 +24,10 @@ export class PostsController {
             userId = await jwtService.getUserIdByToken(token)
 
         }
-
-        const pageSize: number = Number(req.query.PageSize) || 10
-        const pageNumber: number = Number(req.query.PageNumber) || 1
-
-
-        const findPost = await this.postsService.findPosts(pageSize, pageNumber, userId)
-        const getCount = await this.postsService.getCount()
-        res.send({
-            "pagesCount": Math.ceil(getCount / pageSize),
-            "page": pageNumber,
-            "pageSize": pageSize,
-            "totalCount": getCount,
-            "items": findPost
-        })
+// @ts-ignore
+        const posts = await this.postsService.getAllPosts(req.query.PageNumber, req.query.PageSize, req.body.userId)
+        res.status(200).send(posts);
+        return
     }
 
     async creatPost(req: Request, res: Response) {

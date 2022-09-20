@@ -15,6 +15,18 @@ export class PostsService {
         this.bloggersRepository = new BloggersRepository()
     }
 
+
+    async getAllPosts(pageNumber: string = "1" || undefined || null, pageSize: string = "10" || undefined || null, userId: string): Promise<{}> {
+        const postsDb = await this.postsRepository.getAllPosts(+pageNumber, +pageSize, userId)
+        const posts = {...postsDb}
+        // // @ts-ignore
+        // for (let i = 0; i < posts.items.length; i++) {
+        //     // @ts-ignore
+        //     delete posts.items[i]._id
+        // }
+        return posts
+    }
+
     async findPosts(pageSize: number, pageNumber: number, userId: string) {
         return await this.postsRepository.findPosts(pageSize, pageNumber, userId)
     }

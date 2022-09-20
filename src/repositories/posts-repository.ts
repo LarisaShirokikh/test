@@ -1,21 +1,177 @@
-import {LikesStatusType, likeStatusEnum, NewestLikes, PostsType} from "../types";
-import {likesStatusCollection, PostsModelClass} from "../settingses/db";
+import {PostsOfBloggerType, PostsType} from "../types";
+import {PostsModelClass} from "../settingses/db";
 import {injectable} from "inversify";
-import mongoose from "mongoose";
+
+
+const addLikesToPost = async (post: PostsType, userId: string) => {
+    let myStatus = 'None'
+    if (post !== null) {
+
+        if (post.extendedLikesInfo.newestLikes.length > 0) {
+            const userInNewestLikes = post.extendedLikesInfo.newestLikes.find((l: any) => l.userId === userId)
+
+            if (userInNewestLikes) {
+                myStatus = userInNewestLikes.myStatus
+            }
+        }
+
+        const newestLikesArray = post.extendedLikesInfo.newestLikes;
+        let like = 0;
+        let dislike = 0;
+        for (let x = 0; newestLikesArray.length > x; x++) {
+            if (newestLikesArray[x].myStatus === 'Like') {
+                like = like + 1
+            }
+            if (newestLikesArray[x].myStatus === 'Dislike') {
+                dislike = dislike + 1
+            }
+        }
+
+        function byDate(a: any, b: any) {
+            if (a.addedAt < b.addedAt) return 1;
+            if (a.addedAt > b.addedAt) return -1;
+            return 0;
+        }
+
+        const newArr = newestLikesArray
+            .filter(a => a.myStatus !== 'None')
+            .filter(a => a.myStatus !== 'Dislike')
+            .sort(byDate)
+            .slice(0, 3)
+
+        const newestLikes = newArr.map(a => ({
+            addedAt: a.addedAt,
+            userId: a.userId,
+            login: a.login
+        }))
+        const returnPost = JSON.parse(JSON.stringify(post))
+        return {
+            ...returnPost,
+            extendedLikesInfo: {
+                ...returnPost.extendedLikesInfo,
+                likesCount: like,
+                dislikesCount: dislike,
+                myStatus: myStatus,
+                newestLikes: newestLikes
+            }
+        }
+    }
+    return addLikesToPost
+}
+
 
 @injectable()
 export class PostsRepository {
 
+    async getAllPosts(pageNumber: number, pageSize: number, userId: string): Promise<PostsOfBloggerType | undefined | null> {
+
+        const postsCount = await PostsModelClass.count({})
+        const pagesCount = Math.ceil(postsCount / pageSize)
+        const posts = await PostsModelClass.find({}, {_id: 0, __v: 0})
+            .skip((pageNumber - 1) * pageSize).limit(pageSize).lean()
+
+        // const addLikesToPost = async (post: PostsType, userId: string) => {
+        //     let myStatus = 'None'
+        //     if (post !== null) {
+        //
+        //         if (post.extendedLikesInfo.newestLikes.length > 0) {
+        //             const userInNewestLikes = post.extendedLikesInfo.newestLikes.find((l: any) => l.userId === userId)
+        //
+        //             if (userInNewestLikes) {
+        //                 myStatus = userInNewestLikes.myStatus
+        //             }
+        //         }
+        //
+        //         const newestLikesArray = post.extendedLikesInfo.newestLikes;
+        //         let like = 0;
+        //         let dislike = 0;
+        //         for (let x = 0; newestLikesArray.length > x; x++) {
+        //             if (newestLikesArray[x].myStatus === 'Like') {
+        //                 like = like + 1
+        //             }
+        //             if (newestLikesArray[x].myStatus === 'Dislike') {
+        //                 dislike = dislike + 1
+        //             }
+        //         }
+        //
+        //         function byDate(a: any, b: any) {
+        //             if (a.addedAt < b.addedAt) return 1;
+        //             if (a.addedAt > b.addedAt) return -1;
+        //             return 0;
+        //         }
+        //
+        //         const newArr = newestLikesArray
+        //             .filter(a => a.myStatus !== 'None')
+        //             .filter(a => a.myStatus !== 'Dislike')
+        //             .sort(byDate)
+        //             .slice(0, 3)
+        //
+        //         const newestLikes = newArr.map(a => ({
+        //             addedAt: a.addedAt,
+        //             userId: a.userId,
+        //             login: a.login
+        //         }))
+        //         const returnPost = JSON.parse(JSON.stringify(post))
+        //         return {
+        //             ...returnPost,
+        //             extendedLikesInfo: {
+        //                 ...returnPost.extendedLikesInfo,
+        //                 likesCount: like,
+        //                 dislikesCount: dislike,
+        //                 myStatus: myStatus,
+        //                 newestLikes: newestLikes
+        //             }
+        //         }
+        //     }
+        //     return addLikesToPost
+        // }
+
+        const postsWithLikes = posts.map((post) => {
+             addLikesToPost(post, userId)
+
+            return addLikesToPost(post, userId)
+        })
+
+        const allPosts = {
+            pagesCount: pagesCount,
+            page: pageNumber,
+            pageSize,
+            totalCount: postsCount,
+            items: postsWithLikes
+        }
+        console.log('posts', allPosts)
+
+        // for (let items in allPosts) {
+        //     if (allPosts.items.length > 0) {
+        //         if (posts.items.extendedLikesInfo.newestLikes.length > 0) {
+        //             let postsItemsNewestLikes = posts.extendedLikesInfo.newestLikes
+        //                 .find((l: any) => l.userId === userId)
+        //             if (postsItemsNewestLikes) {
+        //                 myStatus = postsItemsNewestLikes.myStatus
+        //             }
+        //         }
+        //     }
+        //}
+
+//@ts-ignore
+        return allPosts
+
+    }
+
     async findPosts(pageSize: number, pageNumber: number, userId: string) {
         let myStatus = 'None'
-        const posts = PostsModelClass.find({}, {_id: 0, __v: 0, 'extendedLikesInfo.newestLikes.myStatus': 0})
+        return PostsModelClass.find({}, {_id: 0, __v: 0})
             .skip((pageNumber - 1) * pageSize).limit(pageSize).lean()
-        return posts
+
+        //console.log('posts', posts)
+
     }
 
     async findPostById(postId: string, userId: string) {
         let myStatus = 'None'
         const post = await PostsModelClass.findOne({id: postId}, {_id: 0, __v: 0})
+
+        //
         if (post !== null) {
 
             if (post.extendedLikesInfo.newestLikes.length > 0) {
@@ -121,74 +277,76 @@ export class PostsRepository {
     async updateLikeStatus(user: any, postId: string, likeStatus: "None" | "Like" | "Dislike", addedLikeStatusAt: object): Promise<boolean | undefined> {
 
         const post = await PostsModelClass.findOne({id: postId})
-            if (post !== null) {
-                const findUser = post.extendedLikesInfo.newestLikes.find(p => p.userId === user.accountData.id)
-                //const postLikeStatus = post.extendedLikesInfo.myStatus
-                //if (postLikeStatus == likeStatus)
-                if (!findUser) {
-                    await PostsModelClass.updateOne({id: postId},
-                        {
-                            $push: {
-                                'extendedLikesInfo.newestLikes': {
-                                    addedAt: addedLikeStatusAt,
-                                    userId: user.accountData.id,
-                                    login: user.accountData.login,
-                                    myStatus: likeStatus
-                                }
+        if (post !== null) {
+            const findUser = post.extendedLikesInfo.newestLikes.find(p => p.userId === user.accountData.id)
+            //const postLikeStatus = post.extendedLikesInfo.myStatus
+            //if (postLikeStatus == likeStatus)
+            if (!findUser) {
+                await PostsModelClass.updateOne({id: postId},
+                    {
+                        $push: {
+                            'extendedLikesInfo.newestLikes': {
+                                addedAt: addedLikeStatusAt,
+                                userId: user.accountData.id,
+                                login: user.accountData.login,
+                                myStatus: likeStatus
                             }
-                        })
-                    return true
-                } else {
+                        }
+                    })
+                return true
+            } else {
 
-                     await PostsModelClass.updateOne({id:postId, 'extendedLikesInfo.newestLikes.userId': findUser.userId},
-                            {$pull:
-                                    {
-                                        'extendedLikesInfo.newestLikes': {'userId': findUser.userId}
-                                    }})
-                    await PostsModelClass.updateOne({id: postId},
-                        {
-                            $push: {
-                                'extendedLikesInfo.newestLikes': {
-                                    addedAt: addedLikeStatusAt,
-                                    userId: user.accountData.id,
-                                    login: user.accountData.login,
-                                    myStatus: likeStatus
-                                }
+                await PostsModelClass.updateOne({id: postId, 'extendedLikesInfo.newestLikes.userId': findUser.userId},
+                    {
+                        $pull:
+                            {
+                                'extendedLikesInfo.newestLikes': {'userId': findUser.userId}
                             }
-                        })
-                    return true
-                }
-                //(!findUser && likeStatus === 'Like')
-                // else {
-                //     if (findUser.myStatus === 'Dislike' && likeStatus === 'Like' | 'None') {
-                //         await PostsModelClass.findOneAndUpdate({id: postId}, {
-                //             $inc: {
-                //                 "extendedLikesInfo.likesCount": 1,
-                //                 // "extendedLikesInfo.dislikesCount": -1
-                //             }, "extendedLikesInfo.myStatus": likeStatus
-                //         })
-                //     }
-                //     await PostsModelClass.findOneAndUpdate({id: postId}, {
-                //         $inc: {
-                //             "extendedLikesInfo.likesCount": 1,
-                //             // "extendedLikesInfo.dislikesCount": -1
-                //         }, "extendedLikesInfo.myStatus": likeStatus
-                //     })
-                //     await PostsModelClass.updateOne({id: postId},
-                //         {
-                //             $push: {
-                //                 'extendedLikesInfo.newestLikes': {
-                //                     addedAt: addedLikeStatusAt,
-                //                     userId: user.accountData.id,
-                //                     login: user.accountData.login,
-                //                     myStatus: likeStatus
-                //                 }
-                //             }
-                //         })
-                //     return true
-                // }
-
+                    })
+                await PostsModelClass.updateOne({id: postId},
+                    {
+                        $push: {
+                            'extendedLikesInfo.newestLikes': {
+                                addedAt: addedLikeStatusAt,
+                                userId: user.accountData.id,
+                                login: user.accountData.login,
+                                myStatus: likeStatus
+                            }
+                        }
+                    })
+                return true
             }
+            //(!findUser && likeStatus === 'Like')
+            // else {
+            //     if (findUser.myStatus === 'Dislike' && likeStatus === 'Like' | 'None') {
+            //         await PostsModelClass.findOneAndUpdate({id: postId}, {
+            //             $inc: {
+            //                 "extendedLikesInfo.likesCount": 1,
+            //                 // "extendedLikesInfo.dislikesCount": -1
+            //             }, "extendedLikesInfo.myStatus": likeStatus
+            //         })
+            //     }
+            //     await PostsModelClass.findOneAndUpdate({id: postId}, {
+            //         $inc: {
+            //             "extendedLikesInfo.likesCount": 1,
+            //             // "extendedLikesInfo.dislikesCount": -1
+            //         }, "extendedLikesInfo.myStatus": likeStatus
+            //     })
+            //     await PostsModelClass.updateOne({id: postId},
+            //         {
+            //             $push: {
+            //                 'extendedLikesInfo.newestLikes': {
+            //                     addedAt: addedLikeStatusAt,
+            //                     userId: user.accountData.id,
+            //                     login: user.accountData.login,
+            //                     myStatus: likeStatus
+            //                 }
+            //             }
+            //         })
+            //     return true
+            // }
+
+        }
     }
 }
 
