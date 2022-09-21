@@ -139,6 +139,7 @@ export class CommentsRepository {
     }
 
     async findAllCommentWithPag(postId: string, pageSize: number, pageNumber: number, userId: string) {
+        let myStatus = 'None'
         const commentsCount = await CommentsModelClass.count({})
         const pagesCount = Math.ceil(commentsCount / pageSize)
 

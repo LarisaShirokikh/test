@@ -73,8 +73,16 @@ export class PostsService {
         return await this.postsRepository.getCount()
     }
 
-    async findBloggersPost(pageSize: number, pageNumber: number, bloggerId: string) {
-        return await this.postsRepository.findBloggersPost(pageSize, pageNumber, bloggerId)
+    async findBloggersPost(pageSize: number, pageNumber: number, bloggerId: string, userId: string) {
+        //@ts-ignore
+        const postsDb = await this.postsRepository.findBloggersPost(bloggerId, +pageNumber, +pageSize, userId)
+        const posts = {...postsDb}
+        // // @ts-ignore
+        // for (let i = 0; i < posts.items.length; i++) {
+        //     // @ts-ignore
+        //     delete posts.items[i]._id
+        // }
+        return posts
     }
 
     async getCountBloggerId(bloggerId: string) {

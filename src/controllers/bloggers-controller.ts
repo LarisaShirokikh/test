@@ -3,6 +3,7 @@ import {BloggersService} from "../domain/bloggers-service";
 import {Request, Response} from "express";
 import {toString} from "express-validator/src/utils";
 import {PostsService} from "../domain/posts-service";
+import {jwtService} from "../application/jwt-service";
 
 @injectable()
 export class BloggersController {
@@ -64,22 +65,33 @@ export class BloggersController {
         }
     }
     async findBloggersPost(req: Request, res: Response) {
-        const pageSize: number = Number(req.query.PageSize) || 10
-        const pageNumber: number = Number(req.query.PageNumber) || 1
-        const findPost = await this.postsService.findBloggersPost(pageSize, pageNumber, req.params.bloggerId)
-        const getCount = await this.postsService.getCountBloggerId(req.params.bloggerId)
+        const token = req.headers.authorization?.split(' ')[1]
+        let userId = ' '
+        if (token) {
+            userId = await jwtService.getUserIdByToken(token)
 
-        if (findPost.length > 0) {
-            res.send({
-                "pagesCount": Math.ceil(getCount / pageSize),
-                "page": pageNumber,
-                "pageSize": pageSize,
-                "totalCount": getCount,
-                "items": findPost
-            })
-        } else {
-            res.send(404)
         }
+//@ts-ignore
+        const findPost = await this.postsService.findBloggersPost(req.query.pageSize, req.query.pageNumber, req.query.bloggerId, userId)
+        res.status(200).send(findPost);
+        return
+
+        // const pageSize: number = Number(req.query.PageSize) || 10
+        // const pageNumber: number = Number(req.query.PageNumber) || 1
+        // const findPost = await this.postsService.findBloggersPost(pageSize, pageNumber, req.params.bloggerId)
+        // const getCount = await this.postsService.getCountBloggerId(req.params.bloggerId)
+        //
+        // if (findPost.length > 0) {
+        //     res.send({
+        //         "pagesCount": Math.ceil(getCount / pageSize),
+        //         "page": pageNumber,
+        //         "pageSize": pageSize,
+        //         "totalCount": getCount,
+        //         "items": findPost
+        //     })
+        // } else {
+        //     res.send(404)
+        // }
 
     }
     async deleteBloggers(req: Request, res: Response) {
