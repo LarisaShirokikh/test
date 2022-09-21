@@ -1,6 +1,6 @@
 
-import {BloggersType} from "../types";
-import { BloggersModelClass} from "../settingses/db";
+import {BloggersType, LikesStatusType, PostsOfBloggerType, PostsType} from "../types";
+import {BloggersModelClass, likesStatusCollection, PostsModelClass} from "../settingses/db";
 import {injectable} from "inversify";
 
 
@@ -60,6 +60,31 @@ export class BloggersRepository  {
         const blogger: BloggersType | null = await BloggersModelClass.findOne({id: bloggerId}, {_id: 0, __v: 0})
         return !!blogger;
     }
+    async getPostsByBloggerId(bloggerId: string, pageNumber: number, pageSize: number, userId?: string): Promise<PostsOfBloggerType | null> {
+
+        const postsCount = await PostsModelClass.count({bloggerId})
+        const pagesCount = Math.ceil(postsCount / pageSize)
+        const posts: PostsType[] | PostsType = await PostsModelClass.find({bloggerId}, {_id: 0, __v: 0}).skip((pageNumber - 1) * pageSize).limit(pageSize).lean()
+
+        const result = {
+            pagesCount: pagesCount,
+            page: pageNumber,
+            pageSize,
+            totalCount: postsCount,
+            items: posts
+        }
+
+        if (!userId){
+            // @ts-ignore
+            return result
+        } else {
+            const likesStatus:LikesStatusType[]|null = await likesStatusCollection.find({userId}).lean()
+            // @ts-ignore
+            return [likesStatus, result]
+        }
+
+    }
+
 }
 
 

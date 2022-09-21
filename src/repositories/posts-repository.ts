@@ -71,67 +71,6 @@ export class PostsRepository {
         const posts = await PostsModelClass.find({}, {_id: 0, __v: 0})
             .skip((pageNumber - 1) * pageSize).limit(pageSize).lean()
 
-        // const addLikesToPost = async (post: PostsType, userId: string) => {
-        //     let myStatus = 'None'
-        //     if (post !== null) {
-        //
-        //         if (post.extendedLikesInfo.newestLikes.length > 0) {
-        //             const userInNewestLikes = post.extendedLikesInfo.newestLikes.find((l: any) => l.userId === userId)
-        //
-        //             if (userInNewestLikes) {
-        //                 myStatus = userInNewestLikes.myStatus
-        //             }
-        //         }
-        //
-        //         const newestLikesArray = post.extendedLikesInfo.newestLikes;
-        //         let like = 0;
-        //         let dislike = 0;
-        //         for (let x = 0; newestLikesArray.length > x; x++) {
-        //             if (newestLikesArray[x].myStatus === 'Like') {
-        //                 like = like + 1
-        //             }
-        //             if (newestLikesArray[x].myStatus === 'Dislike') {
-        //                 dislike = dislike + 1
-        //             }
-        //         }
-        //
-        //         function byDate(a: any, b: any) {
-        //             if (a.addedAt < b.addedAt) return 1;
-        //             if (a.addedAt > b.addedAt) return -1;
-        //             return 0;
-        //         }
-        //
-        //         const newArr = newestLikesArray
-        //             .filter(a => a.myStatus !== 'None')
-        //             .filter(a => a.myStatus !== 'Dislike')
-        //             .sort(byDate)
-        //             .slice(0, 3)
-        //
-        //         const newestLikes = newArr.map(a => ({
-        //             addedAt: a.addedAt,
-        //             userId: a.userId,
-        //             login: a.login
-        //         }))
-        //         const returnPost = JSON.parse(JSON.stringify(post))
-        //         return {
-        //             ...returnPost,
-        //             extendedLikesInfo: {
-        //                 ...returnPost.extendedLikesInfo,
-        //                 likesCount: like,
-        //                 dislikesCount: dislike,
-        //                 myStatus: myStatus,
-        //                 newestLikes: newestLikes
-        //             }
-        //         }
-        //     }
-        //     return addLikesToPost
-        // }
-
-        // const postsWithLikes = posts.map(async(post) => {
-        //     const postWithLikesInfo = await addLikesToPost(post, userId)
-        //     //console.log(postWithLikesInfo)
-        //     return postWithLikesInfo
-        // })
 
         let postsWithLikes: PostsType[] = []
 
@@ -147,19 +86,7 @@ export class PostsRepository {
             totalCount: postsCount,
             items: postsWithLikes
         }
-         console.log('posts', allPosts)
-
-        // for (let items in allPosts) {
-        //     if (allPosts.items.length > 0) {
-        //         if (posts.items.extendedLikesInfo.newestLikes.length > 0) {
-        //             let postsItemsNewestLikes = posts.extendedLikesInfo.newestLikes
-        //                 .find((l: any) => l.userId === userId)
-        //             if (postsItemsNewestLikes) {
-        //                 myStatus = postsItemsNewestLikes.myStatus
-        //             }
-        //         }
-        //     }
-        //}
+         //console.log('posts', allPosts)
 
 //@ts-ignore
         return allPosts
@@ -269,7 +196,9 @@ export class PostsRepository {
         //let myStatus = 'None'
 
         const postsCount = await PostsModelClass.count({})
+        console.log(postsCount)
         const pagesCount = Math.ceil(postsCount / pageSize)
+        console.log(pagesCount)
         const posts = await PostsModelClass.find({bloggerId: bloggerId}, {_id: 0, __v: 0})
             .skip((pageNumber - 1) * pageSize).limit(pageSize).lean()
 

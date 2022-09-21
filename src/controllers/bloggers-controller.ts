@@ -4,12 +4,14 @@ import {Request, Response} from "express";
 import {toString} from "express-validator/src/utils";
 import {PostsService} from "../domain/posts-service";
 import {jwtService} from "../application/jwt-service";
+import {BloggersRepository} from "../repositories/bloggers-repository";
 
 @injectable()
 export class BloggersController {
     constructor(@inject(BloggersService)
                 protected bloggersService: BloggersService,
-                protected postsService: PostsService
+                protected postsService: PostsService,
+                protected bloggersRepository: BloggersRepository
     ) {}
 
     async getAllBloggers(req: Request, res: Response) {
@@ -65,16 +67,34 @@ export class BloggersController {
         }
     }
     async findBloggersPost(req: Request, res: Response) {
-        const token = req.headers.authorization?.split(' ')[1]
-        let userId = ' '
-        if (token) {
-            userId = await jwtService.getUserIdByToken(token)
-
-        }
+        // const token = req.headers.authorization?.split(' ')[1]
+        // let userId = ' '
+        // if (token) {
+        //     userId = await jwtService.getUserIdByToken(token)
+        //
+        // }
 //@ts-ignore
-        const findPost = await this.postsService.findBloggersPost(req.query.pageSize, req.query.pageNumber, req.query.bloggerId, userId)
-        res.status(200).send(findPost);
-        return
+
+        const blogger = await this.bloggersRepository.isBlogger(req.params.bloggerId);
+        if (!blogger) {
+            res.status(404).send({errorsMessages: [{message: "Problem with a bloggerId field", field: "bloggerId"}]});
+        }
+
+        if(!req.user) {
+// @ts-ignore
+            const posts = await this.bloggersService.getPostsByBloggerId(req.params.bloggerId, req.query.PageNumber, req.query.PageSize);
+            res.status(200).send(posts);
+        }
+
+        // @ts-ignore
+        if(req.user) {
+            // @ts-ignore
+            const posts = await this.bloggersService.getPostsByBloggerId(req.params.bloggerId, req.query.PageNumber, req.query.PageSize, req.user);
+            res.status(200).send(posts);
+        }
+        // const findPost = await this.postsService.findBloggersPost(req.query.pageSize, req.query.pageNumber, req.query.bloggerId, userId)
+        // res.status(200).send(findPost);
+        // return
 
         // const pageSize: number = Number(req.query.PageSize) || 10
         // const pageNumber: number = Number(req.query.PageNumber) || 1

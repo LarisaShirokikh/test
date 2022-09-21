@@ -73,7 +73,7 @@ export class PostsService {
         return await this.postsRepository.getCount()
     }
 
-    async findBloggersPost(pageSize: number, pageNumber: number, bloggerId: string, userId: string) {
+    async findBloggersPost(pageNumber: string = "1" || undefined || null, pageSize: string = "10" || undefined || null, bloggerId: string, userId: string): Promise<{}> {
         //@ts-ignore
         const postsDb = await this.postsRepository.findBloggersPost(bloggerId, +pageNumber, +pageSize, userId)
         const posts = {...postsDb}
