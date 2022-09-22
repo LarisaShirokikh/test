@@ -87,7 +87,8 @@ export class PostsRepository {
 //@ts-ignore
         return allPosts
     }
-    async findBloggersPost(pageNumber: number,pageSize: number, bloggerId: string, userId: string): Promise<PostsOfBloggerType | undefined | null> {
+
+    async findBloggersPost(pageNumber: number, pageSize: number, bloggerId: string, userId: string): Promise<PostsOfBloggerType | undefined | null> {
 
         const postsCount = await PostsModelClass.count({bloggerId: bloggerId})
         //console.log(postsCount)
@@ -96,7 +97,7 @@ export class PostsRepository {
         const posts = await PostsModelClass.find({bloggerId: bloggerId}, {_id: 0, __v: 0})
             .skip((pageNumber - 1) * pageSize).limit(pageSize).lean()
         let postsWithLikes: PostsType[] = []
-        for (let post of posts){
+        for (let post of posts) {
             const postWithLikesInfo = await addLikesToPost(post, userId)
             postsWithLikes.push(postWithLikesInfo)
         }
@@ -210,7 +211,6 @@ export class PostsRepository {
     async getCount() {
         return PostsModelClass.count({})
     }
-
 
 
     async getCountBloggerId(bloggerId: string) {

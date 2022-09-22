@@ -6,6 +6,7 @@ import {injectable} from "inversify";
 const addLikesToComment = async (comment: CommentsType, userId: string) => {
     let myStatus = 'None'
     if (comment !== null) {
+        console.log(comment.likesInfo.newestLikes)
         if (comment.likesInfo.newestLikes.length > 0) {
             const userInNewestLikes = comment.likesInfo.newestLikes
                 .find((l: any) => l.userId === userId)
@@ -27,39 +28,40 @@ const addLikesToComment = async (comment: CommentsType, userId: string) => {
             }
         }
 
-        function byDate(a: any, b: any) {
-            if (a.addedAt < b.addedAt) return 1;
-            if (a.addedAt > b.addedAt) return -1;
-            return 0;
-        }
-        const newArr = newestLikesArray
-            .filter(a => a.myStatus !== 'None')
-            .filter(a => a.myStatus !== 'Dislike')
-            .sort(byDate)
-            .slice(0, 3)
+        // function byDate(a: any, b: any) {
+        //     if (a.addedAt < b.addedAt) return 1;
+        //     if (a.addedAt > b.addedAt) return -1;
+        //     return 0;
+        // }
 
-        const newestLikes = newArr.map(a => ({
-            addedAt: a.addedAt,
-            userId: a.userId,
-            login: a.login
-        }))
+        // const newArr = newestLikesArray
+        //     .filter(a => a.myStatus !== 'None')
+        //     .filter(a => a.myStatus !== 'Dislike')
+        //     .sort(byDate)
+        //     .slice(0, 3)
+
+        // const newestLikes = newArr.map(a => ({
+        //     addedAt: a.addedAt,
+        //     userId: a.userId,
+        //     login: a.login
+        // }))
 
         const returnComment = JSON.parse(JSON.stringify(comment))
+
+
         return {
             ...returnComment,
             likesInfo: {
-                ...returnComment.likesInfo,
+                //...returnComment.likesInfo,
                 likesCount: like,
                 dislikesCount: dislike,
                 myStatus: myStatus
+                // newestLikes: newestLikes
             }
         }
     }
     return addLikesToComment
 }
-
-
-
 
 
 @injectable()
@@ -69,25 +71,23 @@ export class CommentsRepository {
         await CommentsModelClass.insertMany({...newComment})
         //console.log(newComment)
         const comment = await CommentsModelClass.findOne({id: newComment.id}, {_id: 0, postId: 0, __v: 0})
-if (comment !== null) {
-    for (let newComment in comment) {
+        if (comment !== null) {
+            for (let newComment in comment) {
 
-    return {
-        id: comment.id,
-        content: comment.content,
-        userId: comment.userId,
-        userLogin: comment.userLogin,
-        addedAt: comment.addedAt,
-        likesInfo: {
-            likesCount: 0,
-            dislikesCount: 0,
-            myStatus: 'None'
+                return {
+                    id: comment.id,
+                    content: comment.content,
+                    userId: comment.userId,
+                    userLogin: comment.userLogin,
+                    addedAt: comment.addedAt,
+                    likesInfo: {
+                        likesCount: 0,
+                        dislikesCount: 0,
+                        myStatus: 'None'
+                    }
+                }
+            }
         }
-    }
-    }
-}
-
-
     }
 
     async findComment(commentId: string, userId: string): Promise<ReturnFindCommentIdType | null> {
@@ -153,7 +153,7 @@ if (comment !== null) {
 
     }
 
-    async findAllCommentWithPag(pageNumber: number, pageSize: number,postId: string, userId: string): Promise<ReturnFindCommentIdType | undefined | null> {
+    async findAllCommentWithPag(pageNumber: number, pageSize: number, postId: string, userId: string): Promise<ReturnFindCommentIdType | undefined | null> {
 
         const commentsCount = await CommentsModelClass.count({postId: postId})
         const pagesCount = Math.ceil(commentsCount / pageSize)
