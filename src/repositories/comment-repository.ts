@@ -158,7 +158,7 @@ export class CommentsRepository {
         const commentsCount = await CommentsModelClass.count({postId: postId})
         const pagesCount = Math.ceil(commentsCount / pageSize)
 
-        const comments = await CommentsModelClass.find({postId: postId}, {_id: 0, __v: 0})
+        const comments = await CommentsModelClass.find({postId: postId}, {_id: 0, __v: 0, postId: 0})
             .skip((pageNumber - 1) * pageSize).limit(pageSize).lean()
 
         let commentsWithLikes: CommentsType[] = []
