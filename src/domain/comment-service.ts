@@ -49,7 +49,8 @@ export class CommentsService {
     }
 
     async findAllCommentWithPag(pageNumber: string = "1" || undefined || null, pageSize: string = "10" || undefined || null, postId: string, userId: string): Promise<{}> {
-        const comment = await this.commentsRepository.findAllCommentWithPag(+pageNumber, +pageSize, postId,  userId)
+        const comment = await this.commentsRepository
+            .findAllCommentWithPag(+pageNumber, +pageSize, postId,  userId)
         const allComments = {...comment}
         return allComments
     }

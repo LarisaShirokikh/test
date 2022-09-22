@@ -37,10 +37,10 @@ export class PostsController {
             userId = await jwtService.getUserIdByToken(token)
         }
 
-        const posts = await this.commentService
+        const comments = await this.commentService
             //@ts-ignore
             .findAllCommentWithPag(req.query.PageNumber, req.query.PageSize, req.params.postId, userId)
-        res.status(200).send(posts);
+        res.status(200).send(comments);
         return
 
         // const pageSize: number = Number(req.query.PageSize) || 10

@@ -47,8 +47,8 @@ const addLikesToComment = async (comment: CommentsType, userId: string) => {
         const returnComment = JSON.parse(JSON.stringify(comment))
         return {
             ...returnComment,
-            LikesInfo: {
-                ...returnComment.LikesInfo,
+            likesInfo: {
+                ...returnComment.likesInfo,
                 likesCount: like,
                 dislikesCount: dislike,
                 myStatus: myStatus,

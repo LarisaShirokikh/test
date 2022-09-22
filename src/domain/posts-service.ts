@@ -30,6 +30,7 @@ export class PostsService {
         return posts
     }
 
+
     async findPosts(pageSize: number, pageNumber: number, userId: string) {
         return await this.postsRepository.findPosts(pageSize, pageNumber, userId)
     }

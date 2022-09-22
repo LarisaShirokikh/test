@@ -88,6 +88,7 @@ export class PostsRepository {
         return allPosts
     }
     async findBloggersPost(pageNumber: number,pageSize: number, bloggerId: string, userId: string): Promise<PostsOfBloggerType | undefined | null> {
+
         const postsCount = await PostsModelClass.count({bloggerId: bloggerId})
         //console.log(postsCount)
         const pagesCount = Math.ceil(postsCount / pageSize)
