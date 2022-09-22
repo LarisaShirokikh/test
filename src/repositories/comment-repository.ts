@@ -78,7 +78,7 @@ if (comment !== null) {
         content: comment.content,
         userId: comment.userId,
         userLogin: comment.userLogin,
-        addedAt: new Date,
+        addedAt: comment.addedAt,
         likesInfo: {
             likesCount: 0,
             dislikesCount: 0,
