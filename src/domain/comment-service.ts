@@ -19,7 +19,7 @@ export class CommentsService {
         this.likesRepository = new LikesRepository()
     }
 
-    async createCommentByPostId(user: any, id: string, content: string): Promise<CommentsType | undefined> {
+    async createCommentByPostId(user: any, id: string, content: string): Promise<any> {
         const post = await this.postsRepository.getPostById(id)
 
         if (post) {

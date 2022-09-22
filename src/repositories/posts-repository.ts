@@ -262,36 +262,6 @@ export class PostsRepository {
                     })
                 return true
             }
-            //(!findUser && likeStatus === 'Like')
-            // else {
-            //     if (findUser.myStatus === 'Dislike' && likeStatus === 'Like' | 'None') {
-            //         await PostsModelClass.findOneAndUpdate({id: postId}, {
-            //             $inc: {
-            //                 "extendedLikesInfo.likesCount": 1,
-            //                 // "extendedLikesInfo.dislikesCount": -1
-            //             }, "extendedLikesInfo.myStatus": likeStatus
-            //         })
-            //     }
-            //     await PostsModelClass.findOneAndUpdate({id: postId}, {
-            //         $inc: {
-            //             "extendedLikesInfo.likesCount": 1,
-            //             // "extendedLikesInfo.dislikesCount": -1
-            //         }, "extendedLikesInfo.myStatus": likeStatus
-            //     })
-            //     await PostsModelClass.updateOne({id: postId},
-            //         {
-            //             $push: {
-            //                 'extendedLikesInfo.newestLikes': {
-            //                     addedAt: addedLikeStatusAt,
-            //                     userId: user.accountData.id,
-            //                     login: user.accountData.login,
-            //                     myStatus: likeStatus
-            //                 }
-            //             }
-            //         })
-            //     return true
-            // }
-
         }
     }
 }

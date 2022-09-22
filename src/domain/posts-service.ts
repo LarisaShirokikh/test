@@ -20,11 +20,6 @@ export class PostsService {
         const postsDb = await this.postsRepository
             .getAllPosts(+pageNumber, +pageSize, userId)
         const posts = {...postsDb}
-        // // @ts-ignore
-        // for (let i = 0; i < posts.items.length; i++) {
-        //     // @ts-ignore
-        //     delete posts.items[i]._id
-        // }
         return posts
     }
     async findBloggersPost(pageNumber: string = "1" || undefined || null, pageSize: string = "10" || undefined || null, bloggerId: string, userId: string): Promise<{}> {

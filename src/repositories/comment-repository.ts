@@ -66,12 +66,28 @@ const addLikesToComment = async (comment: CommentsType, userId: string) => {
 @injectable()
 export class CommentsRepository {
 
-    async createComment(newComment: CommentsType): Promise<CommentsType | undefined> {
+    async createComment(newComment: CommentsType): Promise<any> {
         await CommentsModelClass.insertMany({...newComment})
-        console.log(newComment)
+        //console.log(newComment)
         const comment = await CommentsModelClass.findOne({id: newComment.id}, {_id: 0, postId: 0, __v: 0})
-        //@ts-ignore
-        return comment
+if (comment !== null) {
+    for (let newComment in comment) {
+
+    return {
+        id: comment.id,
+        content: comment.content,
+        userId: comment.userId,
+        userLogin: comment.userLogin,
+        addedAt: new Date,
+        likesInfo: {
+            likesCount: 0,
+            dislikesCount: 0,
+            myStatus: 'None'
+        }
+    }
+    }
+}
+
 
     }
 
