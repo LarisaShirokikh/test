@@ -51,8 +51,7 @@ const addLikesToComment = async (comment: CommentsType, userId: string) => {
                 ...returnComment.likesInfo,
                 likesCount: like,
                 dislikesCount: dislike,
-                myStatus: myStatus,
-                newestLikes: newestLikes
+                myStatus: myStatus
             }
         }
     }
