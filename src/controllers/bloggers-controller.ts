@@ -67,52 +67,60 @@ export class BloggersController {
         }
     }
     async findBloggersPost(req: Request, res: Response) {
-        // const token = req.headers.authorization?.split(' ')[1]
-        // let userId = ' '
-        // if (token) {
-        //     userId = await jwtService.getUserIdByToken(token)
-        //
+        const token = req.headers.authorization?.split(' ')[1]
+        let userId = ' '
+        if (token) {
+            userId = await jwtService.getUserIdByToken(token)
+
+        }
+        const posts = await this.postsService
+            //@ts-ignore
+            .findBloggersPost(req.query.PageNumber, req.query.PageSize, req.params.bloggerId, userId)
+        res.status(200).send(posts);
+        return
+
+
+        // const blogger = await this.bloggersRepository.isBlogger(req.params.bloggerId);
+        // if (!blogger) {
+        //     res.status(404).send({errorsMessages: [{message: "Problem with a bloggerId field", field: "bloggerId"}]});
         // }
-//@ts-ignore
-
-        const blogger = await this.bloggersRepository.isBlogger(req.params.bloggerId);
-        if (!blogger) {
-            res.status(404).send({errorsMessages: [{message: "Problem with a bloggerId field", field: "bloggerId"}]});
-        }
-
-        if(!req.user) {
-// @ts-ignore
-            const posts = await this.bloggersService.getPostsByBloggerId(req.params.bloggerId, req.query.PageNumber, req.query.PageSize);
-            res.status(200).send(posts);
-        }
-
-        // @ts-ignore
-        if(req.user) {
-            // @ts-ignore
-            const posts = await this.bloggersService.getPostsByBloggerId(req.params.bloggerId, req.query.PageNumber, req.query.PageSize, req.user);
-            res.status(200).send(posts);
-        }
+        //
+        // if(!req.user) {
+        //
+        //     const posts = await this.bloggersService
+        //         // @ts-ignore
+        //         .getPostsByBloggerId(req.params.bloggerId, req.query.PageNumber, req.query.PageSize);
+        //     res.status(200).send(posts);
+        // }
+        //
+        // if(req.user) {
+        //     const posts = await this.bloggersService
+        //         // @ts-ignore
+        //         .getPostsByBloggerId(req.params.bloggerId, req.query.PageNumber, req.query.PageSize, req.user);
+        //     res.status(200).send(posts);
+        // }
         // const findPost = await this.postsService.findBloggersPost(req.query.pageSize, req.query.pageNumber, req.query.bloggerId, userId)
         // res.status(200).send(findPost);
         // return
 
-        // const pageSize: number = Number(req.query.PageSize) || 10
-        // const pageNumber: number = Number(req.query.PageNumber) || 1
-        // const findPost = await this.postsService.findBloggersPost(pageSize, pageNumber, req.params.bloggerId)
-        // const getCount = await this.postsService.getCountBloggerId(req.params.bloggerId)
+        //     const pageSize: number = Number(req.query.PageSize) || 10
+        //     const pageNumber: number = Number(req.query.PageNumber) || 1
+        //     const findPost = await this.postsService.findBloggersPost(pageSize, pageNumber, req.params.bloggerId)
+        //     const getCount = await this.postsService.getCountBloggerId(req.params.bloggerId)
         //
-        // if (findPost.length > 0) {
-        //     res.send({
-        //         "pagesCount": Math.ceil(getCount / pageSize),
-        //         "page": pageNumber,
-        //         "pageSize": pageSize,
-        //         "totalCount": getCount,
-        //         "items": findPost
-        //     })
-        // } else {
-        //     res.send(404)
+        //     if (findPost.length > 0) {
+        //         res.send({
+        //             "pagesCount": Math.ceil(getCount / pageSize),
+        //             "page": pageNumber,
+        //             "pageSize": pageSize,
+        //             "totalCount": getCount,
+        //             "items": findPost
+        //         })
+        //     } else {
+        //         res.send(404)
+        //     }
+        //
         // }
-
     }
     async deleteBloggers(req: Request, res: Response) {
         const isDeleted = await this.bloggersService.deleteBloggers(req.params.id)

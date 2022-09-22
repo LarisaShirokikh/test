@@ -62,43 +62,40 @@ export class BloggersService {
             return createdPostDb
         }
     }
-    async getPostsByBloggerId(bloggerId: string, pageNumber: string = '1' || undefined || null, pageSize: string = '10' || undefined || null, userId?: string): Promise<PostsOfBloggerType | null | undefined> {
-
-        if (!userId) {
-
-            const posts = await this.bloggersRepository.getPostsByBloggerId(bloggerId, +pageNumber, +pageSize);
-
-            if (posts) {
-                for (let item of posts.items) {
-                    // @ts-ignore
-                    item.extendedLikesInfo.newestLikes = item.extendedLikesInfo.newestLikes.splice(0, 3)
-                }
-                return posts
-            } else {
-                return undefined
-            }
-
-        } else {
-
-            // @ts-ignore
-            const [likesStatus, posts] = await this.bloggersRepository.getPostsByBloggerId(bloggerId, +pageNumber, +pageSize, userId);
-
-            for (const el of posts.items) {
-                for (const item of likesStatus) {
-                    if (item.id === el.id && item.userId === userId) {
-                        el.extendedLikesInfo.myStatus = item.likeStatus
-                    }
-                }
-            }
-
-            for (let item of posts.items) {
-                // @ts-ignore
-                item.extendedLikesInfo.newestLikes = item.extendedLikesInfo.newestLikes.splice(0, 3)
-            }
-            return posts
-        }
-
-    }
+    // async getPostsByBloggerId(bloggerId: string, pageNumber: string = '1' || undefined || null, pageSize: string = '10' || undefined || null, userId?: string): Promise<PostsOfBloggerType | null | undefined> {
+    //
+    //     if (!userId) {
+    //
+    //         const posts = await this.bloggersRepository.getPostsByBloggerId(bloggerId, +pageNumber, +pageSize);
+    //
+    //         if (posts) {
+    //             for (let item of posts.items) {
+    //
+    //                 items.extendedLikesInfo.newestLikes = items.extendedLikesInfo.newestLikes.splice(0, 3)
+    //             }
+    //             return posts
+    //         } else {
+    //             return undefined
+    //         }
+    //
+    //     } else {
+    //         const [likesStatus, posts] = await this.bloggersRepository.getPostsByBloggerId(bloggerId, +pageNumber, +pageSize, userId);
+    //
+    //         for (const el of posts.items) {
+    //             for (const item of likesStatus) {
+    //                 if (item.id === el.id && item.userId === userId) {
+    //                     el.extendedLikesInfo.myStatus = item.likeStatus
+    //                 }
+    //             }
+    //         }
+    //
+    //         for (let item of posts.items) {
+    //             item.extendedLikesInfo.newestLikes = item.extendedLikesInfo.newestLikes.splice(0, 3)
+    //         }
+    //         return posts
+    //     }
+    //
+    // }
 }
 
 

@@ -17,7 +17,20 @@ export class PostsService {
 
 
     async getAllPosts(pageNumber: string = "1" || undefined || null, pageSize: string = "10" || undefined || null, userId: string): Promise<{}> {
-        const postsDb = await this.postsRepository.getAllPosts(+pageNumber, +pageSize, userId)
+        const postsDb = await this.postsRepository
+            .getAllPosts(+pageNumber, +pageSize, userId)
+        const posts = {...postsDb}
+        // // @ts-ignore
+        // for (let i = 0; i < posts.items.length; i++) {
+        //     // @ts-ignore
+        //     delete posts.items[i]._id
+        // }
+        return posts
+    }
+    async findBloggersPost(pageNumber: string = "1" || undefined || null, pageSize: string = "10" || undefined || null, bloggerId: string, userId: string): Promise<{}> {
+        //@ts-ignore
+        const postsDb = await this.postsRepository
+            .findBloggersPost(+pageNumber,+pageSize, bloggerId, userId)
         const posts = {...postsDb}
         // // @ts-ignore
         // for (let i = 0; i < posts.items.length; i++) {
@@ -73,17 +86,7 @@ export class PostsService {
         return await this.postsRepository.getCount()
     }
 
-    async findBloggersPost(pageNumber: string = "1" || undefined || null, pageSize: string = "10" || undefined || null, bloggerId: string, userId: string): Promise<{}> {
-        //@ts-ignore
-        const postsDb = await this.postsRepository.findBloggersPost(bloggerId, +pageNumber, +pageSize, userId)
-        const posts = {...postsDb}
-        // // @ts-ignore
-        // for (let i = 0; i < posts.items.length; i++) {
-        //     // @ts-ignore
-        //     delete posts.items[i]._id
-        // }
-        return posts
-    }
+
 
     async getCountBloggerId(bloggerId: string) {
         return await this.postsRepository.getCountBloggerId(bloggerId)
