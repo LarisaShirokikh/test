@@ -27,11 +27,6 @@ export class PostsService {
         const postsDb = await this.postsRepository
             .findBloggersPost(+pageNumber,+pageSize, bloggerId, userId)
         const posts = {...postsDb}
-        // // @ts-ignore
-        // for (let i = 0; i < posts.items.length; i++) {
-        //     // @ts-ignore
-        //     delete posts.items[i]._id
-        // }
         return posts
     }
 

@@ -154,9 +154,9 @@ if (comment !== null) {
 
     }
 
-    async findAllCommentWithPag(postId: string, pageSize: number, pageNumber: number, userId: string) {
-        let myStatus = 'None'
-        const commentsCount = await CommentsModelClass.count({})
+    async findAllCommentWithPag(pageNumber: number, pageSize: number,postId: string, userId: string): Promise<ReturnFindCommentIdType | undefined | null> {
+
+        const commentsCount = await CommentsModelClass.count({postId: postId})
         const pagesCount = Math.ceil(commentsCount / pageSize)
 
         const comments = await CommentsModelClass.find({postId: postId}, {_id: 0, __v: 0})
@@ -176,6 +176,8 @@ if (comment !== null) {
             totalCount: commentsCount,
             items: commentsWithLikes
         }
+        console.log('comments', allComments)
+        //@ts-ignore
         return allComments
     }
 

@@ -67,9 +67,11 @@ export class PostsRepository {
     async getAllPosts(pageNumber: number, pageSize: number, userId: string): Promise<PostsOfBloggerType | undefined | null> {
         const postsCount = await PostsModelClass.count({})
         const pagesCount = Math.ceil(postsCount / pageSize)
+
         const posts = await PostsModelClass.find({}, {_id: 0, __v: 0})
             .skip((pageNumber - 1) * pageSize).limit(pageSize).lean()
         let postsWithLikes: PostsType[] = []
+
         for (let post of posts) {
             const postWithLikesInfo = await addLikesToPost(post, userId)
             postsWithLikes.push(postWithLikesInfo)
@@ -87,9 +89,9 @@ export class PostsRepository {
     }
     async findBloggersPost(pageNumber: number,pageSize: number, bloggerId: string, userId: string): Promise<PostsOfBloggerType | undefined | null> {
         const postsCount = await PostsModelClass.count({bloggerId: bloggerId})
-        console.log(postsCount)
+        //console.log(postsCount)
         const pagesCount = Math.ceil(postsCount / pageSize)
-        console.log(pagesCount)
+        //console.log(pagesCount)
         const posts = await PostsModelClass.find({bloggerId: bloggerId}, {_id: 0, __v: 0})
             .skip((pageNumber - 1) * pageSize).limit(pageSize).lean()
         let postsWithLikes: PostsType[] = []
@@ -97,7 +99,7 @@ export class PostsRepository {
             const postWithLikesInfo = await addLikesToPost(post, userId)
             postsWithLikes.push(postWithLikesInfo)
         }
-        console.log("12345", postsWithLikes)
+        //console.log("12345", postsWithLikes)
         const allPosts = {
             pagesCount: pagesCount,
             page: pageNumber,

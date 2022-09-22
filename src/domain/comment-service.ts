@@ -48,8 +48,10 @@ export class CommentsService {
         return comment
     }
 
-    async findAllCommentWithPag(postId: string, pageSize: number, pageNumber: number, userId: string) {
-        return await this.commentsRepository.findAllCommentWithPag(postId, pageSize, pageNumber, userId)
+    async findAllCommentWithPag(pageNumber: string = "1" || undefined || null, pageSize: string = "10" || undefined || null, postId: string, userId: string): Promise<{}> {
+        const comment = await this.commentsRepository.findAllCommentWithPag(+pageNumber, +pageSize, postId,  userId)
+        const allComments = {...comment}
+        return allComments
     }
 
     async getCount(postId: string) {

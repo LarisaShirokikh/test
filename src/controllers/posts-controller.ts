@@ -39,8 +39,7 @@ export class PostsController {
 
         const posts = await this.commentService
             //@ts-ignore
-            .findAllCommentWithPag(req.params.postId, req.query.PageNumber, req.query.PageSize, userId)
-        //const getCount = await this.commentService.getCount(req.params.postId)
+            .findAllCommentWithPag(req.query.PageNumber, req.query.PageSize, req.params.postId, userId)
         res.status(200).send(posts);
         return
 

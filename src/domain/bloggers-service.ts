@@ -12,6 +12,7 @@ export class BloggersService {
         this.bloggersRepository = new BloggersRepository()
         this.postsRepository = new PostsRepository()
     }
+
     async findBloggers(pageSize:number, pageNumber:number, searchNameTerm:string) {
 
         return await this.bloggersRepository.findBloggers(pageSize, pageNumber, searchNameTerm)
