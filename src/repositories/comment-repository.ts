@@ -212,8 +212,7 @@ if (comment !== null) {
         const comment = await CommentsModelClass.findOne({id: commentId})
         if (comment !== null) {
             const findUser = comment.likesInfo.newestLikes.find(p => p.userId === user.accountData.id)
-            //const postLikeStatus = post.extendedLikesInfo.myStatus
-            //if (postLikeStatus == likeStatus)
+            //console.log('user', findUser)
             if (!findUser) {
                 await CommentsModelClass.updateOne({id: commentId},
                     {
@@ -228,7 +227,7 @@ if (comment !== null) {
                     })
                 return true
             } else {
-
+                //console.log(1111)
                 await CommentsModelClass.updateOne({id: commentId, 'likesInfo.newestLikes.userId': findUser.userId},
                     {
                         $pull:
@@ -247,6 +246,7 @@ if (comment !== null) {
                             }
                         }
                     })
+                console.log('comment-repo', 'return update', 1111233)
                 return true
             }
         }

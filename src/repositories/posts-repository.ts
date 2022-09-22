@@ -225,8 +225,6 @@ export class PostsRepository {
         const post = await PostsModelClass.findOne({id: postId})
         if (post !== null) {
             const findUser = post.extendedLikesInfo.newestLikes.find(p => p.userId === user.accountData.id)
-            //const postLikeStatus = post.extendedLikesInfo.myStatus
-            //if (postLikeStatus == likeStatus)
             if (!findUser) {
                 await PostsModelClass.updateOne({id: postId},
                     {

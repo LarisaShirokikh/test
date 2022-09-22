@@ -177,7 +177,7 @@ export class PostsController {
         }
 
 
-        await this.postsService.updateLikeStatus(req.user, req.params.postId, req.body.likeStatus)
+        const updateLike = await this.postsService.updateLikeStatus(req.user, req.params.postId, req.body.likeStatus)
 
         res.status(204).send()
         return

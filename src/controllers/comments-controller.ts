@@ -94,12 +94,12 @@ export class CommentsController {
     async commentLikeStatus(req: Request, res: Response) {
         const user = req.user!
         const comment = await this.commentsService.findComment(req.params.commentId, req.body.userId)
-        console.log('comment', comment)
+        //console.log('comment', comment)
         if (!comment) return res.status(404).send({errorsMessages: [{message: "Comment not found", field: "commentId"}]})
 
         await this.commentsService.updateLikeStatus(user, comment.id, req.body.likeStatus)
-
-        res.status(204)
+        console.log(135)
+        res.status(204).send()
         return
 
     }

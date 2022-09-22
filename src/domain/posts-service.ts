@@ -81,20 +81,15 @@ export class PostsService {
         return await this.postsRepository.getCount()
     }
 
-
-
-    async getCountBloggerId(bloggerId: string) {
-        return await this.postsRepository.getCountBloggerId(bloggerId)
-    }
-
     async getPostById(postId: string): Promise<PostsType | null> {
         return this.postsRepository.getPostById(postId)
     }
 
     async updateLikeStatus(user: any, postId: string, likeStatus: "None" | "Like" | "Dislike"): Promise<boolean | undefined> {
         const addedLikeStatusAt = new Date()
-        return this.postsRepository.updateLikeStatus(user, postId, likeStatus, addedLikeStatusAt)
-
+       const updateLike = await this.postsRepository.updateLikeStatus(user, postId, likeStatus, addedLikeStatusAt)
+        console.log(updateLike)
+return updateLike
     }
 }
 

@@ -71,7 +71,9 @@ export class CommentsService {
     async updateLikeStatus(user: any, commentId: string, likeStatus: "None" | "Like" | "Dislike"): Promise<boolean | undefined> {
 
         const addedLikeStatusAt = new Date()
-        return this.commentsRepository.updateLikeStatus(user, commentId, likeStatus, addedLikeStatusAt)
+        const updateLike = await this.commentsRepository.updateLikeStatus(user, commentId, likeStatus, addedLikeStatusAt)
+        //console.log('updateLike', updateLike)
+        return updateLike
     }
 
     async getComment(commentId: string, userId: string): Promise<ReturnFindCommentIdType | null> {
