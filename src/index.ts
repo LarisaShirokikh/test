@@ -2,20 +2,19 @@ import express from 'express'
 import bodyParser from "body-parser"
 import cors from "cors"
 
-const cookieParser = require('cookie-parser')
+//const cookieParser = require('cookie-parser')
 
 
 
 const app = express()
 const port = process.env.PORT || 3000
 
-app.set("trust proxy", true) // fix ip
-// X-Forwardet-For
+//app.set("trust proxy", true)
 
 const parserMiddleware = bodyParser.json()
 app.use(cors())
 app.use(parserMiddleware)
-app.use(cookieParser());
+//app.use(cookieParser());
 
 
 
