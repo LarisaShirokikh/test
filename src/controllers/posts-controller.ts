@@ -36,27 +36,17 @@ export class PostsController {
         if (token) {
             userId = await jwtService.getUserIdByToken(token)
         }
+var commentatorId =
+            req.query.commentatorid
+
 
         const comments = await this.commentService
-            //@ts-ignore
-            .findAllCommentWithPag(req.query.PageNumber, req.query.PageSize, req.params.postId, userId)
+        //@ts-ignore
+            .findAllCommentWithPag(req.query.PageNumber, req.query.PageSize, req.params.postId, userId, commetatorId)
         res.status(200).send(comments);
         return
 
-        // const pageSize: number = Number(req.query.PageSize) || 10
-        // const pageNumber: number = Number(req.query.PageNumber) || 1
-        //
-        // const findComment = await this.commentService.findCommentWithPag(req.params.postId, pageSize, pageNumber)
-        // const getCount = await this.commentService.getCount(req.params.postId)
-        // const result = {
-        //     "pagesCount": Math.ceil(getCount / pageSize),
-        //     "page": pageNumber,
-        //     "pageSize": pageSize,
-        //     "totalCount": getCount,
-        //     "items": findComment
-        // }
-        // res.send(result)
-        // return
+        // const comment = await this.commentService.findCommentById
     }
 
     async creatPost(req: Request, res: Response) {

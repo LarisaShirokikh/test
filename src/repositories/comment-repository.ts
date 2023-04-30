@@ -153,12 +153,12 @@ export class CommentsRepository {
 
     }
 
-    async findAllCommentWithPag(pageNumber: number, pageSize: number, postId: string, userId: string): Promise<ReturnFindCommentIdType | undefined | null> {
+    async findAllCommentWithPag(pageNumber: number, pageSize: number, postId: string, userId: string, commentatorId: string): Promise<ReturnFindCommentIdType | undefined | null> {
 
         const commentsCount = await CommentsModelClass.count({postId: postId})
         const pagesCount = Math.ceil(commentsCount / pageSize)
 
-        const comments = await CommentsModelClass.find({postId: postId}, {_id: 0, __v: 0, postId: 0})
+        const comments = await CommentsModelClass.find({postId: postId, userId: commentatorId}, {_id: 0, __v: 0, postId: 0})
             .skip((pageNumber - 1) * pageSize).limit(pageSize).lean()
 
         let commentsWithLikes: CommentsType[] = []
@@ -175,7 +175,7 @@ export class CommentsRepository {
             totalCount: commentsCount,
             items: commentsWithLikes
         }
-        console.log('comments', allComments)
+
         //@ts-ignore
         return allComments
     }
